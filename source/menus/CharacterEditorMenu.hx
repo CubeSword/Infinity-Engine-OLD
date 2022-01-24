@@ -739,6 +739,13 @@ class CharacterEditorMenu extends BasicState
                     if(character.animation.curAnim != null) {
                         character.playAnim(character.animation.curAnim.name, true);
                     }
+
+                    characterGhost.setGraphicSize(Std.int(characterGhost.frameWidth * nums.value));
+                    characterGhost.updateHitbox();
+
+                    if(characterGhost.animation.curAnim != null) {
+                        characterGhost.playAnim(character.animation.curAnim.name, true);
+                    }
                 case 'Health1':
                     healthColor[0] = Std.int(nums.value);
 
@@ -778,7 +785,13 @@ class CharacterEditorMenu extends BasicState
         character.y += character.position[1];
 
         characterGhost.setPosition(character.x, character.y);
+
         characterGhost.offset.set(0, 0);
+
+        if(animList.contains("danceLeft"))
+            characterGhost.offset.set(animOffsets[animList.indexOf("danceLeft")][0], animOffsets[animList.indexOf("danceLeft")][1]);
+        else if(animList.contains("idle"))
+            characterGhost.offset.set(animOffsets[animList.indexOf("idle")][0], animOffsets[animList.indexOf("idle")][1]);
 
         for(i in 0...icons.members.length)
         {
