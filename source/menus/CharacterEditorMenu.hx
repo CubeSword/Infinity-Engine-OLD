@@ -564,19 +564,24 @@ class CharacterEditorMenu extends BasicState
         var removeAnimBTN:FlxButton = new FlxButton(charName.x + (addAnimBTN.width + 10), addAnimBTN.y, "Remove", function(){
             if(animList.length > 1)
             {
-                character.animation.remove(animList[curAnim]);
+                var balls:Int = animList.indexOf(animNameTextBox.text);
 
-                animList.remove(animList[curAnim]);
-                prefixList.remove(prefixList[curAnim]);
-                animOffsets.remove(animOffsets[curAnim]);
-                loopList.remove(loopList[curAnim]);
+                if(animList.contains(animList[balls]))
+                {
+                    character.animation.remove(animList[balls]);
 
-                curAnim = 0;
-                changeAnim();
+                    animList.remove(animList[balls]);
+                    prefixList.remove(prefixList[balls]);
+                    animOffsets.remove(animOffsets[balls]);
+                    loopList.remove(loopList[balls]);
 
-                character.playAnim(animList[0]);
+                    curAnim = 0;
+                    changeAnim();
 
-                updateAnimList();
+                    character.playAnim(animList[0]);
+
+                    updateAnimList();
+                }
             }
         });
 
@@ -1004,11 +1009,12 @@ class CharacterEditorMenu extends BasicState
                 character.camOffsets[1]
             ],
             "sing_duration": 6.1, // unused but kept just in case someone wants to add this
-            "scale": character.json.scale
+            "scale": scaleBox.value
         }];
 
         for(i in 0...character.anims.length)
         {
+            character.anims[i].offsets = [animOffsets[i][0], animOffsets[i][1]];
             charData[0].animations.push(character.anims[i]);
         }
 
