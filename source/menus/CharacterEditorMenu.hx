@@ -566,9 +566,10 @@ class CharacterEditorMenu extends BasicState
             {
                 var balls:Int = animList.indexOf(animNameTextBox.text);
 
-                if(animList.contains(animList[balls]))
+                if(animList.contains(animNameTextBox.text))
                 {
-                    character.animation.remove(animList[balls]);
+                    character.animation.remove(animNameTextBox.text);
+                    character.anims.remove(character.anims[balls]);
 
                     animList.remove(animList[balls]);
                     prefixList.remove(prefixList[balls]);
@@ -582,6 +583,8 @@ class CharacterEditorMenu extends BasicState
 
                     updateAnimList();
                 }
+
+                trace(animList);
             }
         });
 
