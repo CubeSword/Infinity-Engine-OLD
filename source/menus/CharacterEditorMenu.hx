@@ -344,6 +344,7 @@ class CharacterEditorMenu extends BasicState
             if(Assets.exists('assets/characters/$charToLoad.json'))
             {
                 character.loadCharacter(charToLoad);
+                characterGhost.loadCharacter(charToLoad);
                 balls = true;
             }
             #if sys
@@ -356,12 +357,14 @@ class CharacterEditorMenu extends BasicState
                         if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$charToLoad.json'))
                         {
                             character.loadCharacter(charToLoad);
+                            characterGhost.loadCharacter(charToLoad);
                             balls = true;
                         }
                         else
                         {
                             if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/images/$charToLoad/assets.png'))
                                 character.frames = Util.getSparrow('characters/images/$charToLoad/assets', false);
+                                characterGhost.frames = Util.getSparrow('characters/images/$charToLoad/assets', false);
                         }
                     }
                 }
