@@ -40,10 +40,10 @@ class Character extends FlxSprite {
             }
         }
 
-        #if sys
+        var balls:Bool = false;
+
         if(Assets.exists('assets/characters/$name.json'))
-        #end
-            json = Util.getJsonContents('assets/characters/$name.json');
+            balls = true;
         #if sys
         else
         {
@@ -53,12 +53,37 @@ class Character extends FlxSprite {
                 {
                     if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$name.json'))
                     {
-                        json = Util.getJsonContents('mods/$mod/characters/$name.json');
+                        balls = true;
                     }
                 }
             }
         }
         #end
+
+        trace("!!!!! CHARACTER EXISTS !!!!!: " + balls);
+
+        if(balls)
+        {
+            #if sys
+            if(Assets.exists('assets/characters/$name.json'))
+            #end
+                json = Util.getJsonContents('assets/characters/$name.json');
+            #if sys
+            else
+            {
+                if(Mods.activeMods.length > 0)
+                {
+                    for(mod in Mods.activeMods)
+                    {
+                        if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$name.json'))
+                        {
+                            json = Util.getJsonContents('mods/$mod/characters/$name.json');
+                        }
+                    }
+                }
+            }
+            #end
+        }
 
         #if sys
         if(Assets.exists('assets/characters/images/$name/assets.png', IMAGE))

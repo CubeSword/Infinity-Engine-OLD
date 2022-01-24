@@ -95,8 +95,9 @@ class AchievementMenu extends BasicState
             var alphabet = new AlphabetText(0, (70 * achievementDataIndex) + 30, achievementData.name);
             alphabet.targetY = achievementDataIndex;
             alphabet.isMenuItem = true;
+            alphabet.x += 200;
             alphabet.xAdd = 150;
-            alphabet.yMult = 140;
+            //alphabet.yMult = 140;
 
             songAlphabets.add(alphabet);
 

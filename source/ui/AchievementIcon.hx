@@ -17,6 +17,6 @@ class AchievementIcon extends TrackerSprite
         }
 
         loadGraphic(Util.getImage(achievementPath, false));
-        setGraphicSize(150, 150);
+        setGraphicSize(120, 120);
     }
 }

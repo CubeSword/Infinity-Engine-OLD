@@ -9,6 +9,7 @@ using StringTools;
 class Icon extends TrackerSprite
 {
 	var isPixel:Bool = false;
+	public var isPlayer:Bool = false;
 
 	public function new(?iconPath:String = "test", ?tracker:FlxSprite, ?isPlayer:Bool = false, ?xOff:Float = 10, ?yOff:Float = -30, ?direction:TrackerDirection = RIGHT, ?swagChar:String = "bf")
 	{
@@ -30,6 +31,16 @@ class Icon extends TrackerSprite
 			antialiasing = false;
 		else
 			antialiasing = Options.getData('anti-aliasing');
+
+		loadIcon(iconPath, isPlayer);
+	}
+
+	public function loadIcon(iconPath:String, isPlayer:Bool)
+	{
+		this.isPlayer = isPlayer;
+		
+		if(!Std.isOfType(Util.getImage(iconPath, false), FlxGraphic))
+			iconPath = "characters/images/placeholder/icons";
 
 		loadGraphic(Util.getImage(iconPath, false), true, 150, 150);
 
