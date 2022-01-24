@@ -1050,7 +1050,7 @@ class CharacterEditorMenu extends BasicState
 
     private function saveCharJSON()
     {
-        var data:String = Json.stringify(charData, null, "\t");
+        var data:String = Json.stringify(charData[0], null, "\t");
 
         if ((data != null) && (data.length > 0))
         {
