@@ -477,6 +477,7 @@ class CharacterEditorMenu extends BasicState
         charFlipBox.callback = function()
         {
             character.flipX = charFlipBox.checked;
+            characterGhost.flipX = charFlipBox.checked;
         };
 
         var charLoopAnimBox:FlxUICheckBox = new FlxUICheckBox(charName.x, charFlipBox.y + 20, null, null, "Loop Animation", 250);
