@@ -744,7 +744,7 @@ class CharacterEditorMenu extends BasicState
                     characterGhost.updateHitbox();
 
                     if(characterGhost.animation.curAnim != null) {
-                        characterGhost.playAnim(character.animation.curAnim.name, true);
+                        characterGhost.playAnim(characterGhost.animation.curAnim.name, true);
                     }
                 case 'Health1':
                     healthColor[0] = Std.int(nums.value);
