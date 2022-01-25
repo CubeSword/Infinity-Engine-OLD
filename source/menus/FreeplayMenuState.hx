@@ -278,7 +278,7 @@ class FreeplayMenuState extends BasicState
         if(Controls.accept)
         {
             game.PlayState.songMultiplier = curSpeed;
-            FlxG.switchState(new game.PlayState(songs[selectedSong].songName.toLowerCase(), selectedDifficulty, false));
+            transitionState(new game.PlayState(songs[selectedSong].songName.toLowerCase(), selectedDifficulty.toLowerCase(), false));
         }
 
         var funnyObject:FlxText = scoreText;

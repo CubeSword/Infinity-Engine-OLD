@@ -13,11 +13,14 @@ class Stage extends FlxTypedGroup<StageSprite>
 
     var file:Dynamic;
 
+    var megaCoolPoggersStage:String = "stage";
+
 	public function new(swagStage:String = "stage")
     {
         super();
 
-        getStageJSON(swagStage);
+        megaCoolPoggersStage = swagStage;
+        getStageJSON(megaCoolPoggersStage);
         trace("Stage Objects: " + stageObjects);
         trace("Stage Objects Length: " + stageObjects.length);
 
@@ -31,9 +34,9 @@ class Stage extends FlxTypedGroup<StageSprite>
             if(stageObjects[i].is_Animated)
             {
                 #if sys
-                if(Assets.exists('assets/stages/$swagStage/' + stageObjects[i].file_Name + '.png'))
+                if(Assets.exists('assets/stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name + '.png'))
                 #end
-                    file = Util.getSparrow('assets/stages/$swagStage/' + stageObjects[i].file_Name, false);
+                    file = Util.getSparrow('assets/stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
                 #if sys
                 else
                 {
@@ -41,9 +44,9 @@ class Stage extends FlxTypedGroup<StageSprite>
                     {
                         for(mod in Mods.activeMods)
                         {
-                            if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/stages/$swagStage/' + stageObjects[i].file_Name + '.png'))
+                            if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name + '.png'))
                             {
-                                file = Util.getSparrow('mods/$mod/stages/$swagStage/' + stageObjects[i].file_Name, false);
+                                file = Util.getSparrow('mods/$mod/stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
                             }
                         }
                     }
@@ -73,8 +76,8 @@ class Stage extends FlxTypedGroup<StageSprite>
             }
             else
             {
-                trace('stages/$swagStage/' + stageObjects[i].file_Name);
-                swagSprite.loadGraphic(Util.getImage('stages/$swagStage/' + stageObjects[i].file_Name, false));
+                trace('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name);
+                swagSprite.loadGraphic(Util.getImage('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false));
             }
 
             swagSprite.setGraphicSize(Std.int(swagSprite.width * stageObjects[i].scale));
@@ -111,7 +114,10 @@ class Stage extends FlxTypedGroup<StageSprite>
         var stage:String = swagStage;
 
         if(!stageExists(stage))
+        {
             stage = "stage";
+            megaCoolPoggersStage = stage;
+        }
 
 		#if sys
 		if(Assets.exists('assets/stages/$stage/data.json'))
