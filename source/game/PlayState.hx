@@ -500,7 +500,7 @@ class PlayState extends BasicState
 			}
 
 			player = new Character(characterPositions[2][0], characterPositions[2][1], song.player1);
-			//player.flipX = !player.flipX;
+			player.flipX = !player.flipX;
 			player.isPlayer = true;
 			add(player);
 

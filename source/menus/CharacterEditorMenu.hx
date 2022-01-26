@@ -96,6 +96,8 @@ class CharacterEditorMenu extends BasicState
 
     var charData:Dynamic;
 
+    var playerChar:Bool = false;
+
     var cameraFollowPointer:FlxSprite;
 
     #if sys
@@ -444,6 +446,12 @@ class CharacterEditorMenu extends BasicState
         {
             character.flipX = charFlipBox.checked;
             characterGhost.flipX = charFlipBox.checked;
+
+            if(playerChar)
+            {
+                character.flipX = !character.flipX;
+                characterGhost.flipX = !characterGhost.flipX;
+            }
         };
 
         var charLoopAnimBox:FlxUICheckBox = new FlxUICheckBox(charName.x, charFlipBox.y + 20, null, null, "Loop Animation", 250);
@@ -625,6 +633,15 @@ class CharacterEditorMenu extends BasicState
 
         noAntialiasingBox = swagNoAntialiasingBox;
 
+        var playerCharBox:FlxUICheckBox = new FlxUICheckBox(charName.x, swagNoAntialiasingBox.y + 20, null, null, "Is Player Character", 250);
+        playerCharBox.checked = playerChar;
+
+        playerCharBox.callback = function()
+        {
+            playerChar = playerCharBox.checked;
+            character.flipX = !character.flipX;
+        };
+
         var saveCharBTN:FlxButton = new FlxButton(loadCharBTN.x + (loadCharBTN.width + 10), loadCharBTN.y, "Save Character", function(){
             // will do soon ok
             setCharData();
@@ -668,6 +685,7 @@ class CharacterEditorMenu extends BasicState
         uiBase.add(charFlipBox);
         uiBase.add(charLoopAnimBox);
         uiBase.add(swagNoAntialiasingBox);
+        uiBase.add(playerCharBox);
 
         // STEPPERS
         uiBase.add(swagCharXBox);

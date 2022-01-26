@@ -44,6 +44,7 @@ class GameOverSubstate extends BasicSubState
         // don't wanna re-export pixel bf's xml to include death anim so i'm doin this
 
 		player = new Character(x, y, swagDeathChar);
+        player.flipX = !player.flipX;
         player.isPlayer = true;
 		add(player);
 
