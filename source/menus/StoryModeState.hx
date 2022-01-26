@@ -241,7 +241,6 @@ class StoryModeState extends BasicState {
     }
 
     var daRawSongs:Dynamic;
-    var bigBalls:Float = 0;
 
     var hasAccepted:Bool = false;
 
@@ -276,7 +275,6 @@ class StoryModeState extends BasicState {
 
         if(accept && !hasAccepted)
         {
-            bigBalls = 0;
             hasAccepted = true;
             game.PlayState.storyPlaylist = [];
     
@@ -289,21 +287,18 @@ class StoryModeState extends BasicState {
             trace(swagSongs[selectedWeek][0].toLowerCase());
             trace(difficulties[selectedDifficulty].toLowerCase());
 
+            FlxG.sound.play(Util.getSound("menus/confirmMenu"));
+
             weekChars.members[1].playAnim('confirm', true);
-        }
 
-        if(hasAccepted)
-        {
-            bigBalls += 0.5;
-
-            if(bigBalls >= 3)
+			new FlxTimer().start(1, function(tmr:FlxTimer)
             {
                 transitionState(new game.PlayState(swagSongs[selectedWeek][0].toLowerCase(), difficulties[selectedDifficulty].toLowerCase(), true));
 
                 game.PlayState.songMultiplier = 1;
                 game.PlayState.storyScore = 0;
                 game.PlayState.weekName = swagWeeks[selectedWeek];
-            }
+            });
         }
 
         if(up) changeSelectedWeek(-1);

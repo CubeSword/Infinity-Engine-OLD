@@ -62,19 +62,10 @@ class StoryModeCharacter extends FlxSprite {
             }
             #end
 
-            #if sys
-            if(Assets.exists('assets/storymode/images/$swagName/assets.png', IMAGE))
-            #end
-                frames = Util.getSparrow('assets/storymode/images/$swagName/assets', false);
-            #if sys
-            else
-                frames = Util.getSparrow('storymode/images/$swagName/assets', false);
-            #end
+            frames = Util.getSparrow('storymode/images/$swagName/assets', false);
 
-            //if(json.scale != 1) {
-                setGraphicSize(Std.int(width * json.scale));
-                updateHitbox();
-            //}
+            setGraphicSize(Std.int(frameWidth * json.scale));
+            updateHitbox();
 
             antialiasing = Options.getData('anti-aliasing');
             position = json.position;
