@@ -169,7 +169,7 @@ class PlayState extends BasicState
 	var hits:Int = 0;
 
 	// song config shit
-	var speed:Float = 1;
+	public var speed:Float = 1;
 	public static var storyMode:Bool = false;
 
 	public static var storyPlaylist:Array<String> = [];
@@ -220,6 +220,14 @@ class PlayState extends BasicState
 	// shit other than variables
 	public function new(?songName:String, ?difficulty:String, ?storyModeBool:Bool = false)
 	{
+		super();
+
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
+
+		FlxTransitionableState.skipNextTransIn = false;
+		FlxTransitionableState.skipNextTransOut = false;
+
 		instance = this;
 
 		dialogue = [];
@@ -231,10 +239,6 @@ class PlayState extends BasicState
 
 		if(Options.getData('botplay'))
 			usedPractice = true;
-
-		super();
-
-		//new Handler("test", true, "godielmfao", true);
 
 		if(songName != null)
 		{

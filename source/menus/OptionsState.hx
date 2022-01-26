@@ -65,6 +65,7 @@ class OptionsState extends BasicState
 		"tools" => [
 			["Back", "menu", ""],
 			["Character Editor", "menu", "Make a new character with the Character Editor."],
+			["Chart Editor", "menu", "Chart your songs with the Chart Editor."],
 		],
 		"misc" => [
 			["Back", "menu", ""],
@@ -201,6 +202,8 @@ class OptionsState extends BasicState
 						// tools
 						case "Character Editor":
 							transitionState(new CharacterEditorMenu());
+						case "Chart Editor":
+							transitionState(new ChartEditorMenu("test"));
 					}
 				case "checkbox":
 					Options.saveData(optionsList[selectedOption][3], !Options.getData(optionsList[selectedOption][3]));

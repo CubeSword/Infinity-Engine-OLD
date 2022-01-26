@@ -72,6 +72,11 @@ class Util
 			png = "assets/images/" + png;
 			xml = "assets/images/" + xml;
 		}
+		else
+		{
+			png = "assets/" + png;
+			xml = "assets/" + xml;
+		}
 
 		#if sys
 		if(!Assets.exists(png + ".png") || !Assets.exists(xml + ".xml"))

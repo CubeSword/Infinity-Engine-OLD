@@ -184,12 +184,12 @@ class CharacterEditorMenu extends BasicState
         stage = new Stage('stage');
         add(stage);
 
-        characterGhost = new Character(0, 0, curChar);
+        characterGhost = new Character(0, 0, curChar, true);
         characterGhost.screenCenter();
         characterGhost.alpha = 0.45;
         add(characterGhost);
 
-        character = new Character(0, 0, curChar);
+        character = new Character(0, 0, curChar, true);
         character.screenCenter();
         add(character);
 
@@ -337,86 +337,52 @@ class CharacterEditorMenu extends BasicState
         var loadCharBTN:FlxButton = new FlxButton(charName.x + (charNameTextBox.width + 10), charNameTextBox.y, "Load Character", function(){
             var charToLoad:String = charNameTextBox.text;
 
-            // i'm trying to prevent the game from crashing when there's no json but i am failing
-            // help
+            character.loadCharacter(charToLoad, true);
+            characterGhost.loadCharacter(charToLoad, true);
+
+            character.x = PlayState.characterPositions[1][0];
+            character.y = PlayState.characterPositions[1][1];
+    
+            character.x += character.position[0];
+            character.y += character.position[1];
+
+            if(swagCharXBox != null)
+            {
+                swagCharXBox.value = character.position[0];
+                swagCharYBox.value = character.position[1];
+            }
+
+            if(swagCamXBox != null)
+            {
+                swagCamXBox.value = character.camOffsets[0];
+                swagCamYBox.value = character.camOffsets[1];
+            }
+
+            if(swagScaleBox != null)
+                swagScaleBox.value = character.json.scale;
+
+            updateCharacter();
+
+            updateAnimList();
+
+            changeAnim();
+
+            //reloadCharListMenu();
+
+            curChar = character.name;
+
+            refreshDiscordRPC();
+            refreshAppTitle();
+
+            swagCustomIconTextBox.text = curChar;
             
-            var balls:Bool = false;
-            if(Assets.exists('assets/characters/$charToLoad.json'))
-            {
-                character.loadCharacter(charToLoad);
-                characterGhost.loadCharacter(charToLoad);
-                balls = true;
-            }
-            #if sys
-            else
-            {
-                if(Mods.activeMods.length > 0)
-                {
-                    for(mod in Mods.activeMods)
-                    {
-                        if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$charToLoad.json'))
-                        {
-                            character.loadCharacter(charToLoad);
-                            characterGhost.loadCharacter(charToLoad);
-                            balls = true;
-                        }
-                        else
-                        {
-                            if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/images/$charToLoad/assets.png'))
-                                character.frames = Util.getSparrow('characters/images/$charToLoad/assets', false);
-                                characterGhost.frames = Util.getSparrow('characters/images/$charToLoad/assets', false);
-                        }
-                    }
-                }
-            }
-            #end
+            healthBar.createFilledBar(character.healthColor, character.healthColor);
 
-            if(balls)
-            {
-                character.x = PlayState.characterPositions[1][0];
-                character.y = PlayState.characterPositions[1][1];
-        
-                character.x += character.position[0];
-                character.y += character.position[1];
+            healthColor[0] = character.json.healthbar_colors[0];
+            healthColor[1] = character.json.healthbar_colors[1];
+            healthColor[2] = character.json.healthbar_colors[2];
 
-                if(swagCharXBox != null)
-                {
-                    swagCharXBox.value = character.position[0];
-                    swagCharYBox.value = character.position[1];
-                }
-
-                if(swagCamXBox != null)
-                {
-                    swagCamXBox.value = character.camOffsets[0];
-                    swagCamYBox.value = character.camOffsets[1];
-                }
-
-                if(swagScaleBox != null)
-                    swagScaleBox.value = character.json.scale;
-
-                updateCharacter();
-
-                updateAnimList();
-
-                changeAnim();
-
-                //reloadCharListMenu();
-
-                curChar = charToLoad;
-
-                refreshDiscordRPC();
-                refreshAppTitle();
-
-                swagCustomIconTextBox.text = curChar;
-                
-                healthBar.createFilledBar(character.healthColor, character.healthColor);
-
-                healthColor[0] = character.json.healthbar_colors[0];
-                healthColor[1] = character.json.healthbar_colors[1];
-                healthColor[2] = character.json.healthbar_colors[2];
-
-                noAntialiasingBox.checked = character.antialiasing;
-            }
+            noAntialiasingBox.checked = character.antialiasing;
         });
 
         charListMenu = new CustomDropdown(charName.x, charName.y + 20, CustomDropdown.makeStrIdLabelArray(characterList, true), function(id:String){
@@ -725,6 +691,15 @@ class CharacterEditorMenu extends BasicState
     function reloadCharListMenu()
     {
         charListMenu.setData(CustomDropdown.makeStrIdLabelArray(characterList, true));
+    }
+
+    function loadChar(?char:String = "bf")
+    {
+        var curCharX:Float = character.x;
+        var curCharY:Float = character.y;
+        
+        character = new Character(curCharX, curCharY, char, true);
+        characterGhost = new Character(curCharX, curCharY, char, true);
     }
 
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>)

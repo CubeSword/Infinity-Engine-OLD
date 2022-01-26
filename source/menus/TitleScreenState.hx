@@ -20,9 +20,6 @@ import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
 import DiscordRPC;
 
-using flixel.util.FlxSpriteUtil;
-
-// no raf i don't fucking know what "from scratch" means - swordcube
 class TitleScreenState extends BasicState
 {
 	// regular vars

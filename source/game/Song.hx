@@ -36,7 +36,7 @@ typedef Song =
 
 	var modchartPath:String;
 
-	var keyCount:Int;
+	var keyCount:Null<Int>;
 
 	var timescale:Array<Int>;
 

@@ -1,5 +1,6 @@
 package game;
 
+import flixel.graphics.frames.FlxAtlasFrames;
 import mods.Mods;
 import openfl.Assets;
 import flixel.FlxSprite;
@@ -21,16 +22,22 @@ class Character extends FlxSprite {
     public var holdTimer:Float = 0;
     public var healthIcon:String = "bf";
 
-    public function new(x, y, name)
+    var isInCharEditor:Bool = false;
+
+    public function new(x, y, ?name:String = "bf", ?isInCharEditor:Bool = false)
     {
         super(x, y);
+        this.isInCharEditor = isInCharEditor;
+
         loadCharacter(name);
     }
 
-    public function loadCharacter(name:String = "bf", ?resetAnims:Bool = false)
+    public function loadCharacter(swagName:String = "bf", ?resetAnims:Bool = false)
     {
-        this.name = name;
-        json = null;
+        this.name = swagName;
+        json = Util.getJsonContents('assets/characters/placeholder.json');
+
+        trace("!!!!! DOES THE PLACEHOLDER JSON EVEN LOAD??? LET'S SEE BY TRACING IT !!!!!: " + json);
 
         if(resetAnims)
         {
@@ -42,7 +49,7 @@ class Character extends FlxSprite {
 
         var balls:Bool = false;
 
-        if(Assets.exists('assets/characters/$name.json'))
+        if(Assets.exists('assets/characters/$swagName.json'))
             balls = true;
         #if sys
         else
@@ -51,7 +58,7 @@ class Character extends FlxSprite {
             {
                 for(mod in Mods.activeMods)
                 {
-                    if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$name.json'))
+                    if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$swagName.json'))
                     {
                         balls = true;
                     }
@@ -65,9 +72,9 @@ class Character extends FlxSprite {
         if(balls)
         {
             #if sys
-            if(Assets.exists('assets/characters/$name.json'))
+            if(Assets.exists('assets/characters/$swagName.json'))
             #end
-                json = Util.getJsonContents('assets/characters/$name.json');
+                json = Util.getJsonContents('assets/characters/$swagName.json');
             #if sys
             else
             {
@@ -75,9 +82,9 @@ class Character extends FlxSprite {
                 {
                     for(mod in Mods.activeMods)
                     {
-                        if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$name.json'))
+                        if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$swagName.json'))
                         {
-                            json = Util.getJsonContents('mods/$mod/characters/$name.json');
+                            json = Util.getJsonContents('mods/$mod/characters/$swagName.json');
                         }
                     }
                 }
@@ -85,18 +92,12 @@ class Character extends FlxSprite {
             #end
         }
 
-        #if sys
-        if(Assets.exists('assets/characters/images/$name/assets.png', IMAGE))
-        #end
-            frames = Util.getSparrow('assets/characters/images/$name/assets', false);
-        #if sys
-        else
-            frames = Util.getSparrow('characters/images/$name/assets', false);
-        #end
+        trace("!!!!! DOES THE SHIT EXIST??? LET'S FIND OUT IN TODAY'S EPISODE OF PAIN AND SUFFERING !!!!!: " + Std.isOfType(Util.getSparrow('characters/images/$swagName/assets', false), FlxAtlasFrames));
+        frames = Util.getSparrow('characters/images/$swagName/assets', false);
 
-        if(json != null)
+        if(balls)
         {
-            setGraphicSize(Std.int(width * json.scale));
+            setGraphicSize(Std.int(frameWidth * json.scale));
             updateHitbox();
 
             flipX = json.flip_x;
@@ -143,8 +144,11 @@ class Character extends FlxSprite {
     override public function update(elapsed) {
         super.update(elapsed);
 
-        if(animation.curAnim.name.startsWith('sing'))
-            holdTimer += elapsed;
+        if(/*!isInCharEditor &&*/ animation.curAnim != null)
+        {
+            if(animation.curAnim.name.startsWith('sing'))
+                holdTimer += elapsed;
+        }
     }
 
     public function playAnim(AnimName:String, Force:Null<Bool> = false, Reversed:Null<Bool> = false, Frame:Null<Int> = 0, ?offsetX:Null<Float>, ?offsetY:Null<Float>) {
