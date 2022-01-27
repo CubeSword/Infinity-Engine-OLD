@@ -1917,8 +1917,13 @@ class PlayState extends BasicState
 							case 'sick' | 'marvelous':
 								if(Options.getData('note-splashes')) // don't create a note splash if the option is disabled
 								{
+									var newShader:ColorSwap = new ColorSwap();
 									var noteSplash:NoteSplash = new NoteSplash(playerStrumArrows.members[note.noteID].x, playerStrumArrows.members[note.noteID].y, note.noteID);
-									noteSplash.cameras = [otherCam];
+									noteSplash.cameras = [hudCam];
+									noteSplash.shader = newShader.shader;
+									newShader.hue = colors[note.noteID % keyCount][0] / 360;
+									newShader.saturation = colors[note.noteID % keyCount][1] / 100;
+									newShader.brightness = colors[note.noteID % keyCount][2] / 100;
 									add(noteSplash);
 								}
 						} // switch cases are better in this case
