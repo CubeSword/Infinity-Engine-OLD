@@ -1926,7 +1926,7 @@ class PlayState extends BasicState
 									newShader.brightness = colors[note.noteID % keyCount][2] / 100;
 									add(noteSplash);
 								}
-						} // switch cases are better in this case
+						}
 					}
 					else
 					{

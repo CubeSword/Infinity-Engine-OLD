@@ -27,15 +27,15 @@ class StoryModeState extends BasicState {
     var doFunnyQuote:Bool = false;
 
     var tracksText:FlxText;
+    
+    var modText:FlxText;
+    var selectedMod:Int = 0;
+    var swagMods:Array<String> = ["Base Game"];
 
     var funnyWeeks:FlxTypedGroup<FlxSprite>;
     var grpDifficulty:FlxTypedGroup<FlxSprite>;
 
-    #if sys
-    var jsonDirs = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/weeks/");
-    #else
-    var jsonDirs:Array<String> = ["tutorial.json", "week1.json", "week2.json", "week3.json", "week4.json", "week5.json", "week6.json"];
-    #end
+    var jsonDirs:Array<String> = [];
 
     var jsons:Array<String> = [];
     var weekQuotes:Array<String> = [];
@@ -61,6 +61,11 @@ class StoryModeState extends BasicState {
         if(FlxG.random.bool(75))
             doFunnyQuote = true;
 
+        for(mod in Mods.activeMods)
+        {
+            swagMods.push(mod);
+        }
+
         tutorialData = Util.getJsonContents(Util.getJsonPath('weeks/tutorial'));
 
 		camFollow = new FlxObject(0, 0, 1, 1);
@@ -75,76 +80,7 @@ class StoryModeState extends BasicState {
         grpDifficulty = new FlxTypedGroup<FlxSprite>();
         add(grpDifficulty);
 
-        #if sys
-        if(Mods.activeMods.length > 0)
-        {
-            for(mod in Mods.activeMods)
-            {
-                if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/weeks/'))
-                {
-                    var funnyArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/weeks/');
-                    
-                    for(jsonThingy in funnyArray)
-                    {
-                        jsonDirs.push(jsonThingy);
-                    }
-                }
-            }
-        }
-        #end
-
-        for(dir in jsonDirs)
-        {
-            if(dir.endsWith(".json"))
-                jsons.push(dir.split(".json")[0]);
-        }
-
-        var json_i:Int = 0;
-
-        for(jsonName in jsons)
-        {
-            var data:Dynamic = tutorialData;
-
-            #if sys
-            if(Assets.exists(Util.getJsonPath('weeks/$jsonName')))
-            #end
-                data = Util.getJsonContents(Util.getJsonPath('weeks/$jsonName'));
-            #if sys
-            else
-            {
-                if(Mods.activeMods.length > 0)
-                {
-                    for(mod in Mods.activeMods)
-                    {
-                        if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/weeks/$jsonName.json'))
-                        {
-                            data = Util.getJsonContents('mods/$mod/weeks/$jsonName.json');
-                        }
-                    }
-                }
-            }
-            #end
-
-            if(doFunnyQuote)
-                weekQuotes.push(data.weekQuote);
-            else
-                weekQuotes.push(data.funnyWeekQuote);
-
-            var realWeek:FlxSprite = new FlxSprite(0, 600 + json_i * 125).loadGraphic(Util.getImage('weeks/images/' + data.fileName, false));
-            realWeek.screenCenter(X);
-            realWeek.ID = json_i;
-            funnyWeeks.add(realWeek);
-        
-            //trace('Week Data Output: ' + data);
-            swagSongs.push(data.songs);
-            swagWeeks.push(data.fileName);
-            swagChars.push(data.characters);
-            swagDifficulties.push(data.difficulties);
-
-            json_i++;
-        }
-
-        trace("Songs:\n" + swagSongs + "\n\nCharacters:\n" + swagChars + "\n\nDifficulties:\n" + swagDifficulties);
+        loadWeeks();
 
         // this shit gets added last for ordering reasons :D
         cover = new FlxSprite(0, 0).makeGraphic(FlxG.width, 200, FlxColor.BLACK);
@@ -212,6 +148,11 @@ class StoryModeState extends BasicState {
         difficultyImage.antialiasing = Options.getData('anti-aliasing');
         grpDifficulty.add(difficultyImage);
 
+        modText = new FlxText(leftDiffArrow.x, leftDiffArrow.y + 30, 0, "Base Game", 24);
+        modText.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, LEFT);
+        modText.scrollFactor.set();
+        add(modText);
+
         funkyBpm(102);
 
 		camFollow = new FlxObject(funnyWeeks.members[selectedWeek].getGraphicMidpoint().x, funnyWeeks.members[selectedWeek].getGraphicMidpoint().y - 100, 1, 1);
@@ -247,6 +188,121 @@ class StoryModeState extends BasicState {
     var trackList:String;
     var tracksArray:Array<Dynamic>;
 
+    function loadWeeks()
+    {
+        if(selectedMod < 0)
+            selectedMod = Mods.activeMods.length;
+
+        if(selectedMod > Mods.activeMods.length)
+            selectedMod = 0;
+
+        jsons = [];
+        swagWeeks = [];
+        swagChars = [];
+        swagSongs = [];
+        swagDifficulties = [];
+
+        for(i in 0...funnyWeeks.members.length)
+        {
+            funnyWeeks.members[i].kill();
+            funnyWeeks.members[i].destroy();
+        }
+
+        funnyWeeks.clear();
+
+        var daMod:String = swagMods[selectedMod];
+
+        trace(swagMods);
+
+        if(daMod == "Base Game")
+        {
+            #if sys
+            jsonDirs = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/weeks/");
+            #else
+            jsonDirs = ["tutorial.json", "week1.json", "week2.json", "week3.json", "week4.json", "week5.json", "week6.json"];
+            #end
+        }
+
+        #if sys
+        if(Mods.activeMods.length > 0)
+        {
+            for(mod in Mods.activeMods)
+            {
+                trace(daMod);
+                trace(mod);
+
+                if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/weeks/') && daMod == mod && mod != "Base Game")
+                {
+                    var funnyArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/weeks/');
+
+                    trace(funnyArray);
+                    
+                    for(jsonThingy in funnyArray)
+                    {
+                        jsonDirs.push(jsonThingy);
+                    }
+                }
+            }
+        }
+        #end
+        
+        trace(jsonDirs);
+
+        for(dir in jsonDirs)
+        {
+            if(dir.endsWith(".json"))
+                jsons.push(dir.split(".json")[0]);
+        }
+
+        var json_i:Int = 0;
+
+        for(jsonName in jsons)
+        {
+            trace(jsonName);
+            var data:Dynamic = tutorialData;
+
+            #if sys
+            if(Assets.exists(Util.getJsonPath('weeks/$jsonName')))
+            #end
+                data = Util.getJsonContents(Util.getJsonPath('weeks/$jsonName'));
+            #if sys
+            else
+            {
+                if(Mods.activeMods.length > 0)
+                {
+                    for(mod in Mods.activeMods)
+                    {
+                        if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/weeks/$jsonName.json') && daMod == mod && mod != "Base Game")
+                        {
+                            data = Util.getJsonContents('mods/$mod/weeks/$jsonName.json');
+                        }
+                    }
+                }
+            }
+            #end
+
+            if(doFunnyQuote)
+                weekQuotes.push(data.weekQuote);
+            else
+                weekQuotes.push(data.funnyWeekQuote);
+
+            var realWeek:FlxSprite = new FlxSprite(0, 600 + json_i * 125).loadGraphic(Util.getImage('weeks/images/' + data.fileName, false));
+            realWeek.screenCenter(X);
+            realWeek.ID = json_i;
+            funnyWeeks.add(realWeek);
+        
+            //trace('Week Data Output: ' + data);
+            swagSongs.push(data.songs);
+            swagWeeks.push(data.fileName);
+            swagChars.push(data.characters);
+            swagDifficulties.push(data.difficulties);
+
+            json_i++;
+        }
+
+        trace("Songs:\n" + swagSongs + "\n\nCharacters:\n" + swagChars + "\n\nDifficulties:\n" + swagDifficulties);
+    }
+
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
@@ -271,6 +327,28 @@ class StoryModeState extends BasicState {
             FlxTransitionableState.skipNextTransIn = false;
             FlxTransitionableState.skipNextTransOut = false;
             transitionState(new MainMenuState());
+        }
+
+        if(FlxG.keys.justPressed.Q)
+        {
+            selectedMod -= 1;
+            loadWeeks();
+
+            selectedWeek = 0;
+            selectedDifficulty = 0;
+            changeSelectedWeek();
+            changeDifficulty();
+        }
+
+        if(FlxG.keys.justPressed.E)
+        {
+            selectedMod += 1;
+            loadWeeks();
+
+            selectedWeek = 0;
+            selectedDifficulty = 0;
+            changeSelectedWeek();
+            changeDifficulty();
         }
 
         if(accept && !hasAccepted)
