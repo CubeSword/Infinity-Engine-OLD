@@ -84,10 +84,27 @@ class FreeplayMenuState extends BasicState
 
         curSpeed = 1;
 
+        #if sys
         for(mod in Mods.activeMods)
         {
-            swagMods.push(mod);
+            var real:Dynamic = null;
+
+            if(Mods.activeMods.length > 0)
+            {
+                if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/data/freeplaySongs.json'))
+                {
+                    real = Util.getJsonContents('mods/$mod/data/freeplaySongs.json');
+                }
+            }
+
+            trace(real);
+
+            if(real != null && real.songs.length > 0)
+                swagMods.push(mod);
+
+            // this checks to see if there are any freeplay songs in the mod, if there are none, skip the mod
         }
+        #end
 
         loadSongs(true);
 
@@ -147,9 +164,9 @@ class FreeplayMenuState extends BasicState
     function loadSongs(?isStupid:Bool = false)
     {
         if(selectedMod < 0)
-            selectedMod = Mods.activeMods.length;
+            selectedMod = swagMods.length - 1;
 
-        if(selectedMod > Mods.activeMods.length)
+        if(selectedMod > swagMods.length - 1)
             selectedMod = 0;
         
         songs = [];

@@ -1,5 +1,6 @@
 package menus;
 
+import sys.FileSystem;
 import lime.app.Application;
 import lime.utils.Assets;
 import mods.Mods;
@@ -61,10 +62,21 @@ class StoryModeState extends BasicState {
         if(FlxG.random.bool(75))
             doFunnyQuote = true;
 
+        #if sys
         for(mod in Mods.activeMods)
         {
-            swagMods.push(mod);
+            var swagCheckArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/weeks/');
+            trace(swagCheckArray);
+
+            if(swagCheckArray != null)
+            {
+                swagMods.push(mod);
+            }   
+
+            // this checks to see if there are any weeks in the mod, if there are none, skip the mod
+            // if you just have images for the week and no jsons, why the fuck haven't you made a json yet
         }
+        #end
 
         tutorialData = Util.getJsonContents(Util.getJsonPath('weeks/tutorial'));
 
@@ -191,9 +203,9 @@ class StoryModeState extends BasicState {
     function loadWeeks()
     {
         if(selectedMod < 0)
-            selectedMod = Mods.activeMods.length;
+            selectedMod = swagMods.length - 1;
 
-        if(selectedMod > Mods.activeMods.length)
+        if(selectedMod > swagMods.length - 1)
             selectedMod = 0;
 
         jsons = [];
@@ -201,6 +213,8 @@ class StoryModeState extends BasicState {
         swagChars = [];
         swagSongs = [];
         swagDifficulties = [];
+
+        jsonDirs = [];
 
         for(i in 0...funnyWeeks.members.length)
         {
