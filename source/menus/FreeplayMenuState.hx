@@ -97,7 +97,7 @@ class FreeplayMenuState extends BasicState
                 }
             }
 
-            trace(real);
+            //trace(real);
 
             if(real != null && real.songs.length > 0)
                 swagMods.push(mod);

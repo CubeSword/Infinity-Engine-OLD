@@ -348,8 +348,8 @@ class PlayState extends BasicState
 		if(!storyMode)
 			inCutscene = false;
 
-		trace(dialogue);
-		trace(inCutscene);
+		//trace(dialogue);
+		//trace(inCutscene);
 
 		score = 0;
 		sickScore = 0;
@@ -786,7 +786,7 @@ class PlayState extends BasicState
 		
 		super.create();
 
-		trace(Conductor.safeZoneOffset);
+		//trace(Conductor.safeZoneOffset);
 	}
 
 	function resetSongPos()
@@ -1419,7 +1419,7 @@ class PlayState extends BasicState
 			{
 				FlxG.sound.playMusic(Util.getSound("menus/freakyMenu", false));
 
-				trace('$storedSong-$storedDifficulty');
+				//trace('$storedSong-$storedDifficulty');
 
 				if(songMultiplier >= 1 && !usedPractice && !changedSpeed)
 					Highscores.saveSongScore(storedSong, storedDifficulty, [score, FlxMath.roundDecimal(accuracyNum, 2)]);
@@ -1530,7 +1530,7 @@ class PlayState extends BasicState
 					if (song.notes[Math.floor(curStep / 16)].changeBPM)
 					{
 						Conductor.changeBPM(song.notes[Math.floor(curStep / 16)].bpm, songMultiplier);
-						trace('CHANGED BPM TO ' + Conductor.bpm + ' SUCCESSFULLY!');
+						//trace('CHANGED BPM TO ' + Conductor.bpm + ' SUCCESSFULLY!');
 					}
 				}
 

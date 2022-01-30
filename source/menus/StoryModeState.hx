@@ -65,13 +65,16 @@ class StoryModeState extends BasicState {
         #if sys
         for(mod in Mods.activeMods)
         {
-            var swagCheckArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/weeks/');
-            trace(swagCheckArray);
-
-            if(swagCheckArray != null)
+            if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/weeks/'))
             {
-                swagMods.push(mod);
-            }   
+                var swagCheckArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/weeks/');
+                //trace(swagCheckArray);
+
+                if(swagCheckArray != null)
+                {
+                    swagMods.push(mod);
+                }  
+            } // linux
 
             // this checks to see if there are any weeks in the mod, if there are none, skip the mod
             // if you just have images for the week and no jsons, why the fuck haven't you made a json yet
@@ -226,7 +229,7 @@ class StoryModeState extends BasicState {
 
         var daMod:String = swagMods[selectedMod];
 
-        trace(swagMods);
+        //trace(swagMods);
 
         if(daMod == "Base Game")
         {
@@ -242,14 +245,14 @@ class StoryModeState extends BasicState {
         {
             for(mod in Mods.activeMods)
             {
-                trace(daMod);
-                trace(mod);
+                //trace(daMod);
+                //trace(mod);
 
                 if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/weeks/') && daMod == mod && mod != "Base Game")
                 {
                     var funnyArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/weeks/');
 
-                    trace(funnyArray);
+                    //trace(funnyArray);
                     
                     for(jsonThingy in funnyArray)
                     {
@@ -260,7 +263,7 @@ class StoryModeState extends BasicState {
         }
         #end
         
-        trace(jsonDirs);
+        //trace(jsonDirs);
 
         for(dir in jsonDirs)
         {
@@ -272,7 +275,7 @@ class StoryModeState extends BasicState {
 
         for(jsonName in jsons)
         {
-            trace(jsonName);
+            //trace(jsonName);
             var data:Dynamic = tutorialData;
 
             #if sys
@@ -314,7 +317,7 @@ class StoryModeState extends BasicState {
             json_i++;
         }
 
-        trace("Songs:\n" + swagSongs + "\n\nCharacters:\n" + swagChars + "\n\nDifficulties:\n" + swagDifficulties);
+        //trace("Songs:\n" + swagSongs + "\n\nCharacters:\n" + swagChars + "\n\nDifficulties:\n" + swagDifficulties);
     }
 
     override public function update(elapsed:Float)
@@ -372,12 +375,12 @@ class StoryModeState extends BasicState {
     
             for(i in 0...swagSongs[selectedWeek].length)
             {
-                trace(swagSongs[selectedWeek][i].toLowerCase());
+                //trace(swagSongs[selectedWeek][i].toLowerCase());
                 game.PlayState.storyPlaylist.push(swagSongs[selectedWeek][i].toLowerCase());
             }
 
-            trace(swagSongs[selectedWeek][0].toLowerCase());
-            trace(difficulties[selectedDifficulty].toLowerCase());
+            //trace(swagSongs[selectedWeek][0].toLowerCase());
+            //trace(difficulties[selectedDifficulty].toLowerCase());
 
             FlxG.sound.play(Util.getSound("menus/confirmMenu"));
 
@@ -522,7 +525,7 @@ class StoryModeState extends BasicState {
         if(selectedDifficulty > difficulties.length - 1)
             selectedDifficulty = 0;
 
-        trace("Difficulty Selected: " + difficulties[selectedDifficulty].toLowerCase());
+        //trace("Difficulty Selected: " + difficulties[selectedDifficulty].toLowerCase());
 
         grpDifficulty.members[2].loadGraphic(Util.getImage('weeks/difficulties/' + difficulties[selectedDifficulty].toLowerCase(), false));
     }
