@@ -89,11 +89,13 @@ Executable file will be in `export/release/linux/bin`.
 **NOTE:** Compiling is going to take a long time for the first time, and maybe even in general.
 The compiling speed depends on your hardware.
 -----
-# ℹ️ What we have planned
+# ℹ️ What we have planned / What we're working on
 - Easy Modding (Working on it)
 - Modcharts/Lua Scripting
 - Custom Notes (Using LUA or smth, could have a json for storing shit like "act like death note or use lua file")
 - Extra Keys (1k to 9k, Could change eventually)
+- Replays
+- Achievements (Unhardcoded too!!!)
 
 # ✅ Finished/Almost Finished
 - Basic Gameplay (Characters, Health, Score/Accuracy/Misses, Notes)
