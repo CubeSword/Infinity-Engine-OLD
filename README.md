@@ -64,7 +64,7 @@ All you need to do here is run `lime test html5` in the root folder of the sourc
 
 ## Windows Compiling
 Once you have all of the library shits installed, You must install [Visual Studio 2019](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=community&rel=16&utm_medium=microsoft&utm_source=docs.microsoft.com&utm_campaign=download+from+relnotes&utm_content=vs2019ga+button).
-If that link downloads VS 2022 instead, Please let one of the team know!
+If that link downloads VS 2022 instead, Please let one of the Infinity Engine team know so we can correct the link!
 
 While installing VSC, don't click on any of the options to install workloads. Instead, go to the individual components tab and choose the following:
 
@@ -89,11 +89,13 @@ Executable file will be in `export/release/linux/bin`.
 **NOTE:** Compiling is going to take a long time for the first time, and maybe even in general.
 The compiling speed depends on your hardware.
 -----
-# ℹ️ What we have planned
+# ℹ️ What we have planned / What we're working on
 - Easy Modding (Working on it)
 - Modcharts/Lua Scripting
 - Custom Notes (Using LUA or smth, could have a json for storing shit like "act like death note or use lua file")
 - Extra Keys (1k to 9k, Could change eventually)
+- Replays
+- Achievements (Unhardcoded too!!!)
 
 # ✅ Finished/Almost Finished
 - Basic Gameplay (Characters, Health, Score/Accuracy/Misses, Notes)
