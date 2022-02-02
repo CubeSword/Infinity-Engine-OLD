@@ -590,7 +590,7 @@ class PlayState extends BasicState
 			theRealStrumArrow.y -= 10;
 			theRealStrumArrow.alpha = 0;
 
-			var balls:Float = Options.getData('middlescroll') ? (0.2 * i % keyCount) : (0.2 * i);
+			var balls:Float = (0.2 * i % keyCount);
 
 			var newShader:ColorSwap = new ColorSwap();
 			theRealStrumArrow.shader = newShader.shader;
@@ -631,7 +631,7 @@ class PlayState extends BasicState
 
 			keybindReminders.add(daKeybindText);
 
-			var balls = Options.getData('middlescroll') ? (0.2 * i % keyCount) : (0.2 * (i + keyCount));
+			var balls = (0.2 * i % keyCount);
 
 			FlxTween.tween(keybindReminders.members[i], {y: keybindReminders.members[i].y + 25, alpha: 1}, 1, {
 				ease: FlxEase.cubeOut,

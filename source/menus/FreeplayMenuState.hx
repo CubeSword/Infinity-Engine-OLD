@@ -56,6 +56,9 @@ class FreeplayMenuState extends BasicState
     var realScore:Float = 0;
     var swagScore:Float = 0;
 
+    var realAcc:Float = 0;
+    var swagAcc:Float = 0;
+
     var up = false;
     var down = false;
     var left = false;
@@ -272,6 +275,9 @@ class FreeplayMenuState extends BasicState
         realScore = Highscores.getSongScore(songs[selectedSong].songName.toLowerCase(), selectedDifficulty.toLowerCase())[0];
         swagScore = FlxMath.lerp(swagScore, realScore, Math.max(0, Math.min(1, elapsed * 20)));
 
+        realAcc = Highscores.getSongScore(songs[selectedSong].songName.toLowerCase(), selectedDifficulty.toLowerCase())[1];
+        swagAcc = FlxMath.lerp(swagAcc, realAcc, Math.max(0, Math.min(1, elapsed * 20)));
+
         if(Controls.back)
         {
             FlxG.sound.play(Util.getSound("menus/cancelMenu", true));
@@ -380,6 +386,7 @@ class FreeplayMenuState extends BasicState
         scoreText.text = "PERSONAL BEST:" + Math.floor(swagScore);
 		scoreText.x = FlxG.width - scoreText.width;
 
+        difText.text = "< " + songs[selectedSong].difficulties[selectedDifIndex] + " - " + FlxMath.roundDecimal(swagAcc, 2) + "%" + " >";
 		difText.x = FlxG.width - difText.width;
 
         speedText.text = "Speed: " + FlxMath.roundDecimal(curSpeed, 2) + " (SHIFT+R)";
@@ -428,8 +435,6 @@ class FreeplayMenuState extends BasicState
             selectedDifIndex = songs[selectedSong].difficulties.length - 1;
 
         selectedDifficulty = songs[selectedSong].difficulties[selectedDifIndex];
-
-        difText.text = "< " + songs[selectedSong].difficulties[selectedDifIndex] + " >";
 
         var newColor:FlxColor = songs[selectedSong].color;
 
