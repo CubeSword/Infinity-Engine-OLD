@@ -52,7 +52,7 @@ class KeybindMenu extends BasicSubState
 		add(daKeybinds);
 
 		for (i in 0...4) {
-			var note:StrumArrow = new StrumArrow((125 * i) + 395, 0, i, Options.getData('noteskin'));
+			var note:StrumArrow = new StrumArrow((125 * i) + 395, 0, i, Options.getData('ui-skin'));
 			note.antialiasing = true;
 			note.centerOffsets();
 			note.centerOrigin();

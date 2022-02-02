@@ -50,7 +50,16 @@
         },
         {
             "name": "noteskin",
+            "value": "default",
+            "lmao": "this is kept just in case lol"
+        },
+        {
+            "name": "ui-skin",
             "value": "default"
+        },
+        {
+            "name": "ui-skin-num",
+            "value": 0
         },
         {
             "name": "song-offset",

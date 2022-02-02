@@ -1,5 +1,7 @@
 package game;
 
+import mods.Mods;
+import lime.utils.Assets;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
@@ -23,7 +25,12 @@ class Note extends FlxSprite {
 	public var wasGoodHit:Bool = false;
 	public static var swagWidth:Float = 160 * 0.7;
 
+	public var scaleX:Float = 0;
+	public var scaleY:Float = 0;
+
 	public var lastNote:Note;
+
+	public var origPos:Array<Float> = [0, 0];
 
 	public function new(x, y, noteID:Int = 0, ?strum:Float, ?mustPress:Bool, ?noteskin:String = 'default', ?isSustainNote:Bool = false, ?isEndNote:Bool = false)
 	{
@@ -37,11 +44,35 @@ class Note extends FlxSprite {
 		this.isEndNote = isEndNote;
 		
 		loadNoteShit(this.noteskin);
+		setOrigPos();
+	}
+
+	public function setOrigPos()
+	{
+		origPos = [this.x, this.y];
 	}
 	
 	public function loadNoteShit(noteskin:String = 'default')
 	{
-		var json:Dynamic = Util.getJsonContents('assets/images/noteskins/' + noteskin + '/config.json');
+		var json:Dynamic = null;
+
+		if(Assets.exists('assets/images/noteskins/' + noteskin + '/config.json'))
+			json = Util.getJsonContents('assets/images/noteskins/' + noteskin + '/config.json');
+		#if sys
+		else
+		{
+			#if sys
+			for(mod in Mods.activeMods)
+			{
+				if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/images/noteskins/' + noteskin))
+				{
+					json = Util.getJsonContents('mods/$mod/images/noteskins/' + noteskin + '/config.json');
+				}
+			}
+			#end
+		}
+		#end
+
 		isPixel = json.isPixel; // this uses a json for config shit because gaming
 		
 		if(!isPixel) { // if the note skin is NOT pixel
@@ -214,6 +245,9 @@ class Note extends FlxSprite {
 			scale.y *= (Conductor.stepCrochet / 100) * 1.52 * PlayState.instance.speed;
 			updateHitbox();
 		}
+
+		scaleX = scale.x;
+		scaleY = scale.y;
 
 		super.update(elapsed);
 	}

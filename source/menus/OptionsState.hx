@@ -1,5 +1,6 @@
 package menus;
 
+import ui.TrackerSprite;
 import lime.app.Application;
 import flixel.FlxBasic;
 import flixel.FlxSubState;
@@ -19,6 +20,7 @@ class OptionsState extends BasicState
 	var grpOptions:FlxTypedGroup<AlphabetText>;
 
 	var checkboxGroup:FlxTypedGroup<Checkbox>;
+	
 	var checkboxNumber:Array<Int> = [];
 	var checkboxArray:Array<Checkbox> = [];
 
@@ -45,7 +47,7 @@ class OptionsState extends BasicState
 			["Engine Watermarks", "checkbox", "When enabled, some menus like the title screen will have\n" + Util.engineName + " branding/watermarks.", "engine-watermarks"],
 			["Camera Zooms", "checkbox", "When disabled, The camera won't zoom to the beat.", "camera-zooms"],
 			["Note Colors", "menu", "Change the color of your notes."],
-			["UI Skin", "menu", "Change how things such as ratings/notes look."],
+			["UI Skin", "menu_ui", "Change how things such as ratings/notes look."],
 			["FPS Cap", "menu", "Change how low/high your FPS can go."],
 		],
 		"gameplay" => [
@@ -148,7 +150,7 @@ class OptionsState extends BasicState
 		{
 			switch(optionsList[selectedOption][1])
 			{
-				case "menu":
+				case "menu" | "menu_ui":
 					switch(optionsList[selectedOption][0])
 					{
 						case "Back":
@@ -185,7 +187,7 @@ class OptionsState extends BasicState
 						case "Note Colors":
 							openSubState(new NoteColorMenu());
 						case "UI Skin":
-							// not yet
+							openSubState(new UISkinMenu());
 						// gameplay
 						case "Adjust Offset":
 							openSubState(new OffsetMenu());
@@ -250,9 +252,15 @@ class OptionsState extends BasicState
 			swagOption.ID = i;
 
 			var usesCheckbox:Bool = false;
+			var isUISkinThing:Bool = false;
 			
-			if(optionsList[i][1] == "checkbox")
-				usesCheckbox = true;
+			switch(optionsList[i][1]) // switch cases my beloved
+			{
+				case "checkbox":
+					usesCheckbox = true;
+				case "menu_ui":
+					isUISkinThing = true;
+			}
 
 			if(usesCheckbox) {
 				swagOption.x += 300;
@@ -263,10 +271,7 @@ class OptionsState extends BasicState
 				checkboxArray.push(checkbox);
 				checkbox.ID = i;
 				checkboxGroup.add(checkbox);
-			} /*else {
-				swagOption.x -= 80;
-				swagOption.xAdd -= 80;
-			}*/
+			}
 
 			grpOptions.add(swagOption);
 		}

@@ -79,6 +79,8 @@ class TitleScreenState extends BasicState
 		Mods.init();
 		optionsInitialized = true;
 
+		UISkinMenu.skinCheck();
+
 		curText = FlxG.random.getObject(getIntroText());
 
 		swagIntroText = new FlxGroup();

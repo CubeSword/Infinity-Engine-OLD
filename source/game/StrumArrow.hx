@@ -1,20 +1,20 @@
 package game;
 
+import mods.Mods;
+import lime.utils.Assets;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 
 using StringTools;
 
-// yes believe it or not this is actually written by me swordcube hrfjzksjLk;lk - swordcube
-// i'm gonna start looking at the haxeflixel doc shit instead of yeeting fnf code now
-// uaydysusfydsh
-
 class StrumArrow extends FlxSprite {
 	var resetAnim:Float = 0;
 	var noteskin:String = 'default';
 	var isPixel:Bool = false;
 	var noteID:Int = 0;
+
+	public var origPos:Array<Float> = [0, 0];
 
 	public function new(x, y, noteID:Int = 0, ?noteskin:String = 'default')
 	{
@@ -23,11 +23,35 @@ class StrumArrow extends FlxSprite {
 		this.noteID = noteID;
 		
 		loadNoteShit(this.noteskin);
+		setOrigPos();
+	}
+
+	public function setOrigPos()
+	{
+		origPos = [this.x, this.y];
 	}
 	
 	public function loadNoteShit(noteskin:String = 'default')
 	{
-		var json:Dynamic = Util.getJsonContents('assets/images/noteskins/' + noteskin + '/config.json');
+		var json:Dynamic = null;
+		
+		if(Assets.exists('assets/images/noteskins/' + noteskin + '/config.json'))
+			json = Util.getJsonContents('assets/images/noteskins/' + noteskin + '/config.json');
+		#if sys
+		else
+		{
+			#if sys
+			for(mod in Mods.activeMods)
+			{
+				if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/images/noteskins/' + noteskin))
+				{
+					json = Util.getJsonContents('mods/$mod/images/noteskins/' + noteskin + '/config.json');
+				}
+			}
+			#end
+		}
+		#end
+		
 		isPixel = json.isPixel; // this uses a json for config shit because gaming
 		
 		if(!isPixel) { // if the note skin is NOT pixel

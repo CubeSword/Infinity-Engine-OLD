@@ -182,6 +182,8 @@ class PlayState extends BasicState
 	var funnyHitStuffsLmao:Float = 0.0;
 	var totalNoteStuffs:Int = 0;
 
+	var curUISkin:String = "default";
+
 	public static var weekName:String = "tutorial";
 
 	// replay shit
@@ -395,6 +397,8 @@ class PlayState extends BasicState
 		Conductor.recalculateStuff(songMultiplier);
 		Conductor.safeZoneOffset *= songMultiplier;
 
+		pixelStage = false;
+
 		switch(song.song.toLowerCase()) // gf char
 		{
 			case "satin panties" | "high" | "m.i.l.f":
@@ -420,15 +424,41 @@ class PlayState extends BasicState
 				if(song.ui_Skin == null)
 					song.ui_Skin = "default-pixel";
 
+				/*#if !sys
 				pixelStage = true;
+				#end*/
 			default:
 				if(song.ui_Skin == null)
 					song.ui_Skin = "default";
 
+				/*#if !sys
 				pixelStage = false;
+				#end*/
 		}
 
-		noteSplashFrames = Util.getSparrow('noteskins/' + game.PlayState.song.ui_Skin + '/noteSplashes');
+		curUISkin = song.ui_Skin;
+
+		if(Options.getData("ui-skin") != "default")
+			curUISkin = Options.getData("ui-skin");
+
+		if(Assets.exists('assets/images/noteskins/$curUISkin/config.json'))
+			pixelStage = Util.getJsonContents('assets/images/noteskins/$curUISkin/config.json').isPixel;
+		#if sys
+		else
+		{
+			#if sys
+			for(mod in Mods.activeMods)
+			{
+				if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/images/noteskins/$curUISkin/config.json'))
+				{
+					pixelStage = Util.getJsonContents('mods/$mod/images/noteskins/$curUISkin/config.json').isPixel;
+				}
+			}
+			#end
+		}
+		#end
+
+		noteSplashFrames = Util.getSparrow('noteskins/' + curUISkin + '/noteSplashes');
 
 		curStage = song.stage;
 
@@ -585,7 +615,7 @@ class PlayState extends BasicState
 				}
 			}
 			
-			var theRealStrumArrow:StrumArrow = new StrumArrow(funnyArrowX + i * 112, strumArea.y, i, song.ui_Skin);
+			var theRealStrumArrow:StrumArrow = new StrumArrow(funnyArrowX + i * 112, strumArea.y, i, curUISkin);
 
 			theRealStrumArrow.y -= 10;
 			theRealStrumArrow.alpha = 0;
@@ -865,10 +895,11 @@ class PlayState extends BasicState
 				if(songNotes[1] >= keyCount)
 					gottaHitNote = !section.mustHitSection;
 
-				var swagNote:Note = new Note((gottaHitNote ? playerStrumArrows.members[daNoteData].x : opponentStrumArrows.members[daNoteData].x), 0, daNoteData, daStrumTime, gottaHitNote, song.ui_Skin);
+				var swagNote:Note = new Note((gottaHitNote ? playerStrumArrows.members[daNoteData].x : opponentStrumArrows.members[daNoteData].x), 0, daNoteData, daStrumTime, gottaHitNote, curUISkin);
 				swagNote.sustainLength = songNotes[2];
 				swagNote.scrollFactor.set(0,0);
 				swagNote.cameras = [hudCam];
+				swagNote.lastNote = oldNote;
 
 				var newShader:ColorSwap = new ColorSwap();
 				swagNote.shader = newShader.shader;
@@ -888,7 +919,7 @@ class PlayState extends BasicState
 					{
 						oldNote = spawnNotes[Std.int(spawnNotes.length - 1)];
 
-						var sustainNote:Note = new Note((gottaHitNote ? playerStrumArrows.members[daNoteData].x : opponentStrumArrows.members[daNoteData].x), 0, daNoteData, daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, gottaHitNote, song.ui_Skin, true, susNote == floorSus - 1);
+						var sustainNote:Note = new Note((gottaHitNote ? playerStrumArrows.members[daNoteData].x : opponentStrumArrows.members[daNoteData].x), 0, daNoteData, daStrumTime + (Conductor.stepCrochet * susNote) + Conductor.stepCrochet, gottaHitNote, curUISkin, true, susNote == floorSus - 1);
 						sustainNote.cameras = [hudCam];
 
 						sustainNote.shader = newShader.shader;
@@ -901,8 +932,8 @@ class PlayState extends BasicState
 						else
 							sustainNote.x += sustainNote.width / 1.5;
 
-						if(susNote != 0)
-							sustainNote.lastNote = notes.members[notes.members.length - 1];
+						//if(susNote != 0)
+						sustainNote.lastNote = oldNote;
 
 						spawnNotes.push(sustainNote);
 
@@ -1187,7 +1218,7 @@ class PlayState extends BasicState
 
 				if(!countdownStarted)
 				{
-					if(Conductor.songPosition >= (!note.isSustainNote ? note.strum : note.strum - Conductor.safeZoneOffset))
+					if(Conductor.songPosition >= (!note.isSustainNote ? note.strum : note.strum - 1))
 					{
 						if(vocals != null)
 							vocals.volume = 1;
@@ -1254,24 +1285,27 @@ class PlayState extends BasicState
 
 				if(note.isSustainNote)
 				{
-					var center:Float = funnyNoteThingyIGuessLol.y + Note.swagWidth / 2;
-
-					var rect = new FlxRect();
-
-					rect.width = funnyNoteThingyIGuessLol.width;
-
-					if(Options.getData('downscroll'))
+					if((note.mustPress && note.lastNote.canBeHit) || !note.mustPress)
 					{
-						rect.height = center - note.y;
-						rect.y = note.frameHeight - rect.height;
-					}
-					else
-					{
-						rect.y = center - note.y;
-						rect.height = note.frameHeight - rect.y;
-					}
+						var center:Float = funnyNoteThingyIGuessLol.y + Note.swagWidth / 2;
 
-					note.clipRect = rect;
+						if (Options.getData('downscroll'))
+						{
+							var swagRect = new FlxRect(0, 0, note.frameWidth, note.frameHeight);
+							swagRect.height = (center - note.y) / note.scaleY;
+							swagRect.y = note.frameHeight - swagRect.height;
+
+							note.clipRect = swagRect;
+						}
+						else
+						{
+							var swagRect = new FlxRect(0, 0, note.width / note.scaleX, note.height / note.scaleY);
+							swagRect.y = (center - note.y) / note.scaleY;
+							swagRect.height -= swagRect.y;
+
+							note.clipRect = swagRect;
+						}
+					}
 				}
 			}
 
@@ -1813,7 +1847,7 @@ class PlayState extends BasicState
 			}
 			else
 			{
-				if((!note.isSustainNote ? note.strum : note.strum - Conductor.safeZoneOffset) <= Conductor.songPosition && note.mustPress)
+				if((!note.isSustainNote ? note.strum : note.strum - 1) <= Conductor.songPosition && note.mustPress)
 					possibleNotes.push(note);
 			}
 		}
@@ -1907,7 +1941,7 @@ class PlayState extends BasicState
 
 						updateAccuracyStuff();
 
-						funnyRating.loadRating(sussyBallsRating);
+						funnyRating.loadRating(sussyBallsRating, curUISkin, pixelStage);
 						funnyRating.tweenRating();
 
 						noteDataTimes[note.noteID] = note.strum;
@@ -1959,7 +1993,7 @@ class PlayState extends BasicState
 					{
 						for(i in 0...comboArray.length) {
 							if(combo >= 10 || combo == 0) {
-								comboGroup.members[i].loadCombo(comboArray[i]);
+								comboGroup.members[i].loadCombo(comboArray[i], curUISkin, pixelStage);
 								comboGroup.members[i].tweenSprite();
 							}
 						}
@@ -2031,7 +2065,7 @@ class PlayState extends BasicState
 			{
 				if(note.isSustainNote && note.mustPress)
 				{
-					if(pressed[note.noteID] && Conductor.songPosition >= (!note.isSustainNote ? note.strum : note.strum - Conductor.safeZoneOffset))
+					if(pressed[note.noteID] && Conductor.songPosition >= (!note.isSustainNote ? note.strum : note.strum - 1))
 					{
 						hits += 1;
 						funnyHitStuffsLmao += 1;
