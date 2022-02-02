@@ -43,12 +43,6 @@ class UISkinMenu extends BasicSubState
 	{
 		super();
 
-		#if sys
-		skinList = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/images/noteskins/");
-		#else
-		skinList = ["default", "default-pixel"];
-		#end
-
 		isStinkySkin = false;
 		selectedSkin = Options.getData("ui-skin-num");
 
@@ -123,6 +117,12 @@ class UISkinMenu extends BasicSubState
 	{
 		if(!swagged)
 		{
+			#if sys
+			skinList = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/images/noteskins/");
+			#else
+			skinList = ["default", "default-pixel"];
+			#end
+			
 			#if sys
 			for(mod in Mods.activeMods)
 			{
