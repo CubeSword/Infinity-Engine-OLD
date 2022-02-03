@@ -115,35 +115,30 @@ class UISkinMenu extends BasicSubState
 
 	public static function skinCheck()
 	{
-		if(!swagged)
-		{
-			#if sys
-			skinList = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/images/noteskins/");
-			#else
-			skinList = ["default", "default-pixel"];
-			#end
-			
-			#if sys
-			for(mod in Mods.activeMods)
-			{
-				if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/images/noteskins/'))
-				{
-					var swagCheckArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/images/noteskins/');
-					trace(swagCheckArray);
-	
-					for(dir in swagCheckArray)
-					{
-						skinList.push(dir);
-					}
-	
-					trace(skinList);
-				} // linux
-			}
-			#end
-
-			swagged = true;
-		}
+		#if sys
+		skinList = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/images/noteskins/");
+		#else
+		skinList = ["default", "default-pixel"];
+		#end
 		
+		#if sys
+		for(mod in Mods.activeMods)
+		{
+			if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/images/noteskins/'))
+			{
+				var swagCheckArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/images/noteskins/');
+				trace(swagCheckArray);
+
+				for(dir in swagCheckArray)
+				{
+					skinList.push(dir);
+				}
+
+				trace(skinList);
+			} // linux
+		}
+		#end
+
 		if(!Assets.exists('assets/images/noteskins/' + skinList[selectedSkin] + '/config.json'))
 		{
 			isStinkySkin = true;
