@@ -236,16 +236,6 @@ class Note extends FlxSprite {
 			centerOrigin();
 		}
 
-		if(isSustainNote && !isEndNote)
-		{
-			scale.y = 1;
-			updateHitbox();
-
-			@:privateAccess
-			scale.y *= (Conductor.stepCrochet / 100) * 1.52 * PlayState.instance.speed;
-			updateHitbox();
-		}
-
 		scaleX = scale.x;
 		scaleY = scale.y;
 

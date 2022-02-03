@@ -46,6 +46,7 @@ class OptionsState extends BasicState
 			["Note Splashes", "checkbox", "When enabled, a firework-like effect will show up\nIf you get a \"SiCK!!\" rating.", "note-splashes"],
 			["Engine Watermarks", "checkbox", "When enabled, some menus like the title screen will have\n" + Util.engineName + " branding/watermarks.", "engine-watermarks"],
 			["Camera Zooms", "checkbox", "When disabled, The camera won't zoom to the beat.", "camera-zooms"],
+			["Note BG Opacity", "menu", "When set above 0, A black area will show behind your notes.\nThis can help with reading notes easier."],
 			["Note Colors", "menu", "Change the color of your notes."],
 			["UI Skin", "menu_ui", "Change how things such as ratings/notes look."],
 			["FPS Cap", "menu", "Change how low/high your FPS can go."],
@@ -184,6 +185,8 @@ class OptionsState extends BasicState
 							selectedOption = 0;
 							changeSelection();
 						// graphics
+						case "Note BG Opacity":
+							openSubState(new NoteBGOpacityMenu());
 						case "Note Colors":
 							openSubState(new NoteColorMenu());
 						case "UI Skin":

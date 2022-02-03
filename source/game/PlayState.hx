@@ -1,5 +1,6 @@
 package game;
 
+import menus.NoteBGOpacityMenu;
 import menus.AchievementThing;
 import flixel.addons.text.FlxTypeText;
 import openfl.display3D.Context3DProgramFormat;
@@ -83,7 +84,6 @@ class PlayState extends BasicState
 	var opponentStrumArrows:FlxTypedGroup<StrumArrow>;
 	var playerStrumArrows:FlxTypedGroup<StrumArrow>;
 
-	var speedText:FlxText;
 	var keybindReminders:FlxTypedGroup<FlxText>;
 
 	var notes:FlxTypedGroup<Note>;
@@ -198,6 +198,9 @@ class PlayState extends BasicState
 	public static var storedDifficulty:String;
 	
 	public static var storedSong:String;
+
+	var noteBG:FlxSprite;
+	var noteBGOpponent:FlxSprite;
 
 	// dialogue shit
 	public var dialogueBox:DialogueBox;
@@ -584,6 +587,20 @@ class PlayState extends BasicState
 			strumArea.y = FlxG.height - 150;
 
 		add(strumArea);
+
+		noteBG = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+		noteBG.alpha = Options.getData('note-bg-opacity');
+		noteBG.color = FlxColor.BLACK;
+		noteBG.scrollFactor.set();
+		noteBG.cameras = [hudCam];
+		add(noteBG);
+
+		noteBGOpponent = new FlxSprite(0, 0).makeGraphic(110 * 4 + 50, FlxG.height * 2);
+		noteBGOpponent.alpha = Options.getData('note-bg-opacity');
+		noteBGOpponent.color = FlxColor.BLACK;
+		noteBGOpponent.scrollFactor.set();
+		noteBGOpponent.cameras = [hudCam];
+		add(noteBGOpponent);
 		
 		opponentStrumArrows = new FlxTypedGroup<StrumArrow>();
 		playerStrumArrows = new FlxTypedGroup<StrumArrow>();
@@ -640,6 +657,13 @@ class PlayState extends BasicState
 				playerStrumArrows.add(theRealStrumArrow);
 			}
 		}
+
+
+		noteBG.x = playerStrumArrows.members[0].x - 20;
+		noteBGOpponent.x = opponentStrumArrows.members[0].x - 20;
+
+		noteBG.screenCenter(Y);
+		noteBGOpponent.screenCenter(Y);
 
 		for(i in 0...playerStrumArrows.members.length)
 		{
@@ -748,7 +772,6 @@ class PlayState extends BasicState
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
 		healthBar.createFilledBar(healthColor1, healthColor2);
-		add(healthBar);
 
 		// health bar icons
 		opponentIcon = new Icon(Util.getCharacterIcons(icon1), null, false, null, null, null, icon1);
@@ -757,19 +780,14 @@ class PlayState extends BasicState
 		playerIcon = new Icon(Util.getCharacterIcons(icon2), null, true, null, null, null, icon1);
 		playerIcon.y = healthBar.y - (playerIcon.height / 2);
 
-		add(playerIcon);
-		add(opponentIcon);
-
 		scoreBar = new FlxSprite(0, healthBarBG.y + 32).loadGraphic(Util.getImage('scoreBar'));
 		scoreBar.setGraphicSize(Std.int(scoreBar.width), Std.int(scoreBar.height) - 10);
-		add(scoreBar);
 
 		scoreText = new FlxText(0, healthBarBG.y + 40, 0, "", 16);
 		scoreText.screenCenter(X);
 		scoreText.setFormat("assets/fonts/vcr.ttf", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 2;
-		add(scoreText);
 
 		ratingsText = new FlxText(8, 0, 0, "", 18);
 		ratingsText.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, LEFT);
@@ -784,13 +802,12 @@ class PlayState extends BasicState
 
 		if(!inCutscene)
 			generateNotes();
-		
-		speedText = new FlxText(0, FlxG.height - 32, 0, "", 24);
-		speedText.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, RIGHT);
-		speedText.borderColor = FlxColor.BLACK;
-		speedText.borderStyle = OUTLINE;
-		speedText.borderSize = 2;
-		add(speedText);
+
+		add(healthBar);
+		add(playerIcon);
+		add(opponentIcon);
+		add(scoreBar);
+		add(scoreText);
 
 		if(inCutscene)
 		{
@@ -812,7 +829,6 @@ class PlayState extends BasicState
 		scoreText.cameras = [hudCam];
 		botplayText.cameras = [hudCam];
 		ratingsText.cameras = [hudCam];
-		speedText.cameras = [hudCam];
 		
 		super.create();
 
@@ -822,40 +838,6 @@ class PlayState extends BasicState
 	function resetSongPos()
 	{
 		Conductor.songPosition = 0 - (Conductor.crochet * 4.5);
-	}
-
-	function changeSpeed(?change:Float = 0, ?changeVarLol:Bool = true)
-	{
-		if(changeVarLol)
-			changedSpeed = true;
-
-		speed = song.speed;
-
-		if(Options.getData('scroll-speed') > 1)
-			speed = Options.getData('scroll-speed');
-
-		songMultiplier += change;
-
-		#if !sys
-		songMultiplier = 1;
-		#end
-
-		if(songMultiplier < 0.1)
-			songMultiplier = 0.1;
-
-		Conductor.changeBPM(song.bpm, songMultiplier);
-
-		speed /= songMultiplier;
-
-		if(speed < 0.1 && songMultiplier > 1)
-			speed = 0.1;
-
-		Conductor.recalculateStuff(songMultiplier);
-		Conductor.safeZoneOffset *= songMultiplier;
-
-		resyncVocals(true);
-
-		refreshAppTitle();
 	}
 
 	public function msTextFade()
@@ -1103,23 +1085,6 @@ class PlayState extends BasicState
 		right = Controls.UI_RIGHT;
 		rightP = Controls.UI_RIGHT_P;
 
-		if(shiftP)
-		{
-			if(leftP || rightP)
-				speed_holdTime += elapsed;
-			else
-				speed_holdTime = 0;
-
-			if(speed_holdTime > 0.5 || left || right)
-			{
-				var daMultiplier:Float = leftP ? -0.05 : 0.05;
-				changeSpeed(daMultiplier);
-			}
-		}
-		
-		speedText.text = "Speed: " + FlxMath.roundDecimal(songMultiplier, 2);
-		speedText.x = (FlxG.width - speedText.width) - 18;
-
 		// ratigns thign at the left of the scrnen!!!
 		ratingsText.text = "Marvelous: " + marvelous + "\nSick: " + sicks + "\nGood: " + goods + "\nBad: " + bads + "\nShit: " + shits + "\nMisses: " + misses + "\n";
 		ratingsText.screenCenter(Y);
@@ -1263,29 +1228,35 @@ class PlayState extends BasicState
 					if(note.isSustainNote && note.isEndNote && note.lastNote.active)
 					{
 						if(Options.getData('downscroll'))
-							note.y = note.lastNote.getGraphicMidpoint().y - note.frameHeight;
+							note.y = note.lastNote.getGraphicMidpoint().y - (note.frameHeight / speed);
 						else
-							note.y = note.lastNote.getGraphicMidpoint().y + note.frameHeight;
+							note.y = note.lastNote.getGraphicMidpoint().y + ((note.frameHeight * 1.2) * speed);
 					}
 					else if(note.isSustainNote && note.isEndNote)
 					{
 						if(Options.getData('downscroll'))
-							note.y += note.frameHeight / 2;
+							note.y += (note.frameHeight / 2) * speed;
 						else
-							note.y += note.frameHeight / 2;
+							note.y += (note.frameHeight / 2) * speed;
 					}
 				}
 				else if(note.isSustainNote && note.isEndNote)
 				{
 					if(Options.getData('downscroll'))
-						note.y += note.frameHeight / 2;
+						note.y += (note.frameHeight / 2) * speed;
 					else
-						note.y += note.frameHeight / 2;
+						note.y += (note.frameHeight / 2) * speed;
+				}
+
+				if(note.isSustainNote && !note.isEndNote)
+				{
+					if(!Options.getData('downscroll'))
+						note.y -= note.frameHeight * speed;
 				}
 
 				if(note.isSustainNote)
 				{
-					if((note.mustPress && note.lastNote.canBeHit) || !note.mustPress)
+					if((note.mustPress && note.lastNote.canBeHit && (pressed[note.noteID % keyCount] || Options.getData('botplay'))) || !note.mustPress)
 					{
 						var center:Float = funnyNoteThingyIGuessLol.y + Note.swagWidth / 2;
 
@@ -1369,26 +1340,7 @@ class PlayState extends BasicState
 			}
 		}
 
-		if(/*!countdownStarted && */!shiftP || Options.getData('botplay'))
-			inputFunction();
-
-		if(arrowsLoaded)
-		{
-			if(shiftP)
-			{
-				for(i in 0...playerStrumArrows.members.length)
-				{
-					playerStrumArrows.members[i].alpha = 0.6;
-				}
-			}
-			else
-			{
-				for(i in 0...playerStrumArrows.members.length)
-				{
-					playerStrumArrows.members[i].alpha = 1;
-				}
-			}
-		}
+		inputFunction();
 
 		CalculateAccuracy();
 
@@ -1455,7 +1407,7 @@ class PlayState extends BasicState
 
 				//trace('$storedSong-$storedDifficulty');
 
-				if(songMultiplier >= 1 && !usedPractice && !changedSpeed)
+				if(songMultiplier >= 1 && !usedPractice)
 					Highscores.saveSongScore(storedSong, storedDifficulty, [score, FlxMath.roundDecimal(accuracyNum, 2)]);
 	
 				transIn = FlxTransitionableState.defaultTransIn;
@@ -1475,7 +1427,7 @@ class PlayState extends BasicState
 					FlxTransitionableState.skipNextTransIn = false;
 					FlxTransitionableState.skipNextTransOut = false;
 					
-					if(songMultiplier >= 1 && !usedPractice && !changedSpeed)
+					if(songMultiplier >= 1 && !usedPractice)
 						Highscores.saveWeekScore(weekName, storedDifficulty, [storyScore, FlxMath.roundDecimal(accuracyNum, 2)]);
 					
 					FlxG.sound.playMusic(Util.getSound("menus/freakyMenu", false));
@@ -1763,14 +1715,18 @@ class PlayState extends BasicState
 		return FlxSort.byValues(FlxSort.ASCENDING, Obj1.strum, Obj2.strum);
 	}
 
+	var justPressed:Array<Bool> = [];
+	var pressed:Array<Bool> = [];
+	var released:Array<Bool> = [];
+
 	function inputFunction()
 	{
 		var testBinds:Array<String> = Options.getData('mainBinds');
 		var testBindsAlt:Array<String> = Options.getData('altBinds');
 
-		var justPressed:Array<Bool> = [];
-		var pressed:Array<Bool> = [];
-		var released:Array<Bool> = [];
+		justPressed = [];
+		pressed = [];
+		released = [];
 
 		for(i in 0...keyCount)
 		{

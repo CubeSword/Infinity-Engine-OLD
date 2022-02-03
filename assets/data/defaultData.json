@@ -49,6 +49,10 @@
             "value": true
         },
         {
+            "name": "note-bg-opacity",
+            "value": 0
+        },
+        {
             "name": "noteskin",
             "value": "default",
             "lmao": "this is kept just in case lol"

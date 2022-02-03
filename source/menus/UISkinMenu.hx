@@ -157,8 +157,8 @@ class UISkinMenu extends BasicSubState
 		if(isStinkySkin) // reset skin to default if it's stinky and doesn't exist
 		{
 			selectedSkin = 0;
-			Options.saveData("ui-skin", skinList[selectedSkin]);
-			Options.saveData("ui-skin-num", selectedSkin);
+			Options.saveData("ui-skin", "default");
+			Options.saveData("ui-skin-num", 0);
 		}
 
 		trace("DOES YOUR SKIN EXIST? " + (!isStinkySkin ? "YES!" : "lmao no"));
