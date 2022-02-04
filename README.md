@@ -2,7 +2,7 @@
 -----
 ![](https://media.discordapp.net/attachments/782707705792954388/931918337989029948/Untitled108_20220115083034.png)
 -----
-Made by 3 people literally out of pure boredom, Aiming to rewrite Friday Night Funkin' to include
+Made by 4 people literally out of pure boredom, Aiming to rewrite Friday Night Funkin' to include
 easier modding, cool features, and little quality of life shits
 -----
 # ℹ️ Preparing Libraries for Compiling
