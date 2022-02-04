@@ -507,11 +507,14 @@ class PlayState extends BasicState
 		}
 
 		// hardcoded BEHIND LAYER stage shit
-		switch(curStage)
+		if(!Options.getData('optimization'))
 		{
-			case "philly":
-				trainSound = FlxG.sound.load(Util.getSound('train_passes'));
-				FlxG.sound.list.add(trainSound);
+			switch(curStage)
+			{
+				case "philly":
+					trainSound = FlxG.sound.load(Util.getSound('train_passes'));
+					FlxG.sound.list.add(trainSound);
+			}
 		}
 
 		FlxG.camera.zoom = stageCamZoom;
@@ -584,11 +587,14 @@ class PlayState extends BasicState
 		}
 
 		// hardcoded FRONT LAYER stage shit
-		switch(curStage)
+		if(!Options.getData('optimization'))
 		{
-			case "limo":
-				add(opponent);
-				add(player);
+			switch(curStage)
+			{
+				case "limo":
+					add(opponent);
+					add(player);
+			}
 		}
 
 		camFollow = new FlxObject(0, 0, 1, 1);
@@ -600,10 +606,6 @@ class PlayState extends BasicState
 
 		FlxG.camera.follow(camFollow, LOCKON, 0.04 * (60 / Main.display.currentFPS));
 		FlxG.camera.focusOn(camFollow.getPosition());
-
-		// stage shit
-		//add(stage);
-		//stage = new Stage('stage');
 		
 		// arrow shit
 		strumArea = new FlxSprite(0, 50);
@@ -1085,35 +1087,38 @@ class PlayState extends BasicState
 	{		
 		updateAccuracyStuff();
 
-		for(char in opponent.members)
+		if(!Options.getData("optimization"))
 		{
-			if(char.animation.curAnim != null)
+			for(char in opponent.members)
 			{
-				if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+				if(char.animation.curAnim != null)
 				{
-					char.playAnim(char.animation.curAnim.name + "-loop");
+					if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+					{
+						char.playAnim(char.animation.curAnim.name + "-loop");
+					}
 				}
 			}
-		}
 
-		for(char in speakers.members)
-		{
-			if(char.animation.curAnim != null)
+			for(char in speakers.members)
 			{
-				if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+				if(char.animation.curAnim != null)
 				{
-					char.playAnim(char.animation.curAnim.name + "-loop");
+					if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+					{
+						char.playAnim(char.animation.curAnim.name + "-loop");
+					}
 				}
 			}
-		}
 
-		for(char in player.members)
-		{
-			if(char.animation.curAnim != null)
+			for(char in player.members)
 			{
-				if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+				if(char.animation.curAnim != null)
 				{
-					char.playAnim(char.animation.curAnim.name + "-loop");
+					if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+					{
+						char.playAnim(char.animation.curAnim.name + "-loop");
+					}
 				}
 			}
 		}
@@ -1679,7 +1684,7 @@ class PlayState extends BasicState
 	
 		if(!inCutscene)
 		{
-			if(stage != null && stage.active)
+			if(stage != null && stage.active && !Options.getData('optimization'))
 			{
 				stage.beatHit();
 
