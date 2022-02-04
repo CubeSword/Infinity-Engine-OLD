@@ -10,6 +10,7 @@ If you want to compile Infinity Engine from source, Here's what you need to do:
 
 - Install [Haxe](https://haxe.org/download/)
 - Install [HaxeFlixel](https://haxeflixel.com/documentation/install-haxeflixel/)
+- Install [Git](https://git-scm.com/)
 
 ***MAKE SURE TO USE THE LATEST VERSION OF HAXE!! OTHERWISE COMPILING MAY NOT WORK.***
 

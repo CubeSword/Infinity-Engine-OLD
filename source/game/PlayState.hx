@@ -700,10 +700,8 @@ class PlayState extends BasicState
 
 		funnyRating = new RatingSprite(FlxG.width * 0.55, 300);
 		funnyRating.alpha = 0;
-		add(funnyRating);
 
 		comboGroup = new FlxTypedGroup<ComboSprite>();
-		add(comboGroup);
 
 		for(i in 0...4) {
 			
@@ -721,14 +719,12 @@ class PlayState extends BasicState
 		msText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		msText.scrollFactor.set();
 		msText.borderSize = 2;
-		add(msText);
 
 		botplayText = new FlxText(0, strumArea.y + 35, 0, "BOTPLAY", 32, true);
 		botplayText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayText.scrollFactor.set();
 		botplayText.borderSize = 2;
 		botplayText.screenCenter(X);
-		add(botplayText);
 
 		msText.alpha = 0;
 		
@@ -737,7 +733,6 @@ class PlayState extends BasicState
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		healthBarBG.antialiasing = Options.getData('anti-aliasing');
-		add(healthBarBG);
 
 		if(Options.getData('downscroll'))
 			healthBarBG.y = 60;
@@ -850,11 +845,16 @@ class PlayState extends BasicState
 		if(!inCutscene)
 			generateNotes();
 
+		add(funnyRating);
+		add(comboGroup);
+		add(msText);
+		add(healthBarBG);
 		add(healthBar);
 		add(playerIcon);
 		add(opponentIcon);
 		add(scoreBar);
 		add(scoreText);
+		add(botplayText);
 
 		if(inCutscene && isDialogue)
 		{

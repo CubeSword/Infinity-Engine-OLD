@@ -20,7 +20,7 @@ class CountdownSprite extends FlxSprite {
 		screenCenter();
 		scrollFactor.set();
 		
-		FlxTween.tween(this, {alpha: 0}, game.Conductor.crochet / 1000, {
+		FlxTween.tween(this, {alpha: 0}, (game.Conductor.crochet / 1000) / game.PlayState.songMultiplier, {
 			ease: FlxEase.cubeInOut,
 			onComplete: function(twn:FlxTween)
 			{
