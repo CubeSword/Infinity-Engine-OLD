@@ -99,8 +99,8 @@ The compiling speed depends on your hardware.
 - Achievements (Unhardcoded too!!!)
 
 # ✅ Finished/Almost Finished
-- Basic Gameplay (Characters, Health, Score/Accuracy/Misses, Notes)
-- Stages/Backgrounds (Only Week 1 - 3 stages exist at the moment)
+- Gameplay
+- Stages/Backgrounds
 - Menus
 
 ## 📖 Credits
