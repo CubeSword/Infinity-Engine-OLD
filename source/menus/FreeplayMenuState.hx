@@ -410,11 +410,11 @@ class FreeplayMenuState extends BasicState
         var funnyObject2:FlxText = selectedModText;
 
 		if(Std.int(box2.width) != Std.int(funnyObject2.width + 6))
-			box2.makeGraphic(Std.int(funnyObject2.width + 6), 60, FlxColor.BLACK);
+			box2.makeGraphic(Std.int(funnyObject2.width + 6), 80, FlxColor.BLACK);
 
         box2.setPosition(funnyObject2.x - 6, FlxG.height - box2.height);
 
-        selectedModText.text = "Selected Mod:\n" + swagMods[selectedMod] + "\n";
+        selectedModText.text = "Press Q & E to switch mods\nSelected Mod:\n" + swagMods[selectedMod] + "\n";
         selectedModText.setPosition(FlxG.width - selectedModText.width, box2.y + 6);
 
         refreshSpeed();

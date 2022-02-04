@@ -55,7 +55,8 @@
             "looped": false,
             "flipX": false,
             "danceLeftRight": false,
-            "visible": true
+            "visible": true,
+            "isInFront": true
         }
     ]
 }

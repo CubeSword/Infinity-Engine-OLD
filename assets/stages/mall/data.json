@@ -1,0 +1,129 @@
+{
+    "character_Positions":[
+        [100, 100, "opponent"],
+        [400, 130, "speakers"],
+        [970, 100, "player"]
+    ],
+    "camera_Zoom": 0.8,
+    "objects": [
+        {
+            "position":[-1000, -500],
+            "scroll_Factor": [0.2, 0.2],
+            "scale": 0.8,
+            "antialiasing": true,
+            "file_Name": "bgWalls",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        },
+        {
+            "position":[-240, -90],
+            "scroll_Factor": [0.33, 0.33],
+            "scale": 0.85,
+            "antialiasing": true,
+            "file_Name": "upperBop",
+            "is_Animated": true,
+            "animations": [
+                ["bop", "Upper Crowd Bob"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        },
+        {
+            "position":[-1100, -600],
+            "scroll_Factor": [0.3, 0.3],
+            "scale": 0.9,
+            "antialiasing": true,
+            "file_Name": "bgEscalator",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        },
+        {
+            "position":[370, -250],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "christmasTree",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        },
+        {
+            "position":[-300, 140],
+            "scroll_Factor": [0.9, 0.9],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "bottomBop",
+            "is_Animated": true,
+            "animations": [
+                ["bop", "Bottom Level Boppers"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        },
+        {
+            "position":[-600, 700],
+            "scroll_Factor": [1, 1],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "fgSnow",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        },
+        {
+            "position":[-840, 150],
+            "scroll_Factor": [1, 1],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "santa",
+            "is_Animated": true,
+            "animations": [
+                ["idle", "santa idle in fear"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": false
+        }
+    ]
+}

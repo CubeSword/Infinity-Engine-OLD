@@ -59,6 +59,86 @@ class Util
 		return "";
 	}
 
+	static public function getPacker(filePath:String, ?fromImagesFolder:Bool = true, ?txtPath:String)
+	{
+		var png = filePath;
+		var txt = txtPath;
+
+		if (txt == null)
+			txt = png;
+
+		if (fromImagesFolder)
+		{
+			png = "assets/images/" + png;
+			txt = "assets/images/" + txt;
+		}
+		else
+		{
+			png = "assets/" + png;
+			txt = "assets/" + txt;
+		}
+
+		#if sys
+		if(!Assets.exists(png + ".png") || !Assets.exists(txt + ".txt"))
+		{
+			for(mod in Mods.activeMods)
+			{
+				var newPng = filePath;
+		
+				if (fromImagesFolder)
+					newPng = "mods/" + mod + "/images/" + newPng;
+				else
+					newPng = "mods/" + mod + "/" + newPng;
+
+				var newTxt = txtPath;
+
+				if (newTxt == null)
+					newTxt = newPng;
+				else
+				{
+					if (fromImagesFolder)
+						newTxt = "mods/" + mod + "/images/" + newTxt;
+					else
+						newTxt = "mods/" + mod + "/" + newTxt;
+				}
+
+				if(sys.FileSystem.exists(Sys.getCwd() + newPng + ".png") && sys.FileSystem.exists(Sys.getCwd() + newTxt + ".txt"))
+				{
+					var txtData = sys.io.File.getContent(Sys.getCwd() + newTxt + ".txt");
+
+					if(Cache.getFromCache(newPng, "image") == null)
+					{
+						var graphic = FlxGraphic.fromBitmapData(BitmapData.fromFile(Sys.getCwd() + newPng + ".png"), false, newPng, false);
+						graphic.destroyOnNoUse = false;
+
+						Cache.addToCache(newPng, graphic, "image");
+					}
+	
+					return FlxAtlasFrames.fromSpriteSheetPacker(Cache.getFromCache(newPng, "image"), txtData);
+				}
+			}
+
+			return FlxAtlasFrames.fromSparrow("assets/images/StoryMode_UI_Assets" + ".png", "assets/images/StoryMode_UI_Assets" + ".xml");
+		}
+		else
+		{
+			var txtData = Assets.getText(txt + ".txt");
+
+			if(Cache.getFromCache(png, "image") == null)
+			{
+				var graphic = FlxGraphic.fromBitmapData(BitmapData.fromFile(Sys.getCwd() + png + ".png"), false, png, false);
+				graphic.destroyOnNoUse = false;
+
+				Cache.addToCache(png, graphic, "image");
+			}
+
+			return FlxAtlasFrames.fromSpriteSheetPacker(Cache.getFromCache(png, "image"), txtData);
+		}
+		#end
+
+		return FlxAtlasFrames.fromSpriteSheetPacker(png + ".png", txt + ".txt");
+	}
+
 	static public function getSparrow(filePath:String, ?fromImagesFolder:Bool = true, ?xmlPath:String)
 	{
 		var png = filePath;

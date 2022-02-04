@@ -1,0 +1,61 @@
+{
+    "character_Positions":[
+        [100, 20, "opponent"],
+        [400, 130, "speakers"],
+        [1090, 100, "player"]
+    ],
+    "camera_Zoom": 1.05,
+    "objects": [
+        {
+            "position":[-400, -500],
+            "scroll_Factor": [0.2, 0.2],
+            "scale": 0.8,
+            "antialiasing": true,
+            "file_Name": "evilBG",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[300, -300],
+            "scroll_Factor": [0.2, 0.2],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "evilTree",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-200, 700],
+            "scroll_Factor": [1, 1],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "evilSnow",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        }
+    ]
+}

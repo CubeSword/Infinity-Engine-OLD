@@ -15,25 +15,18 @@ class StageSprite extends FlxSprite
         super(x, y);
 
         this.bopLeftRight = bopLeftRight;
+
+        animation.play(firstAnim);
     }
 
     override public function update(elapsed:Float)
     {
         super.update(elapsed);
-
-        if(isAnimated)
-        {
-            if(!bopLeftRight)
-            {
-                if(animation.curAnim.name != firstAnim && animation.curAnim.finished)
-                    animation.play(firstAnim);
-            }
-        }
     }
 
     public function beatHit()
     {
-        if(isAnimated)
+        if(isAnimated && !animation.curAnim.looped)
         {
             if(bopLeftRight)
             {
@@ -41,6 +34,12 @@ class StageSprite extends FlxSprite
                     animation.play('danceLeft');
                 else
                     animation.play('danceRight');
+
+                swagBop = !swagBop;
+            }
+            else
+            {
+                animation.play(firstAnim, true);
             }
         }
     }

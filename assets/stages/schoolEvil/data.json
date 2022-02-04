@@ -1,0 +1,27 @@
+{
+    "character_Positions":[
+        [100, 100, "opponent"],
+        [580, 430, "speakers"],
+        [970, 320, "player"]
+    ],
+    "camera_Zoom": 1.05,
+    "objects": [
+        {
+            "position":[400, 200],
+            "scroll_Factor": [0.8, 0.9],
+            "scale": 6,
+            "antialiasing": false,
+            "file_Name": "animatedEvilSchool",
+            "is_Animated": true,
+            "animations": [
+                ["idle", "background 2"]
+            ],
+            "fps": 24,
+            "looped": true,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "specialScale": true
+        }
+    ]
+}

@@ -1,0 +1,128 @@
+{
+    "character_Positions":[
+        [100, 100, "opponent"],
+        [580, 430, "speakers"],
+        [970, 320, "player"]
+    ],
+    "camera_Zoom": 1.05,
+    "objects": [
+        {
+            "position":[0, 0],
+            "scroll_Factor": [0.1, 0.1],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "weebSky",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-200, 0],
+            "scroll_Factor": [0.6, 0.9],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "weebSchool",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-200, 0],
+            "scroll_Factor": [0.95, 0.95],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "weebStreet",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-30, 130],
+            "scroll_Factor": [0.9, 0.9],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "weebTreesBack",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isPackerAtlas": false
+        },
+        {
+            "position":[-580, -800],
+            "scroll_Factor": [0.85, 0.85],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "weebTrees",
+            "is_Animated": true,
+            "animations": [
+                ["treeLoop", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]]
+            ],
+            "fps": 12,
+            "looped": true,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isPackerAtlas": true
+        },
+        {
+            "position":[-200, -40],
+            "scroll_Factor": [0.85, 0.85],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "petals",
+            "is_Animated": true,
+            "animations": [
+                ["leaves", "PETALS ALL"]
+            ],
+            "fps": 24,
+            "looped": true,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-100, 190],
+            "scroll_Factor": [0.9, 0.9],
+            "scale": 1,
+            "antialiasing": false,
+            "file_Name": "bgFreaks",
+            "is_Animated": true,
+            "animations": [
+                ["bop", "BG fangirls dissuaded"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        }
+    ]
+}

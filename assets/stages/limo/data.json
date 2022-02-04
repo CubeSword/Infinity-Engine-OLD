@@ -1,0 +1,163 @@
+{
+    "character_Positions":[
+        [100, 100, "opponent"],
+        [400, 130, "speakers"],
+        [1030, -120, "player"]
+    ],
+    "camera_Zoom": 0.9,
+    "objects": [
+        {
+            "position":[-120, -50],
+            "scroll_Factor": [0.1, 0.1],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoSunset",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-200, 480],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "bgLimo",
+            "is_Animated": true,
+            "animations": [
+                ["drive", "background limo pink"]
+            ],
+            "fps": 24,
+            "looped": true,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[130, 80],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoDancer",
+            "is_Animated": true,
+            "animations": [
+                ["danceLeft", "danceLeft"],
+                ["danceRight", "danceRight"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": true,
+            "visible": true
+        },
+        {
+            "position":[500, 80],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoDancer",
+            "is_Animated": true,
+            "animations": [
+                ["danceLeft", "danceLeft"],
+                ["danceRight", "danceRight"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": true,
+            "visible": true
+        },
+        {
+            "position":[870, 80],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoDancer",
+            "is_Animated": true,
+            "animations": [
+                ["danceLeft", "danceLeft"],
+                ["danceRight", "danceRight"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": true,
+            "visible": true
+        },
+        {
+            "position":[1240, 80],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoDancer",
+            "is_Animated": true,
+            "animations": [
+                ["danceLeft", "danceLeft"],
+                ["danceRight", "danceRight"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": true,
+            "visible": true
+        },
+        {
+            "position":[1610, 80],
+            "scroll_Factor": [0.4, 0.4],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoDancer",
+            "is_Animated": true,
+            "animations": [
+                ["danceLeft", "danceLeft"],
+                ["danceRight", "danceRight"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "danceLeftRight": true,
+            "visible": true
+        },
+        {
+            "position":[-500, -600],
+            "scroll_Factor": [1, 1],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoOverlay",
+            "is_Animated": false,
+            "animations": [
+                ["no", "no"],
+                ["no", "no"]
+            ],
+            "fps": 24,
+            "looped": false,
+            "flipX": false,
+            "alpha": 0.5,
+            "danceLeftRight": false,
+            "visible": true
+        },
+        {
+            "position":[-120, 550],
+            "scroll_Factor": [1, 1],
+            "scale": 1,
+            "antialiasing": true,
+            "file_Name": "limoDrive",
+            "is_Animated": true,
+            "animations": [
+                ["drive", "Limo stage"]
+            ],
+            "fps": 24,
+            "looped": true,
+            "flipX": false,
+            "danceLeftRight": false,
+            "visible": true,
+            "isInFront": true
+        }
+    ]
+}

@@ -163,10 +163,15 @@ class StoryModeState extends BasicState {
         difficultyImage.antialiasing = Options.getData('anti-aliasing');
         grpDifficulty.add(difficultyImage);
 
-        modText = new FlxText(leftDiffArrow.x, leftDiffArrow.y + 30, 0, "Base Game", 24);
-        modText.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, LEFT);
+        modText = new FlxText(leftDiffArrow.x, leftDiffArrow.y + 90, 0, "< Base Game >", 30);
+        modText.setFormat("assets/fonts/vcr.ttf", 30, FlxColor.WHITE, LEFT);
         modText.scrollFactor.set();
         add(modText);
+
+        var switchModWarning:FlxText = new FlxText(modText.x, modText.y + 30, 0, "Press Q & E to switch mods", 24);
+        switchModWarning.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, LEFT);
+        switchModWarning.scrollFactor.set();
+        add(switchModWarning);
 
         funkyBpm(102);
 
@@ -216,6 +221,8 @@ class StoryModeState extends BasicState {
         swagChars = [];
         swagSongs = [];
         swagDifficulties = [];
+
+        weekQuotes = [];
 
         jsonDirs = [];
 
@@ -432,6 +439,8 @@ class StoryModeState extends BasicState {
 
         weekQuote.text = weekQuotes[selectedWeek].toUpperCase();
 		weekQuote.x = FlxG.width - (weekQuote.width + 10);
+
+        modText.text = "< " + swagMods[selectedMod] + " >";
 
         trackList = "";
 

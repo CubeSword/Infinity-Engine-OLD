@@ -1,5 +1,6 @@
 package menus;
 
+import mods.Mods;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import menus.FreeplayMenuState;
@@ -25,6 +26,7 @@ class PauseMenu extends BasicSubState
 		"Resume",
 		"Restart Song",
 		"Toggle Practice Mode",
+		"Change Difficulty",
 		"Options",
 		"Exit To Menu",
 	];
@@ -39,6 +41,7 @@ class PauseMenu extends BasicSubState
 	];
 
 	var pauseOptions:Array<String> = [];
+	var changingDifficulty:Bool = false;
 
 	var selectedOption:Int = 0;
 	var pauseMusic:FlxSound;
@@ -50,6 +53,9 @@ class PauseMenu extends BasicSubState
 	var practiceText:FlxText;
 
 	var bg:FlxSprite;
+
+	var jsonDirs:Array<String> = [];
+	var jsons:Array<String> = [];
 
 	public function new(?x:Float, ?y:Float)
 	{
@@ -176,64 +182,155 @@ class PauseMenu extends BasicSubState
 		{
 			var selectedItem:String = pauseOptions[selectedOption];
 
-			switch(selectedItem)
+			if(!changingDifficulty)
 			{
-				case 'Resume':
-					close();
+				switch(selectedItem)
+				{
+					case 'Resume':
+						close();
 
-				case 'Restart Song':
-					FlxG.resetState();
+					case 'Restart Song':
+						FlxG.resetState();
 
-				case 'Toggle Practice Mode':
-					PlayState.usedPractice = true;
-					PlayState.practiceMode = !PlayState.practiceMode;
-					showOptionWarning(3);
+					case 'Toggle Practice Mode':
+						PlayState.usedPractice = true;
+						PlayState.practiceMode = !PlayState.practiceMode;
+						showOptionWarning(3);
 
-				case 'Options':
-					pauseOptions = funnyOptions;
-					selectedOption = 0;
-					refreshPauseOptions(true);
-					changeSelection();
-				
-				case 'Exit To Menu':
-					FlxG.sound.playMusic(Util.getSound('menus/freakyMenu', false));
+					case 'Change Difficulty':
+						changingDifficulty = true;
 
-					if(game.PlayState.storyMode)
-						transitionState(new menus.StoryModeState());
-					else
-						transitionState(new menus.FreeplayMenuState());
+						pauseOptions = ["Back"];
 
-					FreeplayMenuState.curSpeed = PlayState.songMultiplier;
-				
-				// options Shit
-				case 'Back':
-					pauseOptions = defaultPauseOptions;
-					selectedOption = 0;
-					refreshPauseOptions(true);
-					changeSelection();
+						#if sys
+						jsonDirs = sys.FileSystem.readDirectory(Sys.getCwd() + "assets/songs/" + PlayState.storedSong);
+						#else
+						jsonDirs = ["easy.json", "normal.json", "hard.json"];
+						#end
 
-				case 'Botplay':
-					PlayState.usedPractice = true;
-					Options.saveData('botplay', !Options.getData('botplay'));
-					game.PlayState.botplayText.visible = Options.getData('botplay');
-					showOptionWarning(0);
+						if(jsonDirs == null)
+							jsonDirs = [];
 
-				case 'Ghost Tapping':
-					Options.saveData('ghost-tapping', !Options.getData('ghost-tapping'));
-					showOptionWarning(1);
+						jsons = [];
 
-				case 'Note Splashes':
-					Options.saveData('note-splashes', !Options.getData('note-splashes'));
-					showOptionWarning(2);
+						#if sys
+						if(Mods.activeMods.length > 0)
+						{
+							for(mod in Mods.activeMods)
+							{
+								if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/songs/' + PlayState.storedSong))
+								{
+									var funnyArray = sys.FileSystem.readDirectory(Sys.getCwd() + 'mods/$mod/songs/' + PlayState.storedSong);
 
-				case 'Adjust Hitsounds':
-					openSubState(new HitsoundMenu()); // can you open substates in substates? sure hope you can
+									for(jsonThingy in funnyArray)
+									{
+										jsonDirs.push(jsonThingy);
+									}
+								}
+							}
+						}
+						#end
 
-				case 'Manage Keybinds':
-					openSubState(new KeybindMenu());
+						for(dir in jsonDirs)
+						{
+							if(dir.endsWith(".json"))
+								jsons.push(dir.split(".json")[0]);
+						}
 
-				case 'FPS Cap':
-					openSubState(new FPSCapMenu());
+						var hasEasy = jsons.contains("easy");
+						var hasNormal = jsons.contains("normal");
+						var hasHard = jsons.contains("hard");
+
+						if(hasEasy || hasNormal || hasHard)
+						{
+							if(hasEasy) jsons.remove("easy");
+							if(hasNormal) jsons.remove("normal");
+							if(hasHard) jsons.remove("hard");
+
+							var oldJsons:Array<String> = jsons;
+							jsons = [];
+
+							if(hasEasy) jsons.push("easy");
+							if(hasNormal) jsons.push("normal");
+							if(hasHard) jsons.push("hard");
+
+							for(difficulty in oldJsons)
+							{
+								jsons.push(difficulty);
+							}
+						} // basically sometimes this would show up as "easy, hard, normal", this is supposed to fix that lol
+
+						for(difficulty in jsons)
+						{
+							pauseOptions.push(difficulty);
+						}
+
+						trace(jsons);
+
+						selectedOption = 0;
+						refreshPauseOptions(true);
+						changeSelection();
+
+					case 'Options':
+						pauseOptions = funnyOptions;
+						selectedOption = 0;
+						refreshPauseOptions(true);
+						changeSelection();
+					
+					case 'Exit To Menu':
+						FlxG.sound.playMusic(Util.getSound('menus/freakyMenu', false));
+
+						if(game.PlayState.storyMode)
+							transitionState(new menus.StoryModeState());
+						else
+							transitionState(new menus.FreeplayMenuState());
+
+						FreeplayMenuState.curSpeed = PlayState.songMultiplier;
+					
+					// options Shit
+					case 'Back':
+						pauseOptions = defaultPauseOptions;
+						selectedOption = 0;
+						refreshPauseOptions(true);
+						changeSelection();
+
+					case 'Botplay':
+						PlayState.usedPractice = true;
+						Options.saveData('botplay', !Options.getData('botplay'));
+						game.PlayState.botplayText.visible = Options.getData('botplay');
+						showOptionWarning(0);
+
+					case 'Ghost Tapping':
+						Options.saveData('ghost-tapping', !Options.getData('ghost-tapping'));
+						showOptionWarning(1);
+
+					case 'Note Splashes':
+						Options.saveData('note-splashes', !Options.getData('note-splashes'));
+						showOptionWarning(2);
+
+					case 'Adjust Hitsounds':
+						openSubState(new HitsoundMenu()); // can you open substates in substates? sure hope you can
+
+					case 'Manage Keybinds':
+						openSubState(new KeybindMenu());
+
+					case 'FPS Cap':
+						openSubState(new FPSCapMenu());
+				}
+			}
+			else
+			{
+				switch(selectedItem)
+				{
+					default:
+						transitionState(new game.PlayState(PlayState.storedSong, pauseOptions[selectedOption], false));
+					case 'Back':
+						pauseOptions = defaultPauseOptions;
+						changingDifficulty = false;
+						selectedOption = 0;
+						refreshPauseOptions(true);
+						changeSelection();
+				}
 			}
 		}
 

@@ -37,7 +37,7 @@ class Character extends FlxSprite {
         this.name = swagName;
         json = Util.getJsonContents('assets/characters/placeholder.json');
 
-        trace("!!!!! DOES THE PLACEHOLDER JSON EVEN LOAD??? LET'S SEE BY TRACING IT !!!!!: " + json);
+        //trace("!!!!! DOES THE PLACEHOLDER JSON EVEN LOAD??? LET'S SEE BY TRACING IT !!!!!: " + json);
 
         if(resetAnims)
         {
@@ -67,7 +67,7 @@ class Character extends FlxSprite {
         }
         #end
 
-        trace("!!!!! CHARACTER EXISTS !!!!!: " + balls);
+        //trace("!!!!! CHARACTER EXISTS !!!!!: " + balls);
 
         if(balls)
         {
@@ -92,7 +92,7 @@ class Character extends FlxSprite {
             #end
         }
 
-        trace("!!!!! DOES THE SHIT EXIST??? LET'S FIND OUT IN TODAY'S EPISODE OF PAIN AND SUFFERING !!!!!: " + Std.isOfType(Util.getSparrow('characters/images/$swagName/assets', false), FlxAtlasFrames));
+        //trace("!!!!! DOES THE SHIT EXIST??? LET'S FIND OUT IN TODAY'S EPISODE OF PAIN AND SUFFERING !!!!!: " + Std.isOfType(Util.getSparrow('characters/images/$swagName/assets', false), FlxAtlasFrames));
         frames = Util.getSparrow('characters/images/$swagName/assets', false);
 
         if(balls)
