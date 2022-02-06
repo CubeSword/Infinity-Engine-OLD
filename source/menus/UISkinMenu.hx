@@ -44,10 +44,12 @@ class UISkinMenu extends BasicSubState
 		super();
 
 		isStinkySkin = false;
+
+		skinCheck();
+
 		selectedSkin = Options.getData("ui-skin-num");
 
 		swagged = false;
-		skinCheck();
 
 		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0;

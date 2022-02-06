@@ -99,11 +99,13 @@ class StageFront extends FlxTypedGroup<StageSprite>
     public function createLuaStuff()
     {
         #if linc_luajit
+        #if sys
         if(rawStageData != null)
         {
-            if(Assets.exists(Util.getPath('stages/$megaCoolPoggersStage/script.lua')))
+            if(sys.FileSystem.exists(Sys.getCwd() + Util.getPath('stages/$megaCoolPoggersStage/script.lua')))
                 stageScript = LuaHandler.createLuaHandler(Util.getPath('stages/$megaCoolPoggersStage/script.lua'));
         }
+        #end
         #end
     }
 

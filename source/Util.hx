@@ -152,6 +152,7 @@ class Util
 				if(sys.FileSystem.exists('mods/$mod/$path'))
 				{
 					gaming = 'mods/$mod/$path';
+					break;
 				}
 			}
 		}

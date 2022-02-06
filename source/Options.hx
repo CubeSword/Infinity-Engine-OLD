@@ -11,7 +11,7 @@ class Options
 
     public static function init()
     {
-        FlxG.save.bind("project-refunked", "project-refunked-team");
+        FlxG.save.bind("infinity-engine", "infinity-team");
 
         defaultData = Util.getJsonContents('assets/data/defaultData.json');
         trace(defaultData);

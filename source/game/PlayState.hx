@@ -335,9 +335,8 @@ class PlayState extends BasicState
 
 		playCurrentHitsound(0); // preload hitsound lol
 		
-		if (FlxG.sound.music != null) {
+		if(FlxG.sound.music != null)
 			FlxG.sound.music.stop();
-		}
 
 		// check if dialogue exists
 		#if sys
@@ -445,9 +444,6 @@ class PlayState extends BasicState
 			default:
 				if(song.gf == null)
 					song.gf = "gf";
-			
-				if(song.ui_Skin == null)
-					song.ui_Skin = "default";
 		}
 
 		switch(storedSong) // song skin
@@ -455,17 +451,9 @@ class PlayState extends BasicState
 			case "senpai" | "roses" | "thorns":
 				if(song.ui_Skin == null)
 					song.ui_Skin = "default-pixel";
-
-				/*#if !sys
-				pixelStage = true;
-				#end*/
 			default:
 				if(song.ui_Skin == null)
 					song.ui_Skin = "default";
-
-				/*#if !sys
-				pixelStage = false;
-				#end*/
 		}
 
 		curUISkin = song.ui_Skin;
@@ -656,8 +644,9 @@ class PlayState extends BasicState
 		keybindReminders = new FlxTypedGroup<FlxText>();
 		add(keybindReminders);
 
-		for(i in 0...keyCount * 2) { // add strum arrows
-			var isPlayerArrow:Bool = i > /*3*/(keyCount - 1);
+		for(i in 0...keyCount * 2)// add strum arrows
+		{
+			var isPlayerArrow:Bool = i > (keyCount - 1);
 			var funnyArrowX:Float = 0;
 
 			if(!Options.getData('middlescroll'))
@@ -696,11 +685,10 @@ class PlayState extends BasicState
 					arrowsLoaded = true;
 			}});
 			
-			if(!isPlayerArrow) {
+			if(!isPlayerArrow)
 				opponentStrumArrows.add(theRealStrumArrow);	
-			} else {
+			else
 				playerStrumArrows.add(theRealStrumArrow);
-			}
 
 			strumLineNotes.add(theRealStrumArrow);
 		}
@@ -721,8 +709,8 @@ class PlayState extends BasicState
 
 		comboGroup = new FlxTypedGroup<ComboSprite>();
 
-		for(i in 0...4) {
-			
+		for(i in 0...4)
+		{
 			var newComboNum:ComboSprite = new ComboSprite();
 			newComboNum.x = funnyRating.x - 80 + i * 50;
 			newComboNum.y = funnyRating.y + 85;
@@ -750,27 +738,25 @@ class PlayState extends BasicState
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Util.getImage('healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
-		healthBar.pixelPerfectPosition = true;
 		healthBarBG.antialiasing = Options.getData('anti-aliasing');
 
 		if(Options.getData('downscroll'))
 			healthBarBG.y = 60;
 
 		#if linc_luajit
-		executeModchart = Assets.exists(Util.getPath('songs/$storedSong/script.lua'));
+		#if sys
+		executeModchart = sys.FileSystem.exists(Sys.getCwd() + Util.getPath('songs/$storedSong/script.lua'));
 
 		if(executeModchart)
 		{
-			//if(Assets.exists(Util.getPath('songs/$storedSong/script.lua')))
-			//{
-				luaModchart = LuaHandler.createLuaHandler();
-				executeALuaState("create", [PlayState.storedSong], MODCHART);
-			//}
+			luaModchart = LuaHandler.createLuaHandler(Util.getPath('songs/$storedSong/script.lua'));
+			executeALuaState("create", [PlayState.storedSong], MODCHART);
 		}
 
 		stage.createLuaStuff();
 
 		executeALuaState("create", [stage.megaCoolPoggersStage], STAGE);
+		#end
 		#end
 
 		var healthColor1:Int = 0xFFA1A1A1;
@@ -794,7 +780,6 @@ class PlayState extends BasicState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', minHealth, maxHealth);
 		healthBar.scrollFactor.set();
-		healthBar.pixelPerfectPosition = true;
 		healthBar.createFilledBar(healthColor1, healthColor2);
 
 		// health bar icons

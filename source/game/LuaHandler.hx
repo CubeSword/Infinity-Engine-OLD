@@ -130,6 +130,8 @@ class LuaHandler
 
     function new(?path:Null<String>)
     {
+        trace("ass");
+        
         oldMultiplier = PlayState.songMultiplier;
 
         lua_Sprites = [

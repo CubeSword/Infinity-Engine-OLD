@@ -100,7 +100,7 @@
 			"indices": []
 		}
 	],
-	"no_antialiasing": false,
+	"no_antialiasing": true,
 	"position": [
 		0,
 		350
