@@ -139,6 +139,26 @@ class Util
 		return FlxAtlasFrames.fromSpriteSheetPacker(png + ".png", txt + ".txt");
 	}
 
+	static public function getPath(?path:Null<String>):Null<String>
+	{
+		var gaming = null;
+
+		if(Assets.exists('assets/$path'))
+			gaming = 'assets/$path';
+		else
+		{
+			for(mod in Mods.activeMods)
+			{
+				if(sys.FileSystem.exists('mods/$mod/$path'))
+				{
+					gaming = 'mods/$mod/$path';
+				}
+			}
+		}
+
+		return gaming;
+	}
+
 	static public function getSparrow(filePath:String, ?fromImagesFolder:Bool = true, ?xmlPath:String)
 	{
 		var png = filePath;

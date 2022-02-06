@@ -70,6 +70,11 @@ class PlayState extends BasicState
 	var colors:Array<Dynamic> = Options.getData('note-colors');
 
 	var camFollow:FlxObject;
+
+	public var minHealth:Float = 0;
+	public var maxHealth:Float = 2;
+
+	public var stopSong:Bool = false;
 	
 	// stage shit
 	static public var stageCamZoom:Float = 0.9;
@@ -77,30 +82,34 @@ class PlayState extends BasicState
 	static public var pixelAssetZoom:Float = 6.1;
 	
 	// character shit
-	public var opponent:CharacterGroup;
-	public var speakers:CharacterGroup;
-	public var player:CharacterGroup;	
+	static public var opponent:CharacterGroup;
+	static public var speakers:CharacterGroup;
+	static public var player:CharacterGroup;	
 	
 	// arrow shit
-	var opponentStrumArrows:FlxTypedGroup<StrumArrow>;
-	var playerStrumArrows:FlxTypedGroup<StrumArrow>;
+	static public var opponentStrumArrows:FlxTypedGroup<StrumArrow>;
+	static public var playerStrumArrows:FlxTypedGroup<StrumArrow>;
+	static public var strumLineNotes:FlxTypedGroup<StrumArrow>;
 
 	var keybindReminders:FlxTypedGroup<FlxText>;
 
-	var notes:FlxTypedGroup<Note>;
+	public var notes:FlxTypedGroup<Note>;
 	var spawnNotes:Array<Note> = [];
 
-	var strumArea:FlxSprite;
+	public var strumArea:FlxSprite;
 	
 	// camera shit
-	var hudCam:FlxCamera;
-	var gameCam:FlxCamera;
-	var otherCam:FlxCamera;
+	public var hudCam:FlxCamera;
+	public var gameCam:FlxCamera;
+	public var otherCam:FlxCamera;
 	
 	// health bar shit
 	var healthBarBG:FlxSprite;
 	var healthBar:FlxBar;
-	var health:Float = 1;
+
+	var invincible:Bool = false;
+	
+	public var health:Float = 1;
 	
 	var opponentIcon:FlxSprite;
 	var playerIcon:FlxSprite;
@@ -223,6 +232,13 @@ class PlayState extends BasicState
 	var dialogueSwag:Dynamic;
 
 	var curStage:String = "stage";
+
+	// lua shit
+	var executeModchart:Bool = false;
+
+	#if linc_luajit
+	public static var luaModchart:LuaHandler = null;
+	#end
 
 	// shit other than variables
 	public function new(?songName:String, ?difficulty:String, ?storyModeBool:Bool = false)
@@ -633,9 +649,9 @@ class PlayState extends BasicState
 		
 		opponentStrumArrows = new FlxTypedGroup<StrumArrow>();
 		playerStrumArrows = new FlxTypedGroup<StrumArrow>();
-		
-		add(opponentStrumArrows);
-		add(playerStrumArrows);
+		strumLineNotes = new FlxTypedGroup<StrumArrow>();
+
+		add(strumLineNotes);
 
 		keybindReminders = new FlxTypedGroup<FlxText>();
 		add(keybindReminders);
@@ -685,6 +701,8 @@ class PlayState extends BasicState
 			} else {
 				playerStrumArrows.add(theRealStrumArrow);
 			}
+
+			strumLineNotes.add(theRealStrumArrow);
 		}
 
 		noteBG.x = playerStrumArrows.members[0].x - 20;
@@ -732,10 +750,28 @@ class PlayState extends BasicState
 		healthBarBG = new FlxSprite(0, FlxG.height * 0.9).loadGraphic(Util.getImage('healthBar'));
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
+		healthBar.pixelPerfectPosition = true;
 		healthBarBG.antialiasing = Options.getData('anti-aliasing');
 
 		if(Options.getData('downscroll'))
 			healthBarBG.y = 60;
+
+		#if linc_luajit
+		executeModchart = Assets.exists(Util.getPath('songs/$storedSong/script.lua'));
+
+		if(executeModchart)
+		{
+			//if(Assets.exists(Util.getPath('songs/$storedSong/script.lua')))
+			//{
+				luaModchart = LuaHandler.createLuaHandler();
+				executeALuaState("create", [PlayState.storedSong], MODCHART);
+			//}
+		}
+
+		stage.createLuaStuff();
+
+		executeALuaState("create", [stage.megaCoolPoggersStage], STAGE);
+		#end
 
 		var healthColor1:Int = 0xFFA1A1A1;
 		var healthColor2:Int = 0xFFA1A1A1;
@@ -756,8 +792,9 @@ class PlayState extends BasicState
 		}
 		
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
-			'health', 0, 2);
+			'health', minHealth, maxHealth);
 		healthBar.scrollFactor.set();
+		healthBar.pixelPerfectPosition = true;
 		healthBar.createFilledBar(healthColor1, healthColor2);
 
 		// health bar icons
@@ -863,8 +900,7 @@ class PlayState extends BasicState
 		}
 
 		// camera shit
-		opponentStrumArrows.cameras = [hudCam];
-		playerStrumArrows.cameras = [hudCam];
+		strumLineNotes.cameras = [hudCam];
 		healthBarBG.cameras = [hudCam];
 		healthBar.cameras = [hudCam];
 		opponentIcon.cameras = [hudCam];
@@ -876,8 +912,23 @@ class PlayState extends BasicState
 		scoreText.cameras = [hudCam];
 		botplayText.cameras = [hudCam];
 		ratingsText.cameras = [hudCam];
+
+		#if linc_luajit
+		if(executeModchart && luaModchart != null)
+			luaModchart.setup();
+
+		if(stage.stageScript != null)
+			stage.stageScript.setup();
+
+		if(stageFront.stageScript != null)
+			stageFront.stageScript.setup();
+
+		executeALuaState("start", [storedSong], BOTH, [stage.megaCoolPoggersStage]);
+		#end
 		
 		super.create();
+
+		executeALuaState("createPost", []);
 
 		//trace(Conductor.safeZoneOffset);
 	}
@@ -1087,6 +1138,18 @@ class PlayState extends BasicState
 	{		
 		updateAccuracyStuff();
 
+		if(stopSong)
+		{
+			paused = true;
+
+			FlxG.sound.music.volume = 0;
+			PlayState.instance.vocals.volume = 0;
+
+			FlxG.sound.music.time = 0;
+			PlayState.instance.vocals.time = 0;
+			Conductor.songPosition = 0;
+		}
+
 		if(!Options.getData("optimization"))
 		{
 			for(char in opponent.members)
@@ -1253,13 +1316,24 @@ class PlayState extends BasicState
 		playerIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
 		opponentIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (opponentIcon.width - iconOffset);
 
+		#if linc_luajit
+		if((stage.stageScript != null || (luaModchart != null && executeModchart)) && !countdownStarted)
+		{
+			setLuaVar("songPos", Conductor.songPosition);
+			setLuaVar("hudZoom", hudCam.zoom);
+			setLuaVar("curBeat", curBeat);
+			setLuaVar("cameraZoom", FlxG.camera.zoom);
+			executeALuaState("update", [elapsed]);
+		}
+		#end
+
 		if (health < 0)
 			health = 0;
 
 		if (health > 2)
 			health = 2;
 
-		if(health <= 0 && !PlayState.practiceMode)
+		if(health <= 0 && (!PlayState.practiceMode || !invincible))
 		{
 			persistentUpdate = false;
 			persistentDraw = false;
@@ -1280,6 +1354,8 @@ class PlayState extends BasicState
 			}
 			
 			openSubState(new GameOverSubstate(gameOverX, gameOverY, deathCharacter));
+
+			executeALuaState("onDeath", [Conductor.songPosition]);
 		}
 
 		if (spawnNotes[0] != null)
@@ -1352,6 +1428,11 @@ class PlayState extends BasicState
 								char.playAnim(singAnims[note.noteID % 4] + altAnim, true);
 							}
 						}
+
+						if(note.isSustainNote)
+							executeALuaState('playerTwoSingHeld', [Math.abs(note.noteID), Conductor.songPosition]);
+						else
+							executeALuaState('playerTwoSing', [Math.abs(note.noteID), Conductor.songPosition]);
 
 						note.active = false;
 						notes.remove(note);
@@ -1472,6 +1553,8 @@ class PlayState extends BasicState
 								}
 							}
 
+							executeALuaState("playerOneMiss", [note.noteID % keyCount, Conductor.songPosition, (note != null ? note.isSustainNote : false)]);
+
 							FlxG.random.getObject(missSounds).play(true);
 
 							score -= 10;
@@ -1534,9 +1617,13 @@ class PlayState extends BasicState
 				{
 					if(camFollow.x != midPos.x - 100 + player.members[0].camOffsets[0])
 						camFollow.setPosition(midPos.x - 100 + player.members[0].camOffsets[0], midPos.y - 100 + player.members[0].camOffsets[1]);
+
+					executeALuaState("playerOneTurn", []);
 				} else {
 					if(camFollow.x != midPos.x + 150 + opponent.members[0].camOffsets[0])
 						camFollow.setPosition(midPos.x + 150 + opponent.members[0].camOffsets[0], midPos.y - 100 + opponent.members[0].camOffsets[1]);	
+
+					executeALuaState("playerTwoTurn", []);
 				}
 			}
 		}
@@ -1854,6 +1941,9 @@ class PlayState extends BasicState
 					}
 				}
 			}
+
+			if(!countdownStarted)
+				executeALuaState("beatHit", [curBeat]);
 		}
 	}
 
@@ -1874,6 +1964,9 @@ class PlayState extends BasicState
 					resyncVocals();
 				}
 			}
+
+			setLuaVar("curStep", curStep);
+			executeALuaState("stepHit", [curStep]);
 		}
 	}
 	
@@ -1993,6 +2086,16 @@ class PlayState extends BasicState
 					shaderArray[i + keyCount].brightness = 0;
 				}
 			}
+
+			for (i in 0...justPressed.length) {
+				if (justPressed[i] == true)
+					executeALuaState("keyPressed", [i]);
+			};
+			
+			for (i in 0...released.length) {
+				if (released[i] == true)
+					executeALuaState("keyReleased", [i]);
+			};
 		}
 		else
 		{
@@ -2119,6 +2222,8 @@ class PlayState extends BasicState
 						funnyRating.loadRating(sussyBallsRating, curUISkin, pixelStage);
 						funnyRating.tweenRating();
 
+						executeALuaState("popUpScore", [sussyBallsRating, combo]);
+
 						noteDataTimes[note.noteID] = note.strum;
 
 						switch(sussyBallsRating)
@@ -2187,6 +2292,11 @@ class PlayState extends BasicState
 						if(combo > 9999)
 							combo = 9999; // you should never be able to get a combo this high, if you do, you're nuts.
 					}
+
+					if(note.isSustainNote)
+						executeALuaState('playerOneSingHeld', [Math.abs(note.noteID), Conductor.songPosition]);
+					else
+						executeALuaState('playerOneSing', [Math.abs(note.noteID), Conductor.songPosition]);
 
 					note.active = false;
 					notes.remove(note);
@@ -2476,4 +2586,69 @@ class PlayState extends BasicState
 			startedMoving = false;
 		}
 	}
+
+	function executeALuaState(name:String, arguments:Array<Dynamic>, ?execute_on:Execute_On = BOTH, ?stage_arguments:Array<Dynamic>)
+	{
+		if(stage_arguments == null)
+			stage_arguments = arguments;
+
+		#if linc_luajit
+		if(executeModchart && luaModchart != null && execute_on != STAGE)
+			luaModchart.executeState(name, arguments);
+
+		if(stage.stageScript != null && execute_on != MODCHART)
+			stage.stageScript.executeState(name, stage_arguments);
+		#end
+	}
+
+	function setLuaVar(name:String, data:Dynamic, ?execute_on:Execute_On = BOTH, ?stage_data:Dynamic)
+	{
+		if(stage_data == null)
+			stage_data = data;
+
+		#if linc_luajit
+		if(executeModchart && luaModchart != null && execute_on != STAGE)
+			luaModchart.setVar(name, data);
+
+		if(stage.stageScript != null && execute_on != MODCHART)
+			stage.stageScript.setVar(name, stage_data);
+		#end
+	}
+
+	function getLuaVar(name:String, type:String):Dynamic
+	{
+		#if linc_luajit
+		var luaVar:Dynamic = null;
+
+		// we prioritize modchart cuz frick you
+		
+		if(stage.stageScript != null)
+		{
+			var newLuaVar = stage.stageScript.getVar(name, type);
+
+			if(newLuaVar != null)
+				luaVar = newLuaVar;
+		}
+
+		if(executeModchart && luaModchart != null)
+		{
+			var newLuaVar = luaModchart.getVar(name, type);
+
+			if(newLuaVar != null)
+				luaVar = newLuaVar;
+		}
+
+		if(luaVar != null)
+			return luaVar;
+		#end
+
+		return null;
+	}
+}
+
+enum Execute_On
+{
+	BOTH;
+	MODCHART;
+	STAGE;
 }

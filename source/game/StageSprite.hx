@@ -10,13 +10,17 @@ class StageSprite extends FlxSprite
     public var firstAnim:String = "idle";
     public var isAnimated:Bool = false;
 
+    public var isNormalSprite:Bool = false;
+
     public function new(x:Float, y:Float, ?bopLeftRight:Bool = false)
     {
         super(x, y);
 
-        this.bopLeftRight = bopLeftRight;
-
-        animation.play(firstAnim);
+        if(!isNormalSprite)
+        {
+            this.bopLeftRight = bopLeftRight;
+            animation.play(firstAnim);
+        }
     }
 
     override public function update(elapsed:Float)
@@ -26,20 +30,23 @@ class StageSprite extends FlxSprite
 
     public function beatHit()
     {
-        if(isAnimated && !animation.curAnim.looped)
+        if(!isNormalSprite)
         {
-            if(bopLeftRight)
+            if(isAnimated && !animation.curAnim.looped)
             {
-                if(!swagBop)
-                    animation.play('danceLeft');
-                else
-                    animation.play('danceRight');
+                if(bopLeftRight)
+                {
+                    if(!swagBop)
+                        animation.play('danceLeft');
+                    else
+                        animation.play('danceRight');
 
-                swagBop = !swagBop;
-            }
-            else
-            {
-                animation.play(firstAnim, true);
+                    swagBop = !swagBop;
+                }
+                else
+                {
+                    animation.play(firstAnim, true);
+                }
             }
         }
     }

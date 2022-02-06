@@ -18,6 +18,7 @@ class Character extends FlxSprite {
     public var healthColor:Int = FlxColor.WHITE;
     public var bopLeftRight:Bool = false;
     public var bopDirection:Int = 0;
+    public var shouldDance:Bool = true;
     public var isPlayer:Bool = false;
     public var holdTimer:Float = 0;
     public var healthIcon:String = "bf";
@@ -164,20 +165,23 @@ class Character extends FlxSprite {
     }
 
     public function dance() {
-        holdTimer = 0;
-        
-        if (bopLeftRight == true) {
-            if (bopDirection == 0) {
-                playAnim('danceLeft', true);
-            } else {
-                playAnim('danceRight', true);
+        if(shouldDance)
+        {
+            holdTimer = 0;
+            
+            if (bopLeftRight == true) {
+                if (bopDirection == 0) {
+                    playAnim('danceLeft', true);
+                } else {
+                    playAnim('danceRight', true);
+                }
+
+                bopDirection = (bopDirection + 1) % 2;
             }
 
-            bopDirection = (bopDirection + 1) % 2;
-        }
-
-        if (bopLeftRight == false) {
-            playAnim('idle');
+            if (bopLeftRight == false) {
+                playAnim('idle');
+            }
         }
     }
 }

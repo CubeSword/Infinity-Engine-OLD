@@ -18,6 +18,7 @@ class Note extends FlxSprite {
 	public var isSustainNote:Bool = false;
 	public var isEndNote:Bool = false;
 	public var shouldHit:Bool = true;
+	public var modifiedByLua:Bool;
 	public var sustainLength:Float = 0;
 
 	public var canBeHit:Bool = false;

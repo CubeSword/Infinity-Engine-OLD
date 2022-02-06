@@ -13,7 +13,11 @@ class Stage extends FlxTypedGroup<StageSprite>
 
     var file:Dynamic;
 
-    var megaCoolPoggersStage:String = "stage";
+    public var megaCoolPoggersStage:String = "stage";
+
+    #if linc_luajit
+    public var stageScript:LuaHandler = null;
+    #end
 
 	public function new(swagStage:String = "stage")
     {
@@ -130,6 +134,29 @@ class Stage extends FlxTypedGroup<StageSprite>
         //trace(PlayState.characterPositions);
 
         PlayState.stageCamZoom = rawStageData.camera_Zoom;
+    }
+
+    public function createLuaStuff()
+    {
+        #if linc_luajit
+        if(rawStageData != null)
+        {
+            if(Assets.exists(Util.getPath('stages/$megaCoolPoggersStage/script.lua')))
+                stageScript = LuaHandler.createLuaHandler(Util.getPath('stages/$megaCoolPoggersStage/script.lua'));
+        }
+        #end
+    }
+
+    override public function destroy() {
+        #if linc_luajit
+        if(stageScript != null)
+        {
+            stageScript.die();
+            stageScript = null;
+        }
+        #end
+
+        super.destroy();
     }
 
     function getStageJSON(?swagStage:String = "stage")
