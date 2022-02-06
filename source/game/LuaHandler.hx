@@ -204,6 +204,21 @@ class LuaHandler
 
         // we addin sum callbacks
 
+        Lua_helper.add_callback(lua,"openURL", function(url:String = "https://www.google.com") {
+            if(Options.getData("allow-lua-openurls"))
+                Util.openURL(url);
+        });
+
+        Lua_helper.add_callback(lua,"flixelGetData", function(save:String) {
+            return Reflect.getProperty("flixel.FlxG", 'save.data.$save');
+        });
+
+        Lua_helper.add_callback(lua, "flixelSaveData", function(save:String, value:String, ?flush:Bool = true) {
+            Reflect.setProperty("flixel.FlxG", 'save.data.$save', value);
+            if(flush)
+                FlxG.save.flush();
+        });
+
         Lua_helper.add_callback(lua,"setObjectCamera", function(id:String, camera:String = "") {
             var actor:FlxSprite = getActorByName(id);
 

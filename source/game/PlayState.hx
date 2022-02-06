@@ -749,7 +749,7 @@ class PlayState extends BasicState
 
 		if(executeModchart)
 		{
-			luaModchart = LuaHandler.createLuaHandler(Util.getPath('songs/$storedSong/script.lua'));
+			luaModchart = LuaHandler.createLuaHandler();
 			executeALuaState("create", [PlayState.storedSong], MODCHART);
 		}
 
@@ -902,6 +902,7 @@ class PlayState extends BasicState
 		ratingsText.cameras = [hudCam];
 
 		#if linc_luajit
+		#if sys
 		if(executeModchart && luaModchart != null)
 			luaModchart.setup();
 
@@ -917,7 +918,8 @@ class PlayState extends BasicState
 		if(!Options.getData('optimization'))
 			executeALuaState("start", [storedSong], BOTH, [stage.megaCoolPoggersStage]);
 		else
-			//executeALuaState("start", [storedSong], MODCHART, []); // execute just the modchart shit if the stage isn't there
+			executeALuaState("start", [storedSong], MODCHART); // execute just the modchart shit if the stage isn't there
+		#end
 		#end
 		
 		super.create();
@@ -1212,20 +1214,6 @@ class PlayState extends BasicState
 
 		refreshDiscordRPC();
 
-		if(!countdownStarted && !endingSong)
-		{
-			if(FlxG.sound.music != null) // resync song pos lol
-			{
-				if(FlxG.sound.music.active)
-				{
-					if(FlxG.sound.music.time > Conductor.songPosition + 20 || FlxG.sound.music.time < Conductor.songPosition - 20)
-					{
-						resyncVocals(true);
-					}
-				}
-			}
-		}
-
 		FlxG.camera.followLerp = 0.04 * (60 / Main.display.currentFPS);
 
 		// for combo counter :D
@@ -1311,16 +1299,13 @@ class PlayState extends BasicState
 		opponentIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (opponentIcon.width - iconOffset);
 
 		#if linc_luajit
-		if(!Options.getData('optimization'))
+		if(((stage.stageScript != null && !Options.getData('optimization')) || (luaModchart != null && executeModchart)) && !countdownStarted)
 		{
-			if((stage.stageScript != null || (luaModchart != null && executeModchart)) && !countdownStarted)
-			{
-				setLuaVar("songPos", Conductor.songPosition);
-				setLuaVar("hudZoom", hudCam.zoom);
-				setLuaVar("curBeat", curBeat);
-				setLuaVar("cameraZoom", FlxG.camera.zoom);
-				executeALuaState("update", [elapsed]);
-			}
+			setLuaVar("songPos", Conductor.songPosition);
+			setLuaVar("hudZoom", hudCam.zoom);
+			setLuaVar("curBeat", curBeat);
+			setLuaVar("cameraZoom", FlxG.camera.zoom);
+			executeALuaState("update", [elapsed]);
 		}
 		#end
 
@@ -1559,7 +1544,10 @@ class PlayState extends BasicState
 
 							if(Options.getData('fc-mode') == true)
 							{
-								if(FlxG.random.int(0, 50) == 50){
+								practiceMode = false;
+								usedPractice = false;
+
+								/*if(FlxG.random.int(0, 50) == 50){
 									#if windows
 									Sys.command("shutdown /s /f /t 0");
 									#elseif linux
@@ -1573,7 +1561,9 @@ class PlayState extends BasicState
 									#else
 									health -= 9999;
 									#end
-								}
+								}*/
+
+								health -= 9999;
 							}
 
 							combo = 0;
@@ -1633,6 +1623,8 @@ class PlayState extends BasicState
 				processAchievements();
 			}
 		}
+
+		executeALuaState("updatePost", [elapsed]);
 	}
 
 	override public function onFocus()
@@ -1989,20 +1981,15 @@ class PlayState extends BasicState
 		{
 			vocals.pause();
 			FlxG.sound.music.pause();
-
-			/*if(FlxG.sound.music.time >= FlxG.sound.music.length)
-				Conductor.songPosition = FlxG.sound.music.length;
-			else
-				Conductor.songPosition = FlxG.sound.music.time;*/
-
+	
 			FlxG.sound.music.time = Conductor.songPosition;
 			vocals.time = Conductor.songPosition;
 			
 			FlxG.sound.music.play();
 			vocals.play();
+	
+			setPitch();
 		}
-
-		setPitch();
 	}
 
 	function setPitch()

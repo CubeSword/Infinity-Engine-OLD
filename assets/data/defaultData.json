@@ -112,6 +112,10 @@
         {
             "name": "achievements",
             "value": []
+        },
+        {
+            "name": "allow-lua-openurls",
+            "value": false
         }
     ] 
 }
