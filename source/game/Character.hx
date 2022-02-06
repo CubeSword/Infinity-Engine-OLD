@@ -94,8 +94,12 @@ class Character extends FlxSprite {
         }
         else
         {
-            swagName = "placeholder";
-            this.name = swagName;
+            if(!isInCharEditor)
+            {
+                swagName = "placeholder";
+                this.name = swagName;
+            }
+
             json = Util.getJsonContents('assets/characters/$swagName.json');
         }
 
