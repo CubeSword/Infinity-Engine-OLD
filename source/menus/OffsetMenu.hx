@@ -75,7 +75,7 @@ class OffsetMenu extends BasicSubState
 		if(accept)
 			Options.saveData('song-offset', Math.floor(Options.getData('song-offset')));
 
-		funnyOffset.text = "Current Offset: " + Options.getData('song-offset');
+		funnyOffset.text = "Current Offset: " + FlxMath.roundDecimal(Options.getData('song-offset'), 1);
 		funnyOffset.screenCenter();
 
 		bg.alpha = FlxMath.lerp(bg.alpha, 0.6, Math.max(0, Math.min(1, elapsed * 6)));

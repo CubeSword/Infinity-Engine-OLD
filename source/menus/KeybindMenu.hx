@@ -53,7 +53,6 @@ class KeybindMenu extends BasicSubState
 
 		for (i in 0...4) {
 			var note:StrumArrow = new StrumArrow((125 * i) + 395, 0, i, Options.getData('ui-skin'));
-			note.antialiasing = true;
 			note.centerOffsets();
 			note.centerOrigin();
 			note.updateHitbox();
@@ -150,10 +149,12 @@ class KeybindMenu extends BasicSubState
 			if(daNotes.members[i].ID == selectedKey)
 			{
 				daNotes.members[i].alpha = 1;
-				daNotes.members[i].scale.set(0.8, 0.8);
+				if(!daNotes.members[i].isPixel)
+					daNotes.members[i].scale.set(0.8, 0.8);
 			} else {
 				daNotes.members[i].alpha = 0.6;
-				daNotes.members[i].scale.set(0.7, 0.7);
+				if(!daNotes.members[i].isPixel)
+					daNotes.members[i].scale.set(0.7, 0.7);
 			}
 		}
 

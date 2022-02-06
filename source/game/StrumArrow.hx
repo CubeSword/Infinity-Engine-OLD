@@ -11,7 +11,7 @@ using StringTools;
 class StrumArrow extends FlxSprite {
 	var resetAnim:Float = 0;
 	var noteskin:String = 'default';
-	var isPixel:Bool = false;
+	public var isPixel:Bool = false;
 	var noteID:Int = 0;
 
 	public var origPos:Array<Float> = [0, 0];

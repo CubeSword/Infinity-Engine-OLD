@@ -1,5 +1,6 @@
 package menus;
 
+import game.StageFront;
 import flixel.system.debug.interaction.tools.Pointer.GraphicCursorCross;
 import flixel.graphics.FlxGraphic;
 import openfl.events.IOErrorEvent;
@@ -90,6 +91,7 @@ class CharacterEditorMenu extends BasicState
     var charListMenu:CustomDropdown;
 
     var stage:Stage;
+    var stageFront:StageFront;
 
     var healthBarBG:FlxSprite;
     var healthBar:FlxBar;
@@ -168,7 +170,7 @@ class CharacterEditorMenu extends BasicState
 
 		hudCam = new FlxCamera();
 		gameCam = new FlxCamera();
-		hudCam.bgColor.alpha = 0;
+        hudCam.bgColor.alpha = 0;
 
 		FlxG.cameras.reset();
 
@@ -185,6 +187,9 @@ class CharacterEditorMenu extends BasicState
 
         stage = new Stage('stage');
         add(stage);
+
+        stageFront = new StageFront('stage');
+        add(stageFront);
 
         characterGhost = new Character(0, 0, curChar, true);
         characterGhost.screenCenter();
@@ -215,6 +220,7 @@ class CharacterEditorMenu extends BasicState
         animListText.borderSize = 2;
         animListText.borderColor = FlxColor.BLACK;
         animListText.color = FlxColor.CYAN;
+        animListText.scrollFactor.set();
         animListText.cameras = [hudCam];
         add(animListText);
 
@@ -224,6 +230,7 @@ class CharacterEditorMenu extends BasicState
         curAnimText.borderSize = 2;
         curAnimText.borderColor = FlxColor.BLACK;
         curAnimText.screenCenter(X);
+        curAnimText.scrollFactor.set();
         curAnimText.cameras = [hudCam];
         add(curAnimText);
 
@@ -314,6 +321,8 @@ class CharacterEditorMenu extends BasicState
         uiBox.resize(300, 540);
         uiBox.x = (FlxG.width - uiBox.width) - 20;
         uiBox.y = 10;
+        uiBox.scrollFactor.set();
+        uiBox.cameras = [hudCam];
 
         var charName:FlxText = new FlxText(uiBox.x + 10, 20, 0, "Character Name");
         var animationGhost:FlxText = new FlxText(charName.x + 60, 20, 0, "Animation Ghost");
@@ -650,6 +659,94 @@ class CharacterEditorMenu extends BasicState
 
         // adding the shit
         uiBase.add(uiBox);
+        
+        // setting scroll factor
+        charName.scrollFactor.set();
+        charName.cameras = [hudCam];
+
+        charNameTextBox.scrollFactor.set();
+        charNameTextBox.cameras = [hudCam];
+
+        charNameWarn.scrollFactor.set();
+        charNameWarn.cameras = [hudCam];
+
+        animNameText.scrollFactor.set();
+        animNameTextBox.cameras = [hudCam];
+
+        prefixNameText.scrollFactor.set();
+        prefixNameText.cameras = [hudCam];
+
+        animPrefixTextBox.scrollFactor.set();
+        animPrefixTextBox.cameras = [hudCam];
+
+        animNameTextWarn.scrollFactor.set();
+        animNameTextWarn.cameras = [hudCam];
+
+        customIconText.scrollFactor.set();
+        customIconText.cameras = [hudCam];
+
+        swagCustomIconTextBox.scrollFactor.set();
+        swagCustomIconTextBox.cameras = [hudCam];
+
+        charXYText.scrollFactor.set();
+        charXYText.cameras = [hudCam];
+
+        scaleText.scrollFactor.set();
+        scaleText.cameras = [hudCam];
+
+        healthBarColorText.scrollFactor.set();
+        healthBarColorText.cameras = [hudCam];
+
+        cameraPosText.scrollFactor.set();
+        cameraPosText.cameras = [hudCam];
+
+        saveCharBTN.scrollFactor.set();
+        saveCharBTN.cameras = [hudCam];
+
+        loadCharBTN.scrollFactor.set();
+        loadCharBTN.cameras = [hudCam];
+
+        addAnimBTN.scrollFactor.set();
+        addAnimBTN.cameras = [hudCam];
+
+        removeAnimBTN.scrollFactor.set();
+        removeAnimBTN.cameras = [hudCam];
+
+        iconColorBTN.scrollFactor.set();
+        iconColorBTN.cameras = [hudCam];
+
+        charFlipBox.scrollFactor.set();
+        charFlipBox.cameras = [hudCam];
+
+        charLoopAnimBox.scrollFactor.set();
+        charLoopAnimBox.cameras = [hudCam];
+
+        swagNoAntialiasingBox.scrollFactor.set();
+        swagNoAntialiasingBox.cameras = [hudCam];
+
+        playerCharBox.scrollFactor.set();
+        playerCharBox.cameras = [hudCam];
+
+        swagCharXBox.scrollFactor.set();
+        swagCharXBox.cameras = [hudCam];
+
+        swagCharYBox.scrollFactor.set();
+        swagCharYBox.cameras = [hudCam];
+
+        swagCamXBox.scrollFactor.set();
+        swagCamXBox.cameras = [hudCam];
+
+        swagCamYBox.scrollFactor.set();
+        swagCamYBox.cameras = [hudCam];
+
+        healthBarColorStepper1.scrollFactor.set();
+        healthBarColorStepper1.cameras = [hudCam];
+
+        healthBarColorStepper2.scrollFactor.set();
+        healthBarColorStepper2.cameras = [hudCam];
+
+        healthBarColorStepper3.scrollFactor.set();
+        healthBarColorStepper3.cameras = [hudCam];
 
         // TEXT/TEXTBOXES
         uiBase.add(charName);

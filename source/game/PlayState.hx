@@ -753,9 +753,12 @@ class PlayState extends BasicState
 			executeALuaState("create", [PlayState.storedSong], MODCHART);
 		}
 
-		stage.createLuaStuff();
+		if(!Options.getData('optimization'))
+		{
+			stage.createLuaStuff();
 
-		executeALuaState("create", [stage.megaCoolPoggersStage], STAGE);
+			executeALuaState("create", [stage.megaCoolPoggersStage], STAGE);
+		}
 		#end
 		#end
 
@@ -902,13 +905,19 @@ class PlayState extends BasicState
 		if(executeModchart && luaModchart != null)
 			luaModchart.setup();
 
-		if(stage.stageScript != null)
-			stage.stageScript.setup();
+		if(!Options.getData('optimization'))
+		{
+			if(stage.stageScript != null)
+				stage.stageScript.setup();
 
-		if(stageFront.stageScript != null)
-			stageFront.stageScript.setup();
+			if(stageFront.stageScript != null)
+				stageFront.stageScript.setup();
+		}
 
-		executeALuaState("start", [storedSong], BOTH, [stage.megaCoolPoggersStage]);
+		if(!Options.getData('optimization'))
+			executeALuaState("start", [storedSong], BOTH, [stage.megaCoolPoggersStage]);
+		else
+			//executeALuaState("start", [storedSong], MODCHART, []); // execute just the modchart shit if the stage isn't there
 		#end
 		
 		super.create();
@@ -1302,13 +1311,16 @@ class PlayState extends BasicState
 		opponentIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (opponentIcon.width - iconOffset);
 
 		#if linc_luajit
-		if((stage.stageScript != null || (luaModchart != null && executeModchart)) && !countdownStarted)
+		if(!Options.getData('optimization'))
 		{
-			setLuaVar("songPos", Conductor.songPosition);
-			setLuaVar("hudZoom", hudCam.zoom);
-			setLuaVar("curBeat", curBeat);
-			setLuaVar("cameraZoom", FlxG.camera.zoom);
-			executeALuaState("update", [elapsed]);
+			if((stage.stageScript != null || (luaModchart != null && executeModchart)) && !countdownStarted)
+			{
+				setLuaVar("songPos", Conductor.songPosition);
+				setLuaVar("hudZoom", hudCam.zoom);
+				setLuaVar("curBeat", curBeat);
+				setLuaVar("cameraZoom", FlxG.camera.zoom);
+				executeALuaState("update", [elapsed]);
+			}
 		}
 		#end
 
@@ -2581,8 +2593,11 @@ class PlayState extends BasicState
 		if(executeModchart && luaModchart != null && execute_on != STAGE)
 			luaModchart.executeState(name, arguments);
 
-		if(stage.stageScript != null && execute_on != MODCHART)
-			stage.stageScript.executeState(name, stage_arguments);
+		if(stage != null)
+		{
+			if(stage.stageScript != null && execute_on != MODCHART)
+				stage.stageScript.executeState(name, stage_arguments);
+		}
 		#end
 	}
 
@@ -2595,8 +2610,11 @@ class PlayState extends BasicState
 		if(executeModchart && luaModchart != null && execute_on != STAGE)
 			luaModchart.setVar(name, data);
 
-		if(stage.stageScript != null && execute_on != MODCHART)
-			stage.stageScript.setVar(name, stage_data);
+		if(stage != null)
+		{
+			if(stage.stageScript != null && execute_on != MODCHART)
+				stage.stageScript.setVar(name, stage_data);
+		}
 		#end
 	}
 
@@ -2607,12 +2625,15 @@ class PlayState extends BasicState
 
 		// we prioritize modchart cuz frick you
 		
-		if(stage.stageScript != null)
+		if(stage != null)
 		{
-			var newLuaVar = stage.stageScript.getVar(name, type);
+			if(stage.stageScript != null)
+			{
+				var newLuaVar = stage.stageScript.getVar(name, type);
 
-			if(newLuaVar != null)
-				luaVar = newLuaVar;
+				if(newLuaVar != null)
+					luaVar = newLuaVar;
+			}
 		}
 
 		if(executeModchart && luaModchart != null)

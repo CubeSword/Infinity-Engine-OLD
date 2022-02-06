@@ -72,7 +72,7 @@ class NoteBGOpacityMenu extends BasicSubState
 			holdTime = 0;
 		}
 
-		funnyOffset.text = "Current Note BG Opacity: " + Options.getData('note-bg-opacity');
+		funnyOffset.text = "Current Note BG Opacity: " + FlxMath.roundDecimal(Options.getData('note-bg-opacity'), 1);
 		funnyOffset.screenCenter();
 
 		bg.alpha = FlxMath.lerp(bg.alpha, 0.6, Math.max(0, Math.min(1, elapsed * 6)));
