@@ -41,6 +41,7 @@ import ui.RatingSprite;
 import ui.ComboSprite;
 import ui.NoteSplash;
 import ui.DialogueBox;
+import game.Stage.StageFront;
 
 using StringTools;
 

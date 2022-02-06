@@ -1,6 +1,6 @@
 package menus;
 
-import game.StageFront;
+import game.Stage.StageFront;
 import flixel.system.debug.interaction.tools.Pointer.GraphicCursorCross;
 import flixel.graphics.FlxGraphic;
 import openfl.events.IOErrorEvent;
