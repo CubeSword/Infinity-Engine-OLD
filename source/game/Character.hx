@@ -92,12 +92,18 @@ class Character extends FlxSprite {
             }
             #end
         }
+        else
+        {
+            swagName = "placeholder";
+            this.name = swagName;
+            json = Util.getJsonContents('assets/characters/$swagName.json');
+        }
 
         //trace("!!!!! DOES THE SHIT EXIST??? LET'S FIND OUT IN TODAY'S EPISODE OF PAIN AND SUFFERING !!!!!: " + Std.isOfType(Util.getSparrow('characters/images/$swagName/assets', false), FlxAtlasFrames));
         frames = Util.getSparrow('characters/images/$swagName/assets', false);
 
-        if(balls)
-        {
+        /*if(balls)
+        {*/
             setGraphicSize(Std.int(frameWidth * json.scale));
             updateHitbox();
 
@@ -133,13 +139,13 @@ class Character extends FlxSprite {
 
             //playAnim('idle');
             dance();
-        }
+        /*}
         else
         {
             healthIcon = "placeholder";
             position = [0, 0];
             offset.set(0, 0);
-        }
+        }*/
     }
 
     override public function update(elapsed) {

@@ -746,7 +746,7 @@ class PlayState extends BasicState
 
 		#if linc_luajit
 		#if sys
-		executeModchart = sys.FileSystem.exists(Sys.getCwd() + Util.getPath('songs/$storedSong/script.lua'));
+		executeModchart = sys.FileSystem.exists(Sys.getCwd() + Util.getPath('songs/$storedSong/script.lua')) && !Options.getData("optimization");
 
 		if(executeModchart)
 		{
@@ -919,7 +919,7 @@ class PlayState extends BasicState
 		if(!Options.getData('optimization'))
 			executeALuaState("start", [storedSong], BOTH, [stage.megaCoolPoggersStage]);
 		else
-			executeALuaState("start", [storedSong], MODCHART); // execute just the modchart shit if the stage isn't there
+			//executeALuaState("start", [storedSong], MODCHART); // execute just the modchart shit if the stage isn't there
 		#end
 		#end
 		
@@ -927,7 +927,26 @@ class PlayState extends BasicState
 
 		executeALuaState("createPost", []);
 
+		#if sys
+		if(sys.FileSystem.exists(Sys.getCwd() + Util.getPath('songs/$storedSong/script.lua')) && Options.getData("optimization"))
+			doModChartOptimizeWarning();
+		#end
+
 		//trace(Conductor.safeZoneOffset);
+	}
+
+	function doModChartOptimizeWarning()
+	{
+		var warning:FlxText = new FlxText(10, 10, 0, "Your LUA scripts for your song/stage were not run\nbecause Optimization is enabled in options.\n", 24);
+		warning.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+		warning.borderSize = 2;
+		warning.cameras = [hudCam];
+		add(warning);
+
+		FlxTween.tween(warning, {x: warning.width * -1.2, alpha: 0}, 0.4, {
+			ease: FlxEase.cubeInOut,
+			startDelay: 5
+		});
 	}
 
 	function doKeybindReminder()
@@ -1300,13 +1319,16 @@ class PlayState extends BasicState
 		opponentIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (opponentIcon.width - iconOffset);
 
 		#if linc_luajit
-		if(((stage.stageScript != null && !Options.getData('optimization')) || (luaModchart != null && executeModchart)) && !countdownStarted)
+		if(!Options.getData('optimization'))
 		{
-			setLuaVar("songPos", Conductor.songPosition);
-			setLuaVar("hudZoom", hudCam.zoom);
-			setLuaVar("curBeat", curBeat);
-			setLuaVar("cameraZoom", FlxG.camera.zoom);
-			executeALuaState("update", [elapsed]);
+			if((stage.stageScript != null || (luaModchart != null && executeModchart)) && !countdownStarted)
+			{
+				setLuaVar("songPos", Conductor.songPosition);
+				setLuaVar("hudZoom", hudCam.zoom);
+				setLuaVar("curBeat", curBeat);
+				setLuaVar("cameraZoom", FlxG.camera.zoom);
+				executeALuaState("update", [elapsed]);
+			}
 		}
 		#end
 
@@ -2574,69 +2596,82 @@ class PlayState extends BasicState
 
 	function executeALuaState(name:String, arguments:Array<Dynamic>, ?execute_on:Execute_On = BOTH, ?stage_arguments:Array<Dynamic>)
 	{
-		if(stage_arguments == null)
-			stage_arguments = arguments;
-
-		#if linc_luajit
-		if(executeModchart && luaModchart != null && execute_on != STAGE)
-			luaModchart.executeState(name, arguments);
-
-		if(stage != null)
+		if(!Options.getData('optimization'))
 		{
-			if(stage.stageScript != null && execute_on != MODCHART)
-				stage.stageScript.executeState(name, stage_arguments);
+			if(stage_arguments == null)
+				stage_arguments = arguments;
+
+			#if linc_luajit
+			if(executeModchart && luaModchart != null && execute_on != STAGE)
+				luaModchart.executeState(name, arguments);
+
+			if(stage != null)
+			{
+				if(stage.stageScript != null && execute_on != MODCHART)
+					stage.stageScript.executeState(name, stage_arguments);
+			}
+			#end
 		}
-		#end
 	}
 
 	function setLuaVar(name:String, data:Dynamic, ?execute_on:Execute_On = BOTH, ?stage_data:Dynamic)
 	{
-		if(stage_data == null)
-			stage_data = data;
-
-		#if linc_luajit
-		if(executeModchart && luaModchart != null && execute_on != STAGE)
-			luaModchart.setVar(name, data);
-
-		if(stage != null)
+		if(!Options.getData('optimization'))
 		{
-			if(stage.stageScript != null && execute_on != MODCHART)
-				stage.stageScript.setVar(name, stage_data);
+			if(stage_data == null)
+				stage_data = data;
+
+			#if linc_luajit
+			if(executeModchart && luaModchart != null && execute_on != STAGE)
+				luaModchart.setVar(name, data);
+
+			if(stage != null)
+			{
+				if(stage.stageScript != null && execute_on != MODCHART)
+					stage.stageScript.setVar(name, stage_data);
+			}
+			#end
 		}
-		#end
 	}
 
 	function getLuaVar(name:String, type:String):Dynamic
 	{
-		#if linc_luajit
-		var luaVar:Dynamic = null;
-
-		// we prioritize modchart cuz frick you
-		
-		if(stage != null)
+		if(!Options.getData('optimization'))
 		{
-			if(stage.stageScript != null)
+			#if linc_luajit
+			var luaVar:Dynamic = null;
+
+			// we prioritize modchart cuz frick you
+			
+			if(stage != null)
 			{
-				var newLuaVar = stage.stageScript.getVar(name, type);
+				if(stage.stageScript != null)
+				{
+					var newLuaVar = stage.stageScript.getVar(name, type);
+
+					if(newLuaVar != null)
+						luaVar = newLuaVar;
+				}
+			}
+
+			if(executeModchart && luaModchart != null)
+			{
+				var newLuaVar = luaModchart.getVar(name, type);
 
 				if(newLuaVar != null)
 					luaVar = newLuaVar;
 			}
-		}
 
-		if(executeModchart && luaModchart != null)
+			if(luaVar != null)
+				return luaVar;
+			#end
+
+			return null;
+		}
+		else
 		{
-			var newLuaVar = luaModchart.getVar(name, type);
-
-			if(newLuaVar != null)
-				luaVar = newLuaVar;
+			return null;
 		}
-
-		if(luaVar != null)
-			return luaVar;
-		#end
-
-		return null;
 	}
 }
 

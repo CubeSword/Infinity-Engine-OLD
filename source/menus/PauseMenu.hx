@@ -365,11 +365,7 @@ class PauseMenu extends BasicSubState
 		warningText.alpha = 1;
 		FlxTween.tween(warningText, {x: FlxG.width + 15, alpha: 0}, 0.4, {
 			ease: FlxEase.cubeInOut,
-			startDelay: 1,
-			onComplete: function(twn:FlxTween)
-			{
-				// do nothign because uhsdcjnkALehds
-			}
+			startDelay: 1
 		});
 	}
 
