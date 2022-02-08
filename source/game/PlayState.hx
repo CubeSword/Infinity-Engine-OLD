@@ -68,7 +68,7 @@ class PlayState extends BasicState
 
 	var shaderArray:Array<ColorSwap> = [];
 
-	var colors:Array<Dynamic> = Options.getData('note-colors');
+	var colors:Array<Dynamic> = [];
 
 	var camFollow:FlxObject;
 
@@ -301,6 +301,10 @@ class PlayState extends BasicState
 
 			storyMode = storyModeBool;
 		}
+
+		if(song.keyCount != null) keyCount = song.keyCount;
+
+		colors = Options.getData('note-colors')[keyCount - 1];
 	}
 
 	function refreshDiscordRPC(?basic:Bool = false)
@@ -972,7 +976,7 @@ class PlayState extends BasicState
 
 			daKeybindText.borderSize = 3;
 
-			daKeybindText.text = Options.getData('mainBinds')[i];
+			daKeybindText.text = Options.getData('mainBinds')[keyCount - 1][i];
 			daKeybindText.x = (playerStrumArrows.members[i].x + 55 - (24 /* text size / 2 */)) + 5;
 
 			daKeybindText.cameras = [hudCam];
@@ -2040,8 +2044,8 @@ class PlayState extends BasicState
 
 	function inputFunction()
 	{
-		var testBinds:Array<String> = Options.getData('mainBinds');
-		var testBindsAlt:Array<String> = Options.getData('altBinds');
+		var testBinds:Array<String> = Options.getData('mainBinds')[keyCount - 1];
+		var testBindsAlt:Array<String> = Options.getData('altBinds')[keyCount - 1];
 
 		justPressed = [];
 		pressed = [];

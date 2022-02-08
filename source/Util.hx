@@ -180,48 +180,44 @@ class Util
 		}
 
 		#if sys
-		if(!Assets.exists(png + ".png") || !Assets.exists(xml + ".xml"))
+		for(mod in Mods.activeMods)
 		{
-			for(mod in Mods.activeMods)
-			{
-				var newPng = filePath;
-		
-				if (fromImagesFolder)
-					newPng = "mods/" + mod + "/images/" + newPng;
-				else
-					newPng = "mods/" + mod + "/" + newPng;
-
-				var newXml = xmlPath;
-
-				if (newXml == null)
-					newXml = newPng;
-				else
-				{
-					if (fromImagesFolder)
-						newXml = "mods/" + mod + "/images/" + newXml;
-					else
-						newXml = "mods/" + mod + "/" + newXml;
-				}
-
-				if(sys.FileSystem.exists(Sys.getCwd() + newPng + ".png") && sys.FileSystem.exists(Sys.getCwd() + newXml + ".xml"))
-				{
-					var xmlData = sys.io.File.getContent(Sys.getCwd() + newXml + ".xml");
-
-					if(Cache.getFromCache(newPng, "image") == null)
-					{
-						var graphic = FlxGraphic.fromBitmapData(BitmapData.fromFile(Sys.getCwd() + newPng + ".png"), false, newPng, false);
-						graphic.destroyOnNoUse = false;
-
-						Cache.addToCache(newPng, graphic, "image");
-					}
+			var newPng = filePath;
 	
-					return FlxAtlasFrames.fromSparrow(Cache.getFromCache(newPng, "image"), xmlData);
-				}
+			if (fromImagesFolder)
+				newPng = "mods/" + mod + "/images/" + newPng;
+			else
+				newPng = "mods/" + mod + "/" + newPng;
+
+			var newXml = xmlPath;
+
+			if (newXml == null)
+				newXml = newPng;
+			else
+			{
+				if (fromImagesFolder)
+					newXml = "mods/" + mod + "/images/" + newXml;
+				else
+					newXml = "mods/" + mod + "/" + newXml;
 			}
 
-			return FlxAtlasFrames.fromSparrow("assets/images/StoryMode_UI_Assets" + ".png", "assets/images/StoryMode_UI_Assets" + ".xml");
+			if(sys.FileSystem.exists(Sys.getCwd() + newPng + ".png") && sys.FileSystem.exists(Sys.getCwd() + newXml + ".xml"))
+			{
+				var xmlData = sys.io.File.getContent(Sys.getCwd() + newXml + ".xml");
+
+				if(Cache.getFromCache(newPng, "image") == null)
+				{
+					var graphic = FlxGraphic.fromBitmapData(BitmapData.fromFile(Sys.getCwd() + newPng + ".png"), false, newPng, false);
+					graphic.destroyOnNoUse = false;
+
+					Cache.addToCache(newPng, graphic, "image");
+				}
+
+				return FlxAtlasFrames.fromSparrow(Cache.getFromCache(newPng, "image"), xmlData);
+			}
 		}
-		else
+
+		if(Assets.exists(png + ".png") && Assets.exists(xml + ".xml"))
 		{
 			var xmlData = Assets.getText(xml + ".xml");
 
@@ -237,10 +233,10 @@ class Util
 		}
 		#end
 
-		return FlxAtlasFrames.fromSparrow(png + ".png", xml + ".xml");
+		return FlxAtlasFrames.fromSparrow("assets/images/StoryMode_UI_Assets" + ".png", "assets/images/StoryMode_UI_Assets" + ".xml");
 	}
 
-	static public function getImage(filePath:String, ?fromImagesFolder:Bool = true):Dynamic
+	static public function getImage(filePath:String, ?fromImagesFolder:Bool = true, ?specificMod:Null<String>):Dynamic
 	{
 		var png = filePath;
 		
@@ -250,34 +246,34 @@ class Util
 			png = "assets/" + png;
 
 		#if sys
-		if(!Assets.exists(png + ".png", IMAGE))
+		for(mod in Mods.activeMods)
 		{
-			for(mod in Mods.activeMods)
+			var amongUs = mod;
+
+			var modPng = filePath;
+
+			if(specificMod != null) amongUs = specificMod;
+	
+			if (fromImagesFolder)
+				modPng = "mods/" + amongUs + "/images/" + modPng;
+			else
+				modPng = "mods/" + amongUs + "/" + modPng;
+
+			if(sys.FileSystem.exists(Sys.getCwd() + modPng + ".png"))
 			{
-				png = filePath;
-		
-				if (fromImagesFolder)
-					png = "mods/" + mod + "/images/" + png;
-				else
-					png = "mods/" + mod + "/" + png;
-
-				if(sys.FileSystem.exists(Sys.getCwd() + png + ".png"))
+				if(Cache.getFromCache(modPng, "image") == null)
 				{
-					if(Cache.getFromCache(png, "image") == null)
-					{
-						var graphic = FlxGraphic.fromBitmapData(BitmapData.fromFile(Sys.getCwd() + png + ".png"), false, png, false);
-						graphic.destroyOnNoUse = false;
+					var graphic = FlxGraphic.fromBitmapData(BitmapData.fromFile(Sys.getCwd() + modPng + ".png"), false, modPng, false);
+					graphic.destroyOnNoUse = false;
 
-						Cache.addToCache(png, graphic, "image");
-					}
-					
-					return Cache.getFromCache(png, "image");
+					Cache.addToCache(modPng, graphic, "image");
 				}
+				
+				return Cache.getFromCache(modPng, "image");
 			}
-
-			return "oof.png";
 		}
-		else
+
+		if(Assets.exists(png + ".png", IMAGE))
 		{
 			if(Cache.getFromCache(png, "image") == null)
 			{

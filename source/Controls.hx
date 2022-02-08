@@ -1,5 +1,6 @@
 package;
 
+import game.PlayState;
 import openfl.display.Sprite;
 import flixel.input.FlxInput.FlxInputState;
 import flixel.FlxSprite;
@@ -54,8 +55,8 @@ class Controls
         uiBinds = Options.getData('uiBinds');
         uiBindsAlt = Options.getData('uiBindsAlt');
     
-        mainBinds = Options.getData('mainBinds');
-        altBinds = Options.getData('altBinds');
+        mainBinds = Options.getData('mainBinds')[PlayState.keyCount - 1];
+        altBinds = Options.getData('altBinds')[PlayState.keyCount - 1];
 
         /*trace(uiBinds);
         trace(mainBinds);*/

@@ -60,7 +60,7 @@ class MainMenuState extends BasicState
 		
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
-		menuBG = new FlxSprite(-80).loadGraphic(Util.getImage('menuBG'));
+		menuBG = new FlxSprite(-80).loadGraphic(Util.getImage('menuBG', true, "Base Game"));
 		menuBG.scrollFactor.x = 0;
 		menuBG.scrollFactor.y = 0.18;
 		menuBG.setGraphicSize(Std.int(menuBG.width * 1.375));
@@ -69,7 +69,7 @@ class MainMenuState extends BasicState
 		menuBG.antialiasing = Options.getData('anti-aliasing');
 		add(menuBG);
 
-		menuBGMagenta = new FlxSprite(-80).loadGraphic(Util.getImage('menuDesat'));
+		menuBGMagenta = new FlxSprite(-80).loadGraphic(Util.getImage('menuDesat', true, "Base Game"));
 		menuBGMagenta.scrollFactor.x = 0;
 		menuBGMagenta.scrollFactor.y = 0.18;
 		menuBGMagenta.setGraphicSize(Std.int(menuBGMagenta.width * 1.375));

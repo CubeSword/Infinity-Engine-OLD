@@ -109,11 +109,11 @@ class FreeplayMenuState extends BasicState
         }
         #end
 
-        loadSongs(true);
-
-        bg = new FlxSprite().loadGraphic(Util.getImage("menuDesat"));
-		
+        var daMod = swagMods[selectedMod];
+        bg = new FlxSprite().loadGraphic(Util.getImage('menuDesat', true, daMod));
 		add(bg);
+
+        loadSongs(true);
  
         box = new FlxSprite();
         box.makeGraphic(1,1,FlxColor.BLACK);
@@ -264,6 +264,8 @@ class FreeplayMenuState extends BasicState
             selectedSong = 0;
             updateSelection();
         }
+
+        bg.loadGraphic(Util.getImage('menuDesat', true, swagMods[selectedMod]));
     }
 
     override public function update(elapsed:Float)

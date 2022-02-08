@@ -27,6 +27,8 @@ class NoteColorMenu extends BasicSubState
 
 	var colors:Array<Dynamic> = [];
 
+	var keyCount:Int = 4;
+
 	var selectedKey:Int = 0;
 	var menuState:String = 'selectKey';
 
@@ -40,7 +42,7 @@ class NoteColorMenu extends BasicSubState
 	{
 		super();
 		
-		colors = Options.getData('note-colors');
+		colors = Options.getData('note-colors')[keyCount - 1];
 
 		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0;
@@ -69,7 +71,7 @@ class NoteColorMenu extends BasicSubState
 
 		for(i in 0...4)
 		{
-			var note:Note = new Note((125 * i) + 395, 0, i, 0, false, Options.getData('noteskin'));
+			var note:Note = new Note((125 * i) + 395, 0, i, 0, false, Options.getData('ui-skin'));
 			note.antialiasing = true;
 			note.centerOffsets();
 			note.centerOrigin();
@@ -113,7 +115,10 @@ class NoteColorMenu extends BasicSubState
 
 		if(Controls.back)
 		{
-			Options.saveData('note-colors', colors);
+			var fuck = Options.getData('note-colors');
+			fuck[keyCount - 1] = colors;
+
+			Options.saveData('note-colors', fuck);
 			close();
 		}
 

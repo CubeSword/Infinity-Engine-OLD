@@ -66,7 +66,7 @@ class NoteBGOpacityMenu extends BasicSubState
 			close();
 
 		if(left || right) {
-			var daMultiplier:Float = left ? -0.05 : 0.05;
+			var daMultiplier:Float = left ? -0.1 : 0.1;
 			changeOffset(daMultiplier);
 		} else {
 			holdTime = 0;

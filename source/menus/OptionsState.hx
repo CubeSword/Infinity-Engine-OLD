@@ -92,7 +92,7 @@ class OptionsState extends BasicState
 
 		optionsList = defaultOptionsList["selectables"];
 
-        menuBG = new FlxSprite().loadGraphic(Util.getImage("menuDesat"));
+        menuBG = new FlxSprite().loadGraphic(Util.getImage("menuDesat", true, "Base Game"));
 		menuBG.color = menuColor;
 		add(menuBG);
 

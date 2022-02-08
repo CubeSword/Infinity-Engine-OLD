@@ -20,6 +20,8 @@ class KeybindMenu extends BasicSubState
 
 	var currentKeybinds:Array<String> = [];
 
+	var keyCount:Int = 4;
+
 	var selectedKey:Int = 0;
 	var isEditingKey:Bool = false;
 	var checkingForKeys:Bool = false;
@@ -27,11 +29,8 @@ class KeybindMenu extends BasicSubState
 	public function new()
 	{
 		super();
-
-		for(i in 0...Options.mainBinds.length)
-		{
-			currentKeybinds.push(Options.getData('mainBinds')[i]);
-		}
+			
+		currentKeybinds = Options.getData('mainBinds')[keyCount - 1];
 
 		bg = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
 		bg.alpha = 0;
@@ -117,7 +116,11 @@ class KeybindMenu extends BasicSubState
 			if(FlxG.keys.getIsDown().length > 0 && checkingForKeys) {
 				currentKeybinds[selectedKey] = FlxG.keys.getIsDown()[0].ID.toString();
 				Options.mainBinds = currentKeybinds;
-				Options.saveData('mainBinds', Options.mainBinds);
+
+				var fuck = Options.getData('mainBinds');
+				fuck[selectedKey] = Options.mainBinds;
+
+				Options.saveData('mainBinds', fuck);
 				isEditingKey = false;
 				FlxG.sound.play(Util.getSound('menus/scrollMenu'));
 			}
