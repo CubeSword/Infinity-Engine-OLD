@@ -1672,7 +1672,8 @@ class PlayState extends BasicState
 
 	override public function onFocus()
 	{
-		FlxG.sound.music.time = Conductor.songPosition;
+		if(FlxG.sound.music.active && FlxG.sound.music.playing)
+			FlxG.sound.music.time = Conductor.songPosition;
 
 		//setPitch();		
 		resyncVocals(true);
