@@ -135,30 +135,17 @@ class LuaHandler
         trace("ass");
         
         oldMultiplier = PlayState.songMultiplier;
+        
+        lua_Sprites.set("boyfriend", PlayState.player);
+        lua_Sprites.set("girlfriend", PlayState.speakers);
+        lua_Sprites.set("dad", PlayState.opponent);
 
-        lua_Sprites = [
-            'player' => PlayState.player,
-            'speakers' => PlayState.speakers,
-            'opponent' => PlayState.opponent,
-        ];
+        lua_Characters.set("boyfriend", PlayState.opponent);
+        lua_Characters.set("girlfriend", PlayState.speakers);
+        lua_Characters.set("dad", PlayState.opponent);
 
-        lua_Characters = [
-            'player' => PlayState.player,
-            'speakers' => PlayState.speakers,
-            'opponent' => PlayState.opponent,
-        ];
-    
-        @:privateAccess
-        lua_Sounds = [
-            'Inst' => FlxG.sound.music,
-            'Voices' => PlayState.instance.vocals
-        ];
-    
-        @:privateAccess
-        lua_Sounds = [
-            'Inst' => FlxG.sound.music,
-            'Voices' => PlayState.instance.vocals
-        ];
+        lua_Sounds.set("Inst", FlxG.sound.music);
+        lua_Sounds.set("Voices", PlayState.instance.vocals);
 
         lua = LuaL.newstate();
         LuaL.openlibs(lua);
