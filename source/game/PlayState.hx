@@ -1975,16 +1975,16 @@ class PlayState extends BasicState
 		{
 			var gamerValue = 20 * songMultiplier;
 			
-			if(songMultiplier < 1)
+			/*if(songMultiplier < 1)
 				resyncVocals(true);
 			else
-			{
+			{*/
 				if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > gamerValue
 					|| (song.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > gamerValue))
 				{
 					resyncVocals();
 				}
-			}
+			//}
 
 			setLuaVar("curStep", curStep);
 			executeALuaState("stepHit", [curStep]);
