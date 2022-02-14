@@ -25,6 +25,8 @@ using StringTools;
 class LuaHandler
 {
     var genericTitle:String = "Infinity Engine Modcharts";
+
+    public var variables:Map<String, Dynamic> = [];
     public var lua:State = null;
 
     public static var lua_Sprites:Map<String, Dynamic> = [
@@ -204,6 +206,61 @@ class LuaHandler
 
         // we addin sum callbacks
 
+        Lua_helper.add_callback(lua,"call", function(v:String, ?resultName:String, ?args:Array<Dynamic>):Dynamic {
+            if (args == null) args = [];
+            var splittedVar = v.split(".");
+            if (splittedVar.length == 0) return false;
+            var currentObj = variables[splittedVar[0]];
+            for (i in 1...splittedVar.length - 1) {
+                var property = Reflect.getProperty(currentObj, splittedVar[i]);
+                if (property != null) {
+                    currentObj = property;
+                } else {
+                    trace('Variable $v doesn\'t exist or is equal to null.');
+                    return false;
+                }
+            }
+            var func = Reflect.getProperty(currentObj, splittedVar[splittedVar.length - 1]);
+
+            var finalArgs = [];
+            for (a in args) {
+                if (Std.isOfType(a, String)) {
+                    var str = cast(a, String);
+                    if (str.startsWith("${") && str.endsWith("}")) {
+                        var st = str.substr(2, str.length - 3);
+                        trace(st);
+                        var v = getVarAlt(st);
+                        if (v != null) {
+                            finalArgs.push(v);
+                        } else {
+                            finalArgs.push(a);
+                        }
+                    } else {
+                        finalArgs.push(a);
+                    }
+                } else {
+                    finalArgs.push(a);
+                }
+            }
+            if (func != null) {
+                var result = null;
+                try {
+                    result = Reflect.callMethod(null, func, finalArgs);
+                } catch(e) {
+                    trace('$e');
+                }
+                if (resultName == null) {
+                    return result;
+                } else {
+                    variables[resultName] = result;
+                    return '$' + resultName;
+                }
+            } else {
+                trace('Function $v doesn\'t exist or is equal to null.');
+                return false;
+            }
+        });
+
         Lua_helper.add_callback(lua,"openURL", function(url:String = "https://www.google.com") {
             if(Options.getData("allow-lua-openurls"))
                 Util.openURL(url);
@@ -224,6 +281,33 @@ class LuaHandler
 
             if(actor != null)
                 Reflect.setProperty(actor, "cameras", [cameraFromString(camera)]);
+        });
+
+        Lua_helper.add_callback(lua,"getObjectOrder", function(id:String) {
+            var actor:FlxSprite = getActorByName(id);
+
+            if(actor != null)
+            {
+                return getInstance().members.indexOf(actor);
+            }
+            
+            // yo dumbass your object doesn't exist!
+            trace("Object: " + actor + " doesn't exist!");
+            return -1;
+        });
+
+        Lua_helper.add_callback(lua,"setObjectOrder", function(id:String, order:Int = 0) {
+            var actor:FlxSprite = getActorByName(id);
+
+            if(actor != null)
+            {
+                getInstance().remove(actor);
+                getInstance().insert(order, actor);
+                return;
+            }
+            
+            // yo dumbass your object doesn't exist!
+            trace("Object: " + actor + " doesn't exist!");
         });
 
         Lua_helper.add_callback(lua,"setGraphicSize", function(id:String, width:Int = 0, height:Int = 0) {
@@ -1247,6 +1331,22 @@ class LuaHandler
 		}
 	}
 
+    public function getVarAlt(v:String) {
+        var splittedVar = v.split(".");
+        if (splittedVar.length == 0) return null;
+        var currentObj = variables[splittedVar[0]];
+        for (i in 1...splittedVar.length) {
+            var property = Reflect.getProperty(currentObj, splittedVar[i]);
+            if (property != null) {
+                currentObj = property;
+            } else {
+                this.trace('Variable $v doesn\'t exist or is equal to null.');
+                return null;
+            }
+        }
+        return currentObj;
+    }
+
     public function executeState(name,args:Array<Dynamic>)
     {
         return Lua.tostring(lua, callLua(name, args));
@@ -1288,6 +1388,11 @@ class LuaHandler
         }
 
         return NORMAL;
+    }
+
+	inline function getInstance()
+    {
+        return PlayState.instance.playerDead ? GameOverSubstate.instance : PlayState.instance;
     }
 }
 #end

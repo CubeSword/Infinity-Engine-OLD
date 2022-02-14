@@ -60,6 +60,8 @@ class PlayState extends BasicState
 	public static var practiceMode:Bool = false;
 	public static var usedPractice:Bool = false;
 
+	public var playerDead:Bool = false;
+
 	var changedSpeed:Bool = false;
 
 	var arrowsLoaded:Bool = false;
@@ -1348,6 +1350,8 @@ class PlayState extends BasicState
 			persistentDraw = false;
 			paused = true;
 
+			playerDead = true;
+
 			vocals.stop();
 			FlxG.sound.music.stop();
 
@@ -1975,7 +1979,8 @@ class PlayState extends BasicState
 				resyncVocals(true);
 			else
 			{
-				if (FlxG.sound.music.time > Conductor.songPosition + gamerValue || FlxG.sound.music.time < Conductor.songPosition - gamerValue || FlxG.sound.music.time < 500 && (FlxG.sound.music.time > Conductor.songPosition + 5 || FlxG.sound.music.time < Conductor.songPosition - 5))
+				if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > gamerValue
+					|| (song.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > gamerValue))
 				{
 					resyncVocals();
 				}

@@ -20,8 +20,12 @@ class GameOverSubstate extends BasicSubState
 
     var swagDeathChar:String = "bf";
 
+    public static var instance:GameOverSubstate;
+
 	public function new(x:Float, y:Float, deathCharacter:String = "bf")
 	{
+        instance = this;
+        
 		super();
 
         var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, FlxColor.BLACK);
