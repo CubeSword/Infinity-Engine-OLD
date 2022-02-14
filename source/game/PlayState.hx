@@ -1563,9 +1563,9 @@ class PlayState extends BasicState
 						{
 							if(vocals != null)
 								vocals.volume = 0;
-						}
 
-						changeHealth(false);
+							changeHealth(false);
+						}
 
 						if(!note.isSustainNote)
 						{
