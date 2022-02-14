@@ -63,7 +63,7 @@ class PauseMenu extends BasicSubState
 
 		pauseOptions = defaultPauseOptions;
 
-		pauseMusic = new FlxSound().loadEmbedded('assets/music/breakfast' + Util.soundExt, true, true);
+		pauseMusic = new FlxSound().loadEmbedded('assets/music/menus/breakfast' + Util.soundExt, true, true);
 		pauseMusic.volume = 0;
 		pauseMusic.play(false, FlxG.random.int(0, Std.int(pauseMusic.length / 2)));
 
