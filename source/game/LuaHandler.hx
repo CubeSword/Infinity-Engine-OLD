@@ -1340,7 +1340,7 @@ class LuaHandler
             if (property != null) {
                 currentObj = property;
             } else {
-                this.trace('Variable $v doesn\'t exist or is equal to null.');
+                trace('Variable $v doesn\'t exist or is equal to null.');
                 return null;
             }
         }
