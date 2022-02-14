@@ -212,6 +212,8 @@ class PlayState extends BasicState
 	
 	public static var storedSong:String;
 
+	public var songStarted:Bool = false;
+
 	var noteBG:FlxSprite;
 	var noteBGOpponent:FlxSprite;
 
@@ -1172,6 +1174,13 @@ class PlayState extends BasicState
 			Conductor.songPosition = 0;
 		}
 
+		if(songStarted && (!FlxG.sound.music.active || !FlxG.sound.music.playing))
+		{
+			FlxG.sound.music.play();
+			vocals.play();
+			resyncVocals();
+		}
+
 		if(!Options.getData("optimization"))
 		{
 			for(char in opponent.members)
@@ -1550,8 +1559,11 @@ class PlayState extends BasicState
 				{
 					if(note.mustPress && !Options.getData('botplay'))
 					{
-						if(vocals != null)
-							vocals.volume = 0;
+						if(!note.isEndNote)
+						{
+							if(vocals != null)
+								vocals.volume = 0;
+						}
 
 						changeHealth(false);
 
@@ -1892,6 +1904,7 @@ class PlayState extends BasicState
 						Conductor.songPosition = 0;
 
 						countdownStarted = false;
+						songStarted = true;
 
 						FlxG.sound.playMusic(Util.getInst(song.song.toLowerCase()), 1, false);
 
