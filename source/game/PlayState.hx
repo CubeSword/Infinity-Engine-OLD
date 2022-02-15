@@ -2315,17 +2315,13 @@ class PlayState extends BasicState
 
 						var theReal:Array<Dynamic> = menus.HitsoundMenu.getHitsounds();
 						if(theReal[Options.getData('hitsound')].name != "None")
-						{
 							playCurrentHitsound();
-						}
 
 						if(combo > 9999)
 							combo = 9999; // you should never be able to get a combo this high, if you do, you're nuts.
 					}
 
-					if(note.isSustainNote)
-						executeALuaState('playerOneSingHeld', [Math.abs(note.noteID), Conductor.songPosition]);
-					else
+					if(!note.isSustainNote)
 						executeALuaState('playerOneSing', [Math.abs(note.noteID), Conductor.songPosition]);
 
 					note.active = false;
@@ -2409,6 +2405,19 @@ class PlayState extends BasicState
 						shaderArray[(note.noteID % keyCount) + keyCount].hue = colors[note.noteID % keyCount][0] / 360;
 						shaderArray[(note.noteID % keyCount) + keyCount].saturation = colors[note.noteID % keyCount][1] / 100;
 						shaderArray[(note.noteID % keyCount) + keyCount].brightness = colors[note.noteID % keyCount][2] / 100;
+
+						if(Options.getData('hitsounds-hold'))
+						{
+							var theReal:Array<Dynamic> = menus.HitsoundMenu.getHitsounds();
+							if(theReal[Options.getData('hitsound')].name != "None")
+								playCurrentHitsound();
+						}
+
+						if(combo > 9999)
+							combo = 9999; // you should never be able to get a combo this high, if you do, you're nuts.
+
+						if(note.isSustainNote)
+							executeALuaState('playerOneSingHeld', [Math.abs(note.noteID), Conductor.songPosition]);
 
 						note.active = false;
 						notes.remove(note);

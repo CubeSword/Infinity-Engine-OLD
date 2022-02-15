@@ -62,6 +62,7 @@ class OptionsState extends BasicState
 			["Ghost Tapping", "checkbox", "When disabled, If you try to hit a note that doesn't exist\nThen you will get a miss.", "ghost-tapping"],
 			["Keybind Reminders", "checkbox", "When enabled, a brief reminder of your keybinds\nwill show up on your notes for a moment.", "keybind-reminders"],
 			["Allow LUA Open URLs", "checkbox", "When enabled, LUA scripts will be able to open web pages.\nDisabled by default for security reasons.", "allow-lua-openurls"],
+			["Hitsounds on Holds", "checkbox", "When enabled, your current hitsound will play when a hold/sustain note is hit.\nWhy the fuck would you want to enable this", "hitsounds-hold"],
 			["Anti Mash", "checkbox", "When disabled, If you get a \"SHiT\" rating, you won't lose any health.", "anti-mash"],
 			["Botplay", "checkbox", "When enabled, All notes will get hit for you.", "botplay"],
 			["FC Mode", "checkbox", "When enabled, you MUST get 0 misses on a song\nor else you get blueballed.", "fc-mode"],

@@ -51,7 +51,6 @@ class AlphabetText extends FlxSpriteGroup
             }
             var character:String = splitTextButMultiLengthChars[i];
 
-            //for (j in splitTextButMultiLengthChars)
             switch (character) {
                 case "\n":
                     curLine ++;
@@ -64,43 +63,18 @@ class AlphabetText extends FlxSpriteGroup
                     if (quoteAmount == Math.floor(quoteAmount/2)*2) {
                         var alphabetChar:AlphabetCharacter = new AlphabetCharacter('quoteb', curLine, i, startingX, size);
                         add(alphabetChar);
-                        startingX += alphabetChar.width + 2.5*(size/70);
+                        startingX += alphabetChar.width + 0.4*(size/70);
                     } else {
                         var alphabetChar:AlphabetCharacter = new AlphabetCharacter('quotea', curLine, i, startingX, size);
                         add(alphabetChar);
-                        startingX += alphabetChar.width + 2.5*(size/70);
+                        startingX += alphabetChar.width + 0.4*(size/70);
                     }
                     quoteAmount ++;
                 default:
                     var alphabetChar:AlphabetCharacter = new AlphabetCharacter(character, curLine, i, startingX, size);
                     add(alphabetChar);
-                    startingX += alphabetChar.width + 2.5*(size/70);
+                    startingX += alphabetChar.width + 0.4*(size/70);
             }
-            /*
-            if (character == "\n") {
-                curLine ++;
-                startingX = 0;
-            } else if (character == " ") {
-                startingX += (size*(size/70))*2;
-            } else if (character == "") {
-                startingX += (size*(size/70))/2;
-            } else if (character == 'quote') {
-                if (quoteAmount == Math.floor(quoteAmount/2)*2) {
-                    var alphabetChar:AlphabetCharacter = new AlphabetCharacter('quoteb', curLine, i, startingX, size);
-                    add(alphabetChar);
-                    startingX += alphabetChar.width + 8*(size/70);
-                } else {
-                    var alphabetChar:AlphabetCharacter = new AlphabetCharacter('quotea', curLine, i, startingX, size);
-                    add(alphabetChar);
-                    startingX += alphabetChar.width + 8*(size/70);
-                }
-                quoteAmount ++;
-            } else {
-                var alphabetChar:AlphabetCharacter = new AlphabetCharacter(character, curLine, i, startingX, size);
-                add(alphabetChar);
-
-                startingX += alphabetChar.width + 8*(size/70);
-            } */
         }
     }
 
@@ -160,7 +134,7 @@ class AlphabetCharacter extends FlxSprite
 
         x = startX;
         if (character == "." || character == "_") {
-            y = ((line*size)+8*(size/70))+(size-height/2);
+            y = ((line*size)+8*(size/70))+(size/1.3-height/2);
         } else if (character == "-" || character == "+"){
             y = ((line*size)+8*(size/70))+(size/2-height/2);
         } else {

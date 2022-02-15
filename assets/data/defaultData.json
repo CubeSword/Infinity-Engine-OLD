@@ -25,6 +25,10 @@
             "value": 0
         },
         {
+            "name": "hitsounds-hold",
+            "value": false
+        },
+        {
             "name": "anti-aliasing",
             "value": true
         },

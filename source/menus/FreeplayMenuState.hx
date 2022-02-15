@@ -339,10 +339,16 @@ class FreeplayMenuState extends BasicState
             updateSelection();
         }
 
-		if (-1 * Math.floor(FlxG.mouse.wheel) != 0)
+		if (-1 * Math.floor(FlxG.mouse.wheel) != 0 && !shiftP)
         {
             selectedSong += -1 * Math.floor(FlxG.mouse.wheel);
 			updateSelection();
+        }
+
+		if (-1 * Math.floor(FlxG.mouse.wheel / 10) != 0 && shiftP)
+        {
+            var daMultiplier:Float = -1 * Math.floor(FlxG.mouse.wheel / 10);
+			changeSpeed(daMultiplier);
         }
 
         if(left && !shiftP || right && !shiftP)
