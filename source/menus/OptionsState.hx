@@ -74,7 +74,8 @@ class OptionsState extends BasicState
 		],
 		"misc" => [
 			["Back", "menu", ""],
-			["Discord RPC", "checkbox", "When disabled, Discord will not let your friends know\nthat you are playing " + Util.engineName + "." + "\nThe game must be restarted for this to take effect.", "discord-rpc"]
+			["Discord RPC", "checkbox", "When disabled, Discord will not let your friends know\nthat you are playing " + Util.engineName + "." + "\nThe game must be restarted for this to take effect.", "discord-rpc"],
+			["Logging", "checkbox", "When enabled, logs every console print to a file (useful for debugging)\nThe game must be restarted for this to take effect.", "enable-log-files"]
 		]
 	];
 

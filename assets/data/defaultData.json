@@ -74,6 +74,10 @@
             "value": 0
         },
         {
+            "name": "enable-log-files",
+            "value": false
+        },
+        {
             "name": "mainBinds",
             "value": [
                 ["SPACE"],

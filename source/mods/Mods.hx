@@ -29,7 +29,7 @@ class Mods
         #if sys
         var modDirStuffs = sys.FileSystem.readDirectory(Sys.getCwd() + "mods/");
 
-        trace(modDirStuffs);
+        //trace(modDirStuffs);
 
         if(modDirStuffs != null)
         {
@@ -41,16 +41,16 @@ class Mods
                 {
                     var baseModPath = Sys.getCwd() + 'mods/$modDir/';
 
-                    trace(modDir + " is a valid directory!");
+                    //trace(modDir + " is a valid directory!");
 
                     if(sys.FileSystem.exists(baseModPath + "_mod_info.json"))
                     {
-                        trace(modDir + " is a valid mod!");
+                        //trace(modDir + " is a valid mod!");
 
                         goodMod = true;
 
-                        if(sys.FileSystem.exists(baseModPath + "_mod_icon.png"))
-                            trace(modDir + " has a valid mod icon!");
+                        //if(sys.FileSystem.exists(baseModPath + "_mod_icon.png"))
+                        //    trace(modDir + " has a valid mod icon!");
 
                         var canPush:Bool = true;
 
@@ -69,8 +69,9 @@ class Mods
                         {
                             var swagModPath = Sys.getCwd() + 'mods/' + mod[0] + '/';
 
-                            trace("MEGA FUNNIES: " + mod[0]);
-                            trace("SWAG FUNNIES: " + swagModPath);
+                            //trace("MEGA FUNNIES: " + mod[0]);
+                            //trace("SWAG FUNNIES: " + swagModPath);
+
                             if(!sys.FileSystem.exists(swagModPath + "_mod_info.json"))
                                 mods.remove(mod);
                         }

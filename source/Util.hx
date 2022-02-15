@@ -12,6 +12,7 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import lime.utils.Assets;
 import haxe.Json;
+import lime.app.Application;
 
 using StringTools;
 
@@ -449,10 +450,50 @@ class Util
 	}
 }
 
-class LOG {
-	// do this shit later
-		//static public function log(log:String) {
-			//trace("logging "+ "log" + " to screen" );
-			//var logText
-		//}
+class Log
+{
+    public static var logFileName:String = "test log, if u see this ur game broke";
+
+    #if sys
+    public static var file:sys.io.FileOutput;
+    #end
+
+    public static function init(?fileName:Null<String>)
+    {
+        if(fileName != null)
+            logFileName = fileName;
+
+        logFileName = logFileName.replace(":", "-"); // basically we cant use colons in file names (at least on linux) so brrrrrrr
+
+        #if sys
+        sys.FileSystem.createDirectory("logs");
+
+        file = sys.io.File.write("logs/" + logFileName + ".log", false);
+        #end
+
+        log("Infinity Engine Log file started at " + Date.now().toString() + " running version " + Application.current.meta.get('version'), false);
+
+        #if debug
+		log("This is a DEBUG build.");
+		#else
+		log("This is a RELEASE build.");
+		#end
+
+		log('HaxeFlixel version: ${Std.string(FlxG.VERSION)}');
+    }
+
+    public static function log(data:Dynamic, ?debugPrint:Bool = true, ?timePrefix:Bool = true)
+    {
+        if(debugPrint)
+            trace(data);
+
+        #if sys
+        if(file != null)
+        {
+            file.writeString((timePrefix ? "[" + Date.now().toString() + "]: " : "") + Std.string(data) + "\n");
+            file.flush();
+            file.flush();
+        }
+        #end
+    }
 }

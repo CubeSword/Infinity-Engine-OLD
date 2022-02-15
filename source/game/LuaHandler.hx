@@ -333,7 +333,7 @@ class LuaHandler
                 lua_Sprites.set(id, Sprite);
     
                 @:privateAccess
-                if(front)
+                if(!front)
                     PlayState.instance.stage.add(Sprite);
                 else
                     PlayState.instance.stageFront.add(Sprite);
@@ -356,7 +356,7 @@ class LuaHandler
                 lua_Sprites.set(id, Sprite);
     
                 @:privateAccess
-                if(front)
+                if(!front)
                     PlayState.instance.stage.add(Sprite);
                 else
                     PlayState.instance.stageFront.add(Sprite);

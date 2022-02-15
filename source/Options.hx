@@ -14,7 +14,6 @@ class Options
         FlxG.save.bind("infinity-engine", "infinity-team");
 
         defaultData = Util.getJsonContents('assets/data/defaultData.json');
-        trace(defaultData);
 
         for(data in defaultData.dataObjects)
         {

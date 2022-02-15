@@ -1,5 +1,6 @@
 package menus;
 
+import Util.Log;
 import flixel.input.keyboard.FlxKey;
 import flixel.group.FlxGroup;
 import ui.AlphabetText;
@@ -76,6 +77,21 @@ class TitleScreenState extends BasicState
 		FlxTransitionableState.skipNextTransOut = true;
 
 		Options.init();
+
+		if(Options.getData("enable-log-files"))
+		{
+			Log.init("Infinity Engine Log " + Date.now().toString());
+
+			var oldTrace = haxe.Log.trace;
+	
+			haxe.Log.trace = function(v, ?what)
+			{
+				oldTrace(v, what);
+	
+				Log.log(v, false);
+			};
+		}
+
 		Mods.init();
 		optionsInitialized = true;
 
