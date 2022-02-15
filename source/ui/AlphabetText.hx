@@ -63,17 +63,17 @@ class AlphabetText extends FlxSpriteGroup
                     if (quoteAmount == Math.floor(quoteAmount/2)*2) {
                         var alphabetChar:AlphabetCharacter = new AlphabetCharacter('quoteb', curLine, i, startingX, size);
                         add(alphabetChar);
-                        startingX += alphabetChar.width + 0.4*(size/70);
+                        startingX += alphabetChar.width + 0.3*(size/70);
                     } else {
                         var alphabetChar:AlphabetCharacter = new AlphabetCharacter('quotea', curLine, i, startingX, size);
                         add(alphabetChar);
-                        startingX += alphabetChar.width + 0.4*(size/70);
+                        startingX += alphabetChar.width + 0.3*(size/70);
                     }
                     quoteAmount ++;
                 default:
                     var alphabetChar:AlphabetCharacter = new AlphabetCharacter(character, curLine, i, startingX, size);
                     add(alphabetChar);
-                    startingX += alphabetChar.width + 0.4*(size/70);
+                    startingX += alphabetChar.width + 0.3*(size/70);
             }
         }
     }

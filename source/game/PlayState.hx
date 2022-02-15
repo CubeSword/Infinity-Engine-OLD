@@ -114,8 +114,8 @@ class PlayState extends BasicState
 	
 	public var health:Float = 1;
 	
-	var opponentIcon:FlxSprite;
-	var playerIcon:FlxSprite;
+	var iconP2:FlxSprite;
+	var iconP1:FlxSprite;
 	
 	var opponentHealthColor:Int = 0xFFAF66CE;
 	var playerHealthColor:Int = 0xFF31B0D1;
@@ -668,10 +668,10 @@ class PlayState extends BasicState
 
 			if(!Options.getData('middlescroll'))
 			{
-				funnyArrowX = 65;
+				funnyArrowX = 85;
 				
 				if(isPlayerArrow) {
-					funnyArrowX += 242;
+					funnyArrowX += 202;
 				}
 			}
 			else
@@ -679,7 +679,7 @@ class PlayState extends BasicState
 				funnyArrowX = -9999;
 				
 				if(isPlayerArrow) {
-					funnyArrowX = -30;
+					funnyArrowX = -25;
 				}
 			}
 			
@@ -803,11 +803,11 @@ class PlayState extends BasicState
 		healthBar.createFilledBar(healthColor1, healthColor2);
 
 		// health bar icons
-		opponentIcon = new Icon(Util.getCharacterIcons(icon1), null, false, null, null, null, icon1);
-		opponentIcon.y = healthBar.y - (opponentIcon.height / 2);
+		iconP2 = new Icon(Util.getCharacterIcons(icon1), null, false, null, null, null, icon1);
+		iconP2.y = healthBar.y - (iconP2.height / 2);
 		
-		playerIcon = new Icon(Util.getCharacterIcons(icon2), null, true, null, null, null, icon1);
-		playerIcon.y = healthBar.y - (playerIcon.height / 2);
+		iconP1 = new Icon(Util.getCharacterIcons(icon2), null, true, null, null, null, icon1);
+		iconP1.y = healthBar.y - (iconP1.height / 2);
 
 		scoreBar = new FlxSprite(0, healthBarBG.y + 32).loadGraphic(Util.getImage('scoreBar'));
 		scoreBar.setGraphicSize(Std.int(scoreBar.width), Std.int(scoreBar.height) - 10);
@@ -892,8 +892,8 @@ class PlayState extends BasicState
 		add(msText);
 		add(healthBarBG);
 		add(healthBar);
-		add(playerIcon);
-		add(opponentIcon);
+		add(iconP1);
+		add(iconP2);
 		add(scoreBar);
 		add(scoreText);
 		add(botplayText);
@@ -908,8 +908,8 @@ class PlayState extends BasicState
 		strumLineNotes.cameras = [hudCam];
 		healthBarBG.cameras = [hudCam];
 		healthBar.cameras = [hudCam];
-		opponentIcon.cameras = [hudCam];
-		playerIcon.cameras = [hudCam];
+		iconP2.cameras = [hudCam];
+		iconP1.cameras = [hudCam];
 		funnyRating.cameras = [hudCam];
 		comboGroup.cameras = [hudCam];
 		msText.cameras = [hudCam];
@@ -1330,16 +1330,16 @@ class PlayState extends BasicState
 
 		var icon_Zoom_Lerp = 0.09;
 
-		playerIcon.setGraphicSize(Std.int(FlxMath.lerp(playerIcon.width, 150, (icon_Zoom_Lerp / (Main.display.currentFPS / 60)) * songMultiplier)));
-		opponentIcon.setGraphicSize(Std.int(FlxMath.lerp(opponentIcon.width, 150, (icon_Zoom_Lerp / (Main.display.currentFPS / 60)) * songMultiplier)));
+		iconP1.setGraphicSize(Std.int(FlxMath.lerp(iconP1.width, 150, (icon_Zoom_Lerp / (Main.display.currentFPS / 60)) * songMultiplier)));
+		iconP2.setGraphicSize(Std.int(FlxMath.lerp(iconP2.width, 150, (icon_Zoom_Lerp / (Main.display.currentFPS / 60)) * songMultiplier)));
 
-		playerIcon.updateHitbox();
-		opponentIcon.updateHitbox();
+		iconP1.updateHitbox();
+		iconP2.updateHitbox();
 
 		var iconOffset:Int = 26;
 
-		playerIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
-		opponentIcon.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (opponentIcon.width - iconOffset);
+		iconP1.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01) - iconOffset);
+		iconP2.x = healthBar.x + (healthBar.width * (FlxMath.remapToRange(healthBar.percent, 0, 100, 100, 0) * 0.01)) - (iconP2.width - iconOffset);
 
 		#if linc_luajit
 		if(!Options.getData('optimization'))
@@ -1401,20 +1401,20 @@ class PlayState extends BasicState
 		}
 			
 		if (healthBar.percent < 20)
-			playerIcon.animation.play('dead', true);
+			iconP1.animation.play('dead', true);
 		else
 			if (healthBar.percent > 80)
-				playerIcon.animation.play('winning', true);
+				iconP1.animation.play('winning', true);
 			else
-				playerIcon.animation.play('default', true);
+				iconP1.animation.play('default', true);
 
 		if (healthBar.percent > 80)
-			opponentIcon.animation.play('dead', true);
+			iconP2.animation.play('dead', true);
 		else
 			if (healthBar.percent < 20)
-				opponentIcon.animation.play('winning', true);
+				iconP2.animation.play('winning', true);
 			else
-				opponentIcon.animation.play('default', true);
+				iconP2.animation.play('default', true);
 
 		for(note in notes)
 		{
@@ -1534,7 +1534,7 @@ class PlayState extends BasicState
 
 				if(note.isSustainNote)
 				{
-					if((note.mustPress && note.lastNote.canBeHit && (pressed[note.noteID % keyCount] || Options.getData('botplay'))) || !note.mustPress)
+					if((note.mustPress && note.lastNote.canBeHit && (pressed[note.noteID % keyCount] || Options.getData('botplay'))) || note.lastNote.wasGoodHit || !note.mustPress)
 					{
 						var center:Float = funnyNoteThingyIGuessLol.y + Note.swagWidth / 2;
 
@@ -1862,26 +1862,26 @@ class PlayState extends BasicState
 					hudCam.zoom += 0.03;
 				}
 				
-				playerIcon.setGraphicSize(Std.int(playerIcon.width + (30 / (songMultiplier < 1 ? 1 : songMultiplier))));
-				opponentIcon.setGraphicSize(Std.int(opponentIcon.width + (30 / (songMultiplier < 1 ? 1 : songMultiplier))));
+				iconP1.setGraphicSize(Std.int(iconP1.width + (30 / (songMultiplier < 1 ? 1 : songMultiplier))));
+				iconP2.setGraphicSize(Std.int(iconP2.width + (30 / (songMultiplier < 1 ? 1 : songMultiplier))));
 
-				playerIcon.updateHitbox();
-				opponentIcon.updateHitbox();
+				iconP1.updateHitbox();
+				iconP2.updateHitbox();
 
 				if(player != null && player.active)
 				{
 					if(Options.getData('anti-aliasing') == true)
-						playerIcon.antialiasing = player.members[0].antialiasing;
+						iconP1.antialiasing = player.members[0].antialiasing;
 					else
-						playerIcon.antialiasing = false;
+						iconP1.antialiasing = false;
 				}
 
 				if(opponent != null && opponent.active)
 				{
 					if(Options.getData('anti-aliasing') == true)
-						opponentIcon.antialiasing = opponent.members[0].antialiasing;
+						iconP2.antialiasing = opponent.members[0].antialiasing;
 					else
-						opponentIcon.antialiasing = false;
+						iconP2.antialiasing = false;
 				}
 			} else {
 				countdownNum += 1;
