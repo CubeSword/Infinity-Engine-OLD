@@ -163,7 +163,7 @@ class MainMenuState extends BasicState
 			changeSelection(1);
 
 		if (Controls.shiftP && FlxG.keys.justPressed.C)
-			Util.openURL('https://github.com/CubeSword/Project-ReFunked/blob/main/changelogs/$engineVersion.md');
+			Util.openURL('https://github.com/CubeSword/Infinity-Engine/blob/main/changelogs/$engineVersion.md');
 
 		if (Controls.accept)
 		{
