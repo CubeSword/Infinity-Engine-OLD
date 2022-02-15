@@ -966,16 +966,16 @@ class CharacterEditorMenu extends BasicState
         if(upP || leftP || downP || rightP)
         {
             if(upP)
-                camFollow.velocity.y = camVelocity;
-            else if (downP)
                 camFollow.velocity.y = camVelocity * -1;
+            else if (downP)
+                camFollow.velocity.y = camVelocity;
             else
                 camFollow.velocity.y = 0;
 
             if(leftP)
-                camFollow.velocity.x = camVelocity;
-            else if(rightP)
                 camFollow.velocity.x = camVelocity * -1;
+            else if(rightP)
+                camFollow.velocity.x = camVelocity;
             else
                 camFollow.velocity.x = 0;
         }

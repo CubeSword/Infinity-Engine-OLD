@@ -329,12 +329,6 @@ class PlayState extends BasicState
 
 	override public function create()
 	{
-		missSounds = [
-			FlxG.sound.load(Util.getSound('gameplay/missnote1'), 0.3),
-			FlxG.sound.load(Util.getSound('gameplay/missnote2'), 0.3),
-			FlxG.sound.load(Util.getSound('gameplay/missnote3'), 0.3)
-		];
-		
 		refreshAppTitle();
 
 		refreshDiscordRPC(true);
@@ -342,7 +336,21 @@ class PlayState extends BasicState
 		persistentUpdate = true;
 		persistentDraw = true;
 
-		playCurrentHitsound(0); // preload hitsound lol
+		/* PRELOAD AUDIO SHIT */
+		missSounds = [
+			FlxG.sound.load(Util.getSound('gameplay/missnote1'), 0.3),
+			FlxG.sound.load(Util.getSound('gameplay/missnote2'), 0.3),
+			FlxG.sound.load(Util.getSound('gameplay/missnote3'), 0.3)
+		];
+
+		Util.getSound('gameplay/hitsounds/${hitsoundList[Options.getData('hitsound')].fileName}');
+
+		if(song.needsVoices)
+			Util.getVoices(song.song.toLowerCase());
+
+		Util.getInst(song.song.toLowerCase());
+
+		/* DONE LOL */
 		
 		if(FlxG.sound.music != null)
 			FlxG.sound.music.stop();
@@ -2441,10 +2449,10 @@ class PlayState extends BasicState
 		}
 	}
 
+	var hitsoundList:Array<Dynamic> = menus.HitsoundMenu.getHitsounds();
+
 	function playCurrentHitsound(?volume:Float = 1)
 	{
-		var hitsoundList:Dynamic = menus.HitsoundMenu.getHitsounds();
-
 		var hitSound:FlxSound;
 
 		hitSound = FlxG.sound.load(Util.getSound('gameplay/hitsounds/${hitsoundList[Options.getData('hitsound')].fileName}'), volume);
