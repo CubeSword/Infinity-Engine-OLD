@@ -471,7 +471,7 @@ class Log
         file = sys.io.File.write("logs/" + logFileName + ".log", false);
         #end
 
-        log("Infinity Engine Log file started at " + Date.now().toString() + " running version " + Application.current.meta.get('version'), false);
+        log("Infinity Engine Log file started at " + Date.now().toString() + " running version " + Util.engineVersion, false);
 
         #if debug
 		log("This is a DEBUG build.");

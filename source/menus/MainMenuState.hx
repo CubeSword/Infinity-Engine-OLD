@@ -16,6 +16,8 @@ import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
 import flixel.addons.transition.FlxTransitionableState;
 
+using StringTools;
+
 class MainMenuState extends BasicState
 {
 	var mouseOverlapped = false;
@@ -36,6 +38,8 @@ class MainMenuState extends BasicState
 
 	var menuWatermarks:Array<String> = []; // because you can't access variables in variable initialization
 	var menuWatermarksText:FlxTypedGroup<FlxText>;
+
+	var engineVersion:String;
 
 	override public function create()
 	{
@@ -131,6 +135,9 @@ class MainMenuState extends BasicState
         #if discord_rpc
         DiscordRPC.changePresence("In Main Menu", null);
         #end
+
+		engineVersion = "ENGINE VERSION: " + Util.engineVersion.trim().replace('.', '');
+		trace(engineVersion);
 	}
 
 	override public function update(elapsed:Float)
@@ -156,7 +163,7 @@ class MainMenuState extends BasicState
 			changeSelection(1);
 
 		if (Controls.shiftP && FlxG.keys.justPressed.C)
-			Util.openURL("https://github.com/CubeSword/Project-ReFunked/blob/main/CHANGELOG.md");
+			Util.openURL('https://github.com/CubeSword/Project-ReFunked/blob/main/changelogs/$engineVersion.md');
 
 		if (Controls.accept)
 		{
