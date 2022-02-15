@@ -136,8 +136,8 @@ class MainMenuState extends BasicState
         DiscordRPC.changePresence("In Main Menu", null);
         #end
 
-		engineVersion = "ENGINE VERSION: " + Util.engineVersion.trim().replace('.', '');
-		trace(engineVersion);
+		engineVersion = Util.engineVersion.trim().replace('.', '');
+		trace("ENGINE VERSION: " + engineVersion);
 	}
 
 	override public function update(elapsed:Float)
