@@ -1,5 +1,8 @@
 package ui;
 
+import game.PlayState;
+import mods.Mods;
+import lime.utils.Assets;
 import flixel.FlxSprite;
 
 class NoteSplash extends FlxSprite
@@ -20,6 +23,26 @@ class NoteSplash extends FlxSprite
 
 	public function doSplash()
 	{
+		var json:Dynamic = null;
+		var noteskin:String = PlayState.curUISkin;
+
+		if(Assets.exists('assets/images/noteskins/' + noteskin + '/config.json'))
+			json = Util.getJsonContents('assets/images/noteskins/' + noteskin + '/config.json');
+		#if sys
+		else
+		{
+			#if sys
+			for(mod in Mods.activeMods)
+			{
+				if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/images/noteskins/' + noteskin))
+				{
+					json = Util.getJsonContents('mods/$mod/images/noteskins/' + noteskin + '/config.json');
+				}
+			}
+			#end
+		}
+		#end
+
 		var theFunny:String = 'note splash ' + directions[noteID % 4];
 		frames = game.PlayState.noteSplashFrames;
 		animation.addByPrefix('splash', theFunny + "0", 35, false);
@@ -31,7 +54,7 @@ class NoteSplash extends FlxSprite
 		updateHitbox();
 		centerOrigin();
 		centerOffsets();
-		offset.set(120 * 1.1, 120 * 1.2);
+		offset.set(json.splashOffsets[0], json.splashOffsets[1]);
 	}
 
 	override function update(elapsed:Float)

@@ -195,7 +195,7 @@ class PlayState extends BasicState
 	var funnyHitStuffsLmao:Float = 0.0;
 	var totalNoteStuffs:Int = 0;
 
-	var curUISkin:String = "default";
+	public static var curUISkin:String = "default";
 
 	public static var weekName:String = "tutorial";
 
@@ -1038,7 +1038,7 @@ class PlayState extends BasicState
 
 			for(songNotes in section.sectionNotes)
 			{
-				var daStrumTime:Float = songNotes[0] + song.chartOffset + (Options.getData('song-offset') * songMultiplier);
+				var daStrumTime:Float = songNotes[0] + song.chartOffset + (Options.getData('song-offset') / songMultiplier);
 				var daNoteData:Int = Std.int(songNotes[1] % keyCount);
 
 				var oldNote:Note;
