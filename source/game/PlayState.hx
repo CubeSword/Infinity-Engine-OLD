@@ -330,9 +330,12 @@ class PlayState extends BasicState
 	override public function create()
 	{
 		#if linc_luajit
-		LuaHandler.lua_Characters.clear();
-		LuaHandler.lua_Sounds.clear();
-		LuaHandler.lua_Sprites.clear();
+		if(Options.getData('optimization'))
+		{
+			LuaHandler.lua_Characters.clear();
+			LuaHandler.lua_Sounds.clear();
+			LuaHandler.lua_Sprites.clear();
+		}
 		#end
 
 		refreshAppTitle();
@@ -683,7 +686,7 @@ class PlayState extends BasicState
 				funnyArrowX = -9999;
 				
 				if(isPlayerArrow) {
-					funnyArrowX = -25;
+					funnyArrowX = -32;
 				}
 			}
 			
@@ -735,7 +738,8 @@ class PlayState extends BasicState
 			var newComboNum:ComboSprite = new ComboSprite();
 			newComboNum.x = funnyRating.x - 80 + i * 50;
 			newComboNum.y = funnyRating.y + 85;
-			newComboNum.stupidY = newComboNum.y;
+			newComboNum.origPos[0] = newComboNum.x;
+			newComboNum.origPos[1] = newComboNum.y;
 			newComboNum.alpha = 0;
 
 			comboGroup.add(newComboNum);
@@ -1028,11 +1032,7 @@ class PlayState extends BasicState
 		msText.alpha = 1;
 		FlxTween.tween(msText, {alpha: 0}, 0.4, {
 			ease: FlxEase.cubeInOut,
-			startDelay: 0.4,
-			onComplete: function(twn:FlxTween)
-			{
-				// do nothign because uhsdcjnkALehds
-			}
+			startDelay: Conductor.crochet * 0.001
 		});
 	}
 
@@ -1044,7 +1044,7 @@ class PlayState extends BasicState
 
 			for(songNotes in section.sectionNotes)
 			{
-				var daStrumTime:Float = songNotes[0] + song.chartOffset + (Options.getData('song-offset') / songMultiplier);
+				var daStrumTime:Float = songNotes[0] + song.chartOffset + (Options.getData('song-offset') * songMultiplier);
 				var daNoteData:Int = Std.int(songNotes[1] % keyCount);
 
 				var oldNote:Note;
@@ -2283,6 +2283,19 @@ class PlayState extends BasicState
 
 						funnyRating.loadRating(sussyBallsRating, curUISkin, pixelStage);
 						funnyRating.tweenRating();
+						funnyRating.alpha = 1;
+
+						funnyRating.acceleration.y = 550;
+
+						funnyRating.velocity.y = 0;
+						funnyRating.velocity.x = 0;
+
+						funnyRating.velocity.y -= FlxG.random.int(140, 175);
+						funnyRating.velocity.x -= FlxG.random.int(0, 10);
+
+						FlxTween.tween(funnyRating, {alpha: 0}, 0.2, {
+							startDelay: Conductor.crochet * 0.001
+						});
 
 						executeALuaState("popUpScore", [sussyBallsRating, combo]);
 
@@ -2336,14 +2349,27 @@ class PlayState extends BasicState
 
 					if(!note.isSustainNote)
 					{
+						combo += 1; // maybe we should set the combo then display it??? lol
+
 						for(i in 0...comboArray.length) {
-							if(combo >= 10 || combo == 0) {
+							//if(combo >= 10 || combo == 0) {
 								comboGroup.members[i].loadCombo(comboArray[i], curUISkin, pixelStage);
 								comboGroup.members[i].tweenSprite();
-							}
-						}
+								comboGroup.members[i].alpha = 1;
 
-						combo += 1;
+								comboGroup.members[i].acceleration.y = FlxG.random.int(200, 300);
+
+								comboGroup.members[i].velocity.y = 0;
+								comboGroup.members[i].velocity.x = 0;
+
+								comboGroup.members[i].velocity.y -= FlxG.random.int(140, 160);
+								comboGroup.members[i].velocity.x = FlxG.random.float(-5, 5);
+
+								FlxTween.tween(comboGroup.members[i], {alpha: 0}, 0.2, {
+									startDelay: Conductor.crochet * 0.002
+								});
+							//}
+						}
 
 						var theReal:Array<Dynamic> = menus.HitsoundMenu.getHitsounds();
 						if(theReal[Options.getData('hitsound')].name != "None")

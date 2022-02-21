@@ -8,13 +8,10 @@ import flixel.tweens.FlxTween;
 
 class RatingSprite extends FlxSprite
 {
-	var stupidY:Float = 0;
-
 	public var origPos:Array<Float> = [0, 0];
 
 	public function new(x, y)
 	{
-		stupidY = y;
 		super(x, y);
 
 		loadRating('sick');
@@ -62,9 +59,10 @@ class RatingSprite extends FlxSprite
 	public function tweenRating()
 	{
 		FlxTween.cancelTweensOf(this);
-		y = stupidY;
+		x = origPos[0];
+		y = origPos[1];
 		alpha = 1;
-		FlxTween.tween(this, {y: this.y - 25}, 0.4, {
+		/*FlxTween.tween(this, {y: this.y - 25}, 0.4, {
 			ease: FlxEase.cubeOut,
 			onComplete: function(twn:FlxTween)
 			{
@@ -72,6 +70,6 @@ class RatingSprite extends FlxSprite
 					ease: FlxEase.cubeInOut,
 				});
 			}
-		});
+		});*/
 	}
 }

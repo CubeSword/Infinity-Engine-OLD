@@ -9,14 +9,12 @@ import flixel.FlxG;
 
 class ComboSprite extends FlxSprite
 {
-	public var stupidY:Float = 0;
 	var isComboText:Bool = false;
 
 	public var origPos:Array<Float> = [0, 0];
 
 	public function new(?x = 0, ?y = 0, ?isComboTextB:Bool = false)
 	{
-		stupidY = y;
 		isComboText = isComboTextB;
 		super(x, y);
 
@@ -68,9 +66,10 @@ class ComboSprite extends FlxSprite
 		var random2:Float = FlxG.random.float(20, 30);
 
 		FlxTween.cancelTweensOf(this);
-		y = stupidY;
+		x = origPos[0];
+		y = origPos[1];
 		alpha = 1;
-		FlxTween.tween(this, {y: this.y - random2}, random1, {
+		/*FlxTween.tween(this, {y: this.y - random2}, random1, {
 			ease: FlxEase.cubeOut,
 			onComplete: function(twn:FlxTween)
 			{
@@ -80,6 +79,6 @@ class ComboSprite extends FlxSprite
 				});
 
 			}
-		});
+		});*/
 	}
 }
