@@ -538,8 +538,6 @@ class PlayState extends BasicState
 			}
 		}
 
-		FlxG.camera.zoom = stageCamZoom;
-
 		if(!Options.getData('optimization'))
 		{
 			if(!song.player2.startsWith("gf"))
@@ -778,6 +776,8 @@ class PlayState extends BasicState
 		}
 		#end
 		#end
+
+		FlxG.camera.zoom = stageCamZoom;
 
 		var healthColor1:Int = 0xFFA1A1A1;
 		var healthColor2:Int = 0xFFA1A1A1;
@@ -1698,6 +1698,21 @@ class PlayState extends BasicState
 		if(!endingSong && !canPause)
 		{
 			endingSong = true;
+
+			#if linc_luajit
+			if (executeModchart && luaModchart != null)
+			{
+				for(sound in LuaHandler.lua_Sounds)
+				{
+					sound.stop();
+					sound.kill();
+					sound.destroy();
+				}
+
+				luaModchart.die();
+				luaModchart = null;
+			}
+			#end
 
 			if(!storyMode)
 			{

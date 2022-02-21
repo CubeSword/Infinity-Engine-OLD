@@ -253,14 +253,12 @@ class LuaHandler
                 Util.openURL(url);
         });
 
-        Lua_helper.add_callback(lua,"flixelGetData", function(save:String) {
-            return Reflect.getProperty("flixel.FlxG", 'save.data.$save');
+        Lua_helper.add_callback(lua,"getOption", function(save:String) {
+            return Options.getData(save);
         });
 
-        Lua_helper.add_callback(lua, "flixelSaveData", function(save:String, value:String, ?flush:Bool = true) {
-            Reflect.setProperty("flixel.FlxG", 'save.data.$save', value);
-            if(flush)
-                FlxG.save.flush();
+        Lua_helper.add_callback(lua, "saveOption", function(save:String, value:String, ?flush:Bool = true) {
+            Options.saveData(save, value);
         });
 
         Lua_helper.add_callback(lua,"setObjectCamera", function(id:String, camera:String = "") {
@@ -1099,56 +1097,85 @@ class LuaHandler
             }
         });
 
+
         Lua_helper.add_callback(lua,"setProperty", function(object:String, property:String, value:Dynamic) {
-            @:privateAccess
-            if(Reflect.getProperty(PlayState.instance, object) != null)
-                Reflect.setProperty(Reflect.getProperty(PlayState.instance, object), property, value);
+            if(object != "")
+            {
+                @:privateAccess
+                if(Reflect.getProperty(PlayState.instance, object) != null)
+                    Reflect.setProperty(Reflect.getProperty(PlayState.instance, object), property, value);
+                else
+                    Reflect.setProperty(Reflect.getProperty(PlayState, object), property, value);
+            }
             else
-                Reflect.setProperty(Reflect.getProperty(PlayState, object), property, value);
+            {
+                @:privateAccess
+                if(Reflect.getProperty(PlayState.instance, property) != null)
+                    Reflect.setProperty(PlayState.instance, property, value);
+                else
+                    Reflect.setProperty(PlayState, property, value);
+            }
         });
 
         Lua_helper.add_callback(lua,"getProperty", function(object:String, property:String) {
-            @:privateAccess
-            if(Reflect.getProperty(PlayState.instance, object) != null)
-                return Reflect.getProperty(Reflect.getProperty(PlayState.instance, object), property);
+            if(object != "")
+            {
+                @:privateAccess
+                if(Reflect.getProperty(PlayState.instance, object) != null)
+                    return Reflect.getProperty(Reflect.getProperty(PlayState.instance, object), property);
+                else
+                    return Reflect.getProperty(Reflect.getProperty(PlayState, object), property);
+            }
             else
-                return Reflect.getProperty(Reflect.getProperty(PlayState, object), property);
+            {
+                @:privateAccess
+                if(Reflect.getProperty(PlayState.instance, property) != null)
+                    return Reflect.getProperty(PlayState.instance, property);
+                else
+                    return Reflect.getProperty(PlayState, property);
+            }
         });
 
         Lua_helper.add_callback(lua, "getPropertyFromClass", function(className:String, variable:String) {
-			var variablePaths = variable.split(".");
-
-            if(variablePaths.length > 1)
+            @:privateAccess
             {
-                var selectedVariable:Dynamic = Reflect.getProperty(Type.resolveClass(className), variablePaths[0]);
+                var variablePaths = variable.split(".");
 
-                for (i in 1...variablePaths.length-1)
+                if(variablePaths.length > 1)
                 {
-					selectedVariable = Reflect.getProperty(selectedVariable, variablePaths[i]);
-				}
+                    var selectedVariable:Dynamic = Reflect.getProperty(Type.resolveClass(className), variablePaths[0]);
 
-				return Reflect.getProperty(selectedVariable, variablePaths[variablePaths.length - 1]);
+                    for (i in 1...variablePaths.length-1)
+                    {
+                        selectedVariable = Reflect.getProperty(selectedVariable, variablePaths[i]);
+                    }
+
+                    return Reflect.getProperty(selectedVariable, variablePaths[variablePaths.length - 1]);
+                }
+
+                return Reflect.getProperty(Type.resolveClass(className), variable);
             }
-
-            return Reflect.getProperty(Type.resolveClass(className), variable);
 		});
 
 		Lua_helper.add_callback(lua, "setPropertyFromClass", function(className:String, variable:String, value:Dynamic) {
-            var variablePaths:Array<String> = variable.split('.');
-
-			if(variablePaths.length > 1)
+            @:privateAccess
             {
-				var selectedVariable:Dynamic = Reflect.getProperty(Type.resolveClass(className), variablePaths[0]);
+                var variablePaths:Array<String> = variable.split('.');
 
-				for (i in 1...variablePaths.length-1)
+                if(variablePaths.length > 1)
                 {
-					selectedVariable = Reflect.getProperty(selectedVariable, variablePaths[i]);
-				}
+                    var selectedVariable:Dynamic = Reflect.getProperty(Type.resolveClass(className), variablePaths[0]);
 
-				return Reflect.setProperty(selectedVariable, variablePaths[variablePaths.length - 1], value);
-			}
+                    for (i in 1...variablePaths.length-1)
+                    {
+                        selectedVariable = Reflect.getProperty(selectedVariable, variablePaths[i]);
+                    }
 
-			return Reflect.setProperty(Type.resolveClass(className), variable, value);
+                    return Reflect.setProperty(selectedVariable, variablePaths[variablePaths.length - 1], value);
+                }
+
+                return Reflect.setProperty(Type.resolveClass(className), variable, value);
+            }
 		});
 
         Lua_helper.add_callback(lua,"setSongPosition", function(position:Float) {

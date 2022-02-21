@@ -190,6 +190,14 @@ class PauseMenu extends BasicSubState
 						close();
 
 					case 'Restart Song':
+						#if linc_luajit
+						if (PlayState.luaModchart != null)
+						{
+							PlayState.luaModchart.die();
+							PlayState.luaModchart = null;
+						}
+						#end
+
 						FlxG.resetState();
 
 					case 'Toggle Practice Mode':
