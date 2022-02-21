@@ -329,6 +329,12 @@ class PlayState extends BasicState
 
 	override public function create()
 	{
+		#if linc_luajit
+		LuaHandler.lua_Characters.clear();
+		LuaHandler.lua_Sounds.clear();
+		LuaHandler.lua_Sprites.clear();
+		#end
+
 		refreshAppTitle();
 
 		refreshDiscordRPC(true);
@@ -869,7 +875,7 @@ class PlayState extends BasicState
 									generateNotes();
 				
 									resetSongPos();
-									curBeat = 0;
+									curBeat = -3;
 				
 									canPause = true;
 
@@ -1118,7 +1124,7 @@ class PlayState extends BasicState
 		{
 			canPause = false;
 			resetSongPos();
-			curBeat = 0;
+			curBeat = -3;
 
 			swagUpdate(elapsed);
 
@@ -1138,7 +1144,7 @@ class PlayState extends BasicState
 						doKeybindReminder();
 
 						resetSongPos();
-						curBeat = 0;
+						curBeat = -3;
 
 						canPause = true;
 					}
@@ -1348,7 +1354,7 @@ class PlayState extends BasicState
 			{
 				setLuaVar("songPos", Conductor.songPosition);
 				setLuaVar("hudZoom", hudCam.zoom);
-				setLuaVar("curBeat", curBeat);
+				setLuaVar("inGameOver", playerDead);
 				setLuaVar("cameraZoom", FlxG.camera.zoom);
 				executeALuaState("update", [elapsed]);
 			}
@@ -2000,7 +2006,10 @@ class PlayState extends BasicState
 			}
 
 			if(!countdownStarted)
+			{
+				setLuaVar("curBeat", curBeat);
 				executeALuaState("beatHit", [curBeat]);
+			}
 		}
 	}
 

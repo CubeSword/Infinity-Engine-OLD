@@ -136,13 +136,13 @@ class LuaHandler
         
         oldMultiplier = PlayState.songMultiplier;
         
-        lua_Sprites.set("boyfriend", PlayState.player);
-        lua_Sprites.set("girlfriend", PlayState.speakers);
-        lua_Sprites.set("dad", PlayState.opponent);
+        lua_Sprites.set("player", PlayState.player);
+        lua_Sprites.set("speakers", PlayState.speakers);
+        lua_Sprites.set("opponent", PlayState.opponent);
 
-        lua_Characters.set("boyfriend", PlayState.opponent);
-        lua_Characters.set("girlfriend", PlayState.speakers);
-        lua_Characters.set("dad", PlayState.opponent);
+        lua_Characters.set("player", PlayState.opponent);
+        lua_Characters.set("speakers", PlayState.speakers);
+        lua_Characters.set("opponent", PlayState.opponent);
 
         lua_Sounds.set("Inst", FlxG.sound.music);
         lua_Sounds.set("Voices", PlayState.instance.vocals);
@@ -170,11 +170,12 @@ class LuaHandler
         setVar("bpm", Conductor.bpm);
         setVar("songBpm", PlayState.song.bpm);
         setVar("keyCount", PlayState.song.keyCount);
-        setVar("scrollSpeed", PlayState.song);
+        setVar("scrollSpeed", PlayState.instance.speed);
         setVar("fpsCap", Options.getData("fpsCap"));
         setVar("botplay", Options.getData("botplay"));
         setVar("downscroll", Options.getData("downscroll"));
         setVar("cameraZooms", Options.getData("camera-zooms"));
+        setVar("inGameOver", PlayState.instance.playerDead);
 
         setVar("curStep", 0);
         setVar("curBeat", 0);
