@@ -737,7 +737,7 @@ class PlayState extends BasicState
 		{
 			var newComboNum:ComboSprite = new ComboSprite();
 			newComboNum.x = funnyRating.x - 80 + i * 50;
-			newComboNum.y = funnyRating.y + 85;
+			newComboNum.y = funnyRating.y + 95;
 			newComboNum.origPos[0] = newComboNum.x;
 			newComboNum.origPos[1] = newComboNum.y;
 			newComboNum.alpha = 0;
@@ -1247,7 +1247,12 @@ class PlayState extends BasicState
 		}
 
 		if(!endingSong)
-			Conductor.songPosition += (FlxG.elapsed * 1000) * songMultiplier;
+		{
+			/*if(countdownStarted)
+				Conductor.songPosition += (FlxG.elapsed * 1000);
+			else*/
+				Conductor.songPosition += (FlxG.elapsed * 1000) * songMultiplier;
+		}
 
 		var curTime:Float = FlxG.sound.music.time - Options.getData('song-offset');
 		if(curTime < 0) curTime = 0;
@@ -2042,15 +2047,13 @@ class PlayState extends BasicState
 		if(gainHealth) {
 			health += 0.023; // health you gain for hitting a note
 		} else { 
-			health -= 0.0475; // health you lose for getting a "SHIT" rating or missing a note
+			health -= 0.0475; // health you lose for missing a note
 		}
 	}
 
 	function startSong() // for doin shit when the song starts
 	{
 		Conductor.recalculateStuff(songMultiplier);
-
-		resyncVocals(true);
 	}
 
 	function resyncVocals(?force:Bool = false, ?doSetPitch:Bool = true)
