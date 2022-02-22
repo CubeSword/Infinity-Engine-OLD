@@ -38,14 +38,14 @@ class NoteBGOpacityMenu extends BasicSubState
 		add(bg);
 
 		funnyOffset = new FlxText(0, 0, 0, "placeholder", 64);
-		funnyOffset.setFormat("assets/fonts/vcr.ttf", 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		funnyOffset.setFormat(Util.getFont('vcr'), 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		funnyOffset.scrollFactor.set();
 		funnyOffset.screenCenter();
 		funnyOffset.borderSize = 2.4;
 		add(funnyOffset);
 
-		offsetWarning = new FlxText(0, FlxG.height * 0.8, 0, "Press LEFT & RIGHT to how transparent your note background is.", 32);
-		offsetWarning.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		offsetWarning = new FlxText(0, FlxG.height * 0.8, 0, "Press LEFT & RIGHT to adjust the opacity of the Note BG.", 32);
+		offsetWarning.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		offsetWarning.scrollFactor.set();
 		offsetWarning.screenCenter(X);
 		offsetWarning.borderSize = 2.4;

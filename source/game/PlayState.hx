@@ -747,12 +747,12 @@ class PlayState extends BasicState
 
 		msText = new FlxText(funnyRating.x + 105, funnyRating.y + 105, 0, "999ms", 32, true);
 		msText.color = FlxColor.CYAN;
-		msText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		msText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		msText.scrollFactor.set();
 		msText.borderSize = 2;
 
 		botplayText = new FlxText(0, strumArea.y + 35, 0, "BOTPLAY", 32, true);
-		botplayText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		botplayText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		botplayText.scrollFactor.set();
 		botplayText.borderSize = 2;
 		botplayText.screenCenter(X);
@@ -824,12 +824,12 @@ class PlayState extends BasicState
 
 		scoreText = new FlxText(0, healthBarBG.y + 40, 0, "", 16);
 		scoreText.screenCenter(X);
-		scoreText.setFormat("assets/fonts/vcr.ttf", 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scoreText.setFormat(Util.getFont('vcr'), 16, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scoreText.scrollFactor.set();
 		scoreText.borderSize = 2;
 
 		ratingsText = new FlxText(8, 0, 0, "", 18);
-		ratingsText.setFormat("assets/fonts/vcr.ttf", 18, FlxColor.WHITE, LEFT);
+		ratingsText.setFormat(Util.getFont('vcr'), 18, FlxColor.WHITE, LEFT);
 		ratingsText.borderColor = FlxColor.BLACK;
 		ratingsText.borderStyle = OUTLINE;
 		ratingsText.borderSize = 2;
@@ -964,7 +964,7 @@ class PlayState extends BasicState
 	function doModChartOptimizeWarning()
 	{
 		var warning:FlxText = new FlxText(10, 10, 0, "Your LUA scripts for your song/stage were not run\nbecause Optimization is enabled in options.\n", 24);
-		warning.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+		warning.setFormat(Util.getFont('vcr'), 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
 		warning.borderSize = 2;
 		warning.cameras = [hudCam];
 		add(warning);
@@ -994,7 +994,7 @@ class PlayState extends BasicState
 			daKeybindText.color = FlxColor.WHITE;
 			daKeybindText.borderStyle = OUTLINE;
 			daKeybindText.borderColor = FlxColor.BLACK;
-			//daKeybindText.setFormat("assets/fonts/vcr.ttf", 48, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			//daKeybindText.setFormat(Util.getFont('vcr'), 48, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 			daKeybindText.borderSize = 3;
 

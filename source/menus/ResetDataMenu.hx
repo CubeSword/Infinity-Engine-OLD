@@ -27,14 +27,14 @@ class ResetDataMenu extends BasicSubState
 		add(bg);
 
 		funnyScrollSpeed = new FlxText(0, 0, 0, "placeholder", 32);
-		funnyScrollSpeed.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		funnyScrollSpeed.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		funnyScrollSpeed.scrollFactor.set();
 		funnyScrollSpeed.screenCenter();
 		funnyScrollSpeed.borderSize = 2.4;
 		add(funnyScrollSpeed);
 
 		scrollSpeedWarning = new FlxText(0, FlxG.height * 0.8, 0, "Y = Erase Data\nN = Cancel\n", 32);
-		scrollSpeedWarning.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scrollSpeedWarning.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scrollSpeedWarning.scrollFactor.set();
 		scrollSpeedWarning.screenCenter(X);
 		scrollSpeedWarning.borderSize = 2.4;

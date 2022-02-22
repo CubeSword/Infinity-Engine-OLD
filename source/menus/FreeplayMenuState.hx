@@ -126,7 +126,7 @@ class FreeplayMenuState extends BasicState
         add(box2);
 
         scoreText = new FlxText(0, 0, 0,"PERSONAL BEST: 0", 32);
-        scoreText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, RIGHT);
+        scoreText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, RIGHT);
         add(scoreText);
 
         difText = new FlxText(0, scoreText.y + scoreText.height + 2, 0, "< Normal >", 24);

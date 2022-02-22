@@ -57,7 +57,7 @@ class UISkinMenu extends BasicSubState
 		add(bg);
 
 		selectedSkinText = new FlxText(0, 60, 0, "", 32);
-		selectedSkinText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
+		selectedSkinText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, OUTLINE, FlxColor.BLACK);
 		selectedSkinText.borderSize = 2;
 		add(selectedSkinText);
 

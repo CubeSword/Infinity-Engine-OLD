@@ -32,7 +32,7 @@ class ReplayMenuState extends BasicState
 		add(menuBG);
 
 		noReplaysText = new FlxText(0, 0, 0, "You have no replays!", 48);
-		noReplaysText.setFormat("assets/fonts/vcr.ttf", 48, FlxColor.WHITE);
+		noReplaysText.setFormat(Util.getFont('vcr'), 48, FlxColor.WHITE);
 		noReplaysText.borderStyle = OUTLINE;
 		noReplaysText.borderColor = FlxColor.BLACK;
 		noReplaysText.borderSize = 3;

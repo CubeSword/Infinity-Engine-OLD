@@ -1,5 +1,6 @@
 package game;
 
+import flixel.text.FlxText;
 import ui.Icon;
 import flixel.util.FlxColor;
 import openfl.display.BlendMode;
@@ -345,7 +346,8 @@ class LuaHandler
                 Sprite.isNormalSprite = true;
 
                 @:privateAccess
-                Sprite.loadGraphic(Util.getImage("stages/" + PlayState.instance.stage.megaCoolPoggersStage + "/" + filename, false));
+                if(filename != null && filename.length > 0)
+                    Sprite.loadGraphic(Util.getImage("stages/" + PlayState.instance.stage.megaCoolPoggersStage + "/" + filename, false));
 
                 Sprite.setGraphicSize(Std.int(Sprite.width * size));
                 Sprite.updateHitbox();
@@ -390,7 +392,8 @@ class LuaHandler
             {
                 var Sprite:FlxSprite = new FlxSprite(x, y);
 
-                Sprite.loadGraphic(Util.getImage(filename));
+                if(filename != null && filename.length > 0)
+                    Sprite.loadGraphic(Util.getImage(filename));
 
                 Sprite.setGraphicSize(Std.int(Sprite.width * size));
                 Sprite.updateHitbox();
@@ -421,7 +424,7 @@ class LuaHandler
                 Application.current.window.alert("Sprite " + id + " already exists! Choose a different name!", genericTitle);
         });
 
-        Lua_helper.add_callback(lua, "destroySprite", function(id:String) {
+        Lua_helper.add_callback(lua, "removeSprite", function(id:String) {
             var sprite = lua_Sprites.get(id);
 
             if (sprite == null)
@@ -1251,6 +1254,41 @@ class LuaHandler
             return true;
         });
 
+        Lua_helper.add_callback(lua, "makeGraphic", function(id:String, width:Int, height:Int, color:String) {
+            if(getObjectByName(id) != null)
+                getObjectByName(id).makeGraphic(width, height, FlxColor.fromString(color));
+		});
+
+        Lua_helper.add_callback(lua,"setObjectTextColor", function(id:String, color:String) {
+            if(getObjectByName(id) != null)
+                Reflect.setProperty(getObjectByName(id), "color", FlxColor.fromString(color));
+        });
+
+        Lua_helper.add_callback(lua,"setObjectText", function(id:String, text:String) {
+            if(getObjectByName(id) != null)
+                Reflect.setProperty(getObjectByName(id), "text", text);
+        });
+
+        Lua_helper.add_callback(lua,"setObjectAlignment", function(id:String, align:String) {
+            if(getObjectByName(id) != null)
+                Reflect.setProperty(getObjectByName(id), "alignment", align);
+        });
+
+        Lua_helper.add_callback(lua,"makeText", function(id:String, text:String, x:Float, y:Float, size:Int = 32, font:String = "vcr", fieldWidth:Float = 0) {
+            if(!lua_Sprites.exists(id))
+            {
+                var Sprite:FlxText = new FlxText(x, y, fieldWidth, text, size);
+                Sprite.font = Util.getFont(font);
+
+
+                lua_Sprites.set(id, Sprite);
+
+                PlayState.instance.add(Sprite);
+            }
+            else
+                Application.current.window.alert("Sprite " + id + " already exists! Choose a different name!", genericTitle);
+        });
+
         Lua_helper.add_callback(lua,"endSong", function() {
             @:privateAccess
             {
@@ -1267,6 +1305,9 @@ class LuaHandler
 
             return true;
         });
+
+        executeState("onCreate", []);
+        executeState("createLua", []);
     }
 
     public function setup()

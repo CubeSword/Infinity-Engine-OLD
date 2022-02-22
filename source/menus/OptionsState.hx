@@ -112,7 +112,7 @@ class OptionsState extends BasicState
 		add(stupidBox);
 
 		descText = new FlxText(0, 0, 0, "", 24);
-		descText.font = "assets/fonts/vcr.ttf";
+		descText.font = Util.getFont('vcr');
 		descText.color = FlxColor.WHITE;
 		descText.borderColor = FlxColor.BLACK;
 		descText.borderSize = 2;

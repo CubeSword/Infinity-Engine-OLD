@@ -237,6 +237,31 @@ class Util
 		return FlxAtlasFrames.fromSparrow("assets/images/StoryMode_UI_Assets" + ".png", "assets/images/StoryMode_UI_Assets" + ".xml");
 	}
 
+	static public function getFont(font:String, ?specificMod:Null<String>)
+	{
+		#if sys
+		for(mod in Mods.activeMods)
+		{
+			if(specificMod != null)
+				mod = specificMod;
+
+			var png = 'assets/fonts/$font';
+
+			if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/fonts/$font.ttf'))
+				return 'mods/$mod/fonts/$font.ttf';
+			else if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/fonts/$font.otf'))
+				return 'mods/$mod/fonts/$font.otf';
+		}
+		#end
+
+		if(Assets.exists('assets/fonts/$font.ttf'))
+			return 'assets/fonts/$font.ttf';
+		else if(Assets.exists('assets/fonts/$font.otf'))
+			return 'assets/fonts/$font.otf';
+
+		return null;
+	}
+
 	static public function getImage(filePath:String, ?fromImagesFolder:Bool = true, ?specificMod:Null<String>):Dynamic
 	{
 		var png = filePath;

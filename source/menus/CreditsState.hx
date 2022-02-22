@@ -128,7 +128,7 @@ class CreditsState extends BasicState
             }
 
             description = new FlxText(0,0,FlxG.width,credits[curSelected].desc, 64, true);
-            description.setFormat("assets/fonts/funkin.ttf", 64, FlxColor.BLACK, RIGHT);
+            description.setFormat(Util.getFont('funkin'), 64, FlxColor.BLACK, RIGHT);
             description.y = FlxG.height - description.height - 30;
             add(description);
         }

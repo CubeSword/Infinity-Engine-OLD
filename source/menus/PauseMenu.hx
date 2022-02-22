@@ -75,24 +75,24 @@ class PauseMenu extends BasicSubState
 		add(bg);
 
 		warningText = new FlxText(0, FlxG.height * 0.95, 0, "", 24);
-		warningText.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, RIGHT);
+		warningText.setFormat(Util.getFont('vcr'), 24, FlxColor.WHITE, RIGHT);
 		warningText.borderStyle = OUTLINE;
 		warningText.borderSize = 2;
 		warningText.borderColor = FlxColor.BLACK;
 		add(warningText);
 
 		songText = new FlxText(0, 10, 0, PlayState.song.song, 32);
-		songText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, RIGHT);
+		songText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, RIGHT);
 		songText.alpha = 0;
 		add(songText);
 
 		difficultyText = new FlxText(0, 40, 0, PlayState.storedDifficulty.toUpperCase(), 32);
-		difficultyText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, RIGHT);
+		difficultyText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, RIGHT);
 		difficultyText.alpha = 0;
 		add(difficultyText);
 
 		practiceText = new FlxText(0, 70, 0, "PRACTICE MODE", 32);
-		practiceText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, RIGHT);
+		practiceText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, RIGHT);
 		practiceText.alpha = 0;
 		add(practiceText);
 

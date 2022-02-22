@@ -225,7 +225,7 @@ class CharacterEditorMenu extends BasicState
         add(animListText);
 
         curAnimText = new FlxText(0, 8, 0, "super idle", 48);
-        curAnimText.setFormat("assets/fonts/vcr.ttf", 48, FlxColor.WHITE, CENTER);
+        curAnimText.setFormat(Util.getFont('vcr'), 48, FlxColor.WHITE, CENTER);
         curAnimText.borderStyle = OUTLINE;
         curAnimText.borderSize = 2;
         curAnimText.borderColor = FlxColor.BLACK;

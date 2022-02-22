@@ -117,7 +117,7 @@ class MainMenuState extends BasicState
 			if(Options.getData('engine-watermarks'))
 			{
 				var watermark:FlxText = new FlxText(8, FlxG.height - (30 + i * 20), 0, menuWatermarks[i], 16);
-				watermark.setFormat("assets/fonts/vcr.ttf", 16, FlxColor.WHITE, LEFT);
+				watermark.setFormat(Util.getFont('vcr'), 16, FlxColor.WHITE, LEFT);
 				watermark.borderStyle = OUTLINE;
 				watermark.borderSize = 1.5;
 				watermark.borderColor = FlxColor.BLACK;

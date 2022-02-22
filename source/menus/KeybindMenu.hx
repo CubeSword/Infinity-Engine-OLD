@@ -38,7 +38,7 @@ class KeybindMenu extends BasicSubState
 		add(bg);
 
 		keybindWarning = new FlxText(0, FlxG.height * 0.8, 0, "Press any key to continue.", 32);
-		keybindWarning.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		keybindWarning.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		keybindWarning.scrollFactor.set();
 		keybindWarning.screenCenter(X);
 		keybindWarning.borderSize = 2.4;
@@ -68,7 +68,6 @@ class KeybindMenu extends BasicSubState
 			daKeybindText.color = FlxColor.WHITE;
 			daKeybindText.borderStyle = OUTLINE;
 			daKeybindText.borderColor = FlxColor.BLACK;
-			//daKeybindText.setFormat("assets/fonts/vcr.ttf", 48, FlxColor.WHITE, null, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 
 			daKeybindText.borderSize = 3;
 			daKeybinds.add(daKeybindText);

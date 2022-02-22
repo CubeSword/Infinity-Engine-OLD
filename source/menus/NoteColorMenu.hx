@@ -50,14 +50,14 @@ class NoteColorMenu extends BasicSubState
 		add(bg);
 
 		noteColorWarning = new FlxText(0, FlxG.height * 0.8, 0, "Press any key to continue.", 32);
-		noteColorWarning.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		noteColorWarning.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		noteColorWarning.scrollFactor.set();
 		noteColorWarning.screenCenter(X);
 		noteColorWarning.borderSize = 2.4;
 		add(noteColorWarning);
 
 		colorTypeText = new FlxText(0, 100, 0, "", 32);
-		colorTypeText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		colorTypeText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		colorTypeText.scrollFactor.set();
 		colorTypeText.screenCenter(X);
 		colorTypeText.borderSize = 2.4;
@@ -91,7 +91,7 @@ class NoteColorMenu extends BasicSubState
 		for(i in 0...3)
 		{
 			var number:FlxText = new FlxText(0, 135, 0, "", 32);
-			number.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+			number.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 			number.scrollFactor.set();
 			number.screenCenter(X);
 			number.borderSize = 2.4;

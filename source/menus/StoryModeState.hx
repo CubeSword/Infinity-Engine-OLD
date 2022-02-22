@@ -103,12 +103,12 @@ class StoryModeState extends BasicState {
         add(cover);
 
         scoreText = new FlxText(8, 8, 0, "PERSONAL BEST: N/A", 32);
-        scoreText.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, LEFT);
+        scoreText.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, LEFT);
         scoreText.scrollFactor.set();
         add(scoreText);
 
         weekQuote = new FlxText(FlxG.width * 0.7, 8, 0, "", 32);
-        weekQuote.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, RIGHT);
+        weekQuote.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, RIGHT);
         weekQuote.alpha = 0.7;
         weekQuote.scrollFactor.set();
         add(weekQuote);
@@ -134,7 +134,7 @@ class StoryModeState extends BasicState {
 
         tracksText = new FlxText(0, yellowBG.y + (yellowBG.height + 30), 0, "TRACKS:\nplaceholder\na\npiss\n");
         tracksText.screenCenter(X);
-        tracksText.setFormat("assets/fonts/vcr.ttf", 32, 0xFFBD4A90, CENTER);
+        tracksText.setFormat(Util.getFont('vcr'), 32, 0xFFBD4A90, CENTER);
         tracksText.x -= 500;
         tracksText.scrollFactor.set();
         add(tracksText);
@@ -164,12 +164,12 @@ class StoryModeState extends BasicState {
         grpDifficulty.add(difficultyImage);
 
         modText = new FlxText(leftDiffArrow.x, leftDiffArrow.y + 90, 0, "< Base Game >", 30);
-        modText.setFormat("assets/fonts/vcr.ttf", 30, FlxColor.WHITE, LEFT);
+        modText.setFormat(Util.getFont('vcr'), 30, FlxColor.WHITE, LEFT);
         modText.scrollFactor.set();
         add(modText);
 
         var switchModWarning:FlxText = new FlxText(modText.x, modText.y + 30, 0, "Press Q & E to switch mods", 24);
-        switchModWarning.setFormat("assets/fonts/vcr.ttf", 24, FlxColor.WHITE, LEFT);
+        switchModWarning.setFormat(Util.getFont('vcr'), 24, FlxColor.WHITE, LEFT);
         switchModWarning.scrollFactor.set();
         add(switchModWarning);
 
@@ -183,7 +183,7 @@ class StoryModeState extends BasicState {
 		FlxG.camera.follow(camFollowPos, null, 1);
 
         debugText = new FlxText(8, FlxG.height * 0.8, 0, "placeholder", 32);
-        debugText.font = "assets/fonts/vcr.ttf";
+        debugText.font = Util.getFont('vcr');
         debugText.color = FlxColor.WHITE;
         debugText.scrollFactor.set();
         debugText.visible = false;
@@ -452,7 +452,7 @@ class StoryModeState extends BasicState {
         tracksText.text = "TRACKS:\n" + trackList;
 
         tracksText.screenCenter(X);
-        tracksText.setFormat("assets/fonts/vcr.ttf", 32, 0xFFBD4A90, CENTER);
+        tracksText.setFormat(Util.getFont('vcr'), 32, 0xFFBD4A90, CENTER);
         tracksText.x -= 400;
 
         for(i in 0...grpDifficulty.members.length)

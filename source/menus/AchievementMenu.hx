@@ -112,7 +112,7 @@ class AchievementMenu extends BasicState
 		add(stupidBox);
 
         descriptionText = new FlxText(0, FlxG.height * 0.9, 0, "Haha funny test", 24);
-        descriptionText.font = "assets/fonts/vcr.ttf";
+        descriptionText.font = Util.getFont('vcr');
 		descriptionText.color = FlxColor.WHITE;
 		descriptionText.borderColor = FlxColor.BLACK;
 		descriptionText.borderSize = 2;

@@ -67,7 +67,7 @@ class AchievementThing extends BasicSubState
             FlxTween.tween(box, {alpha: 0.6}, tweenDuration, {ease: FlxEase.circOut});
 
             name = new FlxText(20, 20 + (80 * achievementIndex), 0, "test\nlolz", 18);
-            name.font = "assets/fonts/vcr.ttf";
+            name.font = Util.getFont('vcr');
             name.color = FlxColor.WHITE;
             name.borderColor = FlxColor.BLACK;
             name.borderSize = 1.5;

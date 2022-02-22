@@ -38,14 +38,14 @@ class ScrollSpeedMenu extends BasicSubState
 		add(bg);
 
 		funnyScrollSpeed = new FlxText(0, 0, 0, "placeholder", 64);
-		funnyScrollSpeed.setFormat("assets/fonts/vcr.ttf", 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		funnyScrollSpeed.setFormat(Util.getFont('vcr'), 64, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		funnyScrollSpeed.scrollFactor.set();
 		funnyScrollSpeed.screenCenter();
 		funnyScrollSpeed.borderSize = 2.4;
 		add(funnyScrollSpeed);
 
 		scrollSpeedWarning = new FlxText(0, FlxG.height * 0.8, 0, "Press LEFT & RIGHT to change how fast notes go.\n1 = Chart Dependent Speed", 32);
-		scrollSpeedWarning.setFormat("assets/fonts/vcr.ttf", 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		scrollSpeedWarning.setFormat(Util.getFont('vcr'), 32, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		scrollSpeedWarning.scrollFactor.set();
 		scrollSpeedWarning.screenCenter(X);
 		scrollSpeedWarning.borderSize = 2.4;
