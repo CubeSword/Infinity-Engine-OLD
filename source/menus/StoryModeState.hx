@@ -311,7 +311,8 @@ class StoryModeState extends BasicState {
             else
                 weekQuotes.push(data.funnyWeekQuote);
 
-            var realWeek:StoryWeekSprite = new StoryWeekSprite(0, 600 + json_i * 125).loadGraphic(Util.getImage('weeks/images/' + data.fileName, false));
+            var realWeek:StoryWeekSprite = new StoryWeekSprite(0, 600 + json_i * 125);
+            realWeek.loadGraphic(Util.getImage('weeks/images/' + data.fileName, false));
             realWeek.screenCenter(X);
             realWeek.ID = json_i;
             funnyWeeks.add(realWeek);

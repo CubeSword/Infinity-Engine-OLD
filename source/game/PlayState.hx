@@ -535,13 +535,6 @@ class PlayState extends BasicState
 				curStage = "schoolAngry";
 			case "thorns":
 				curStage = "schoolEvil";
-		}		if (canEndSong)
-		{
-			// song ends too early or late on certain speeds, this is fix
-			if (FlxG.sound.music.length - Conductor.songPosition <= 20)
-			{
-				endSong();
-			}
 		}
 
 		if(!Options.getData('optimization'))

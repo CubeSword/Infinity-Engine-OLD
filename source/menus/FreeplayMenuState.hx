@@ -23,7 +23,7 @@ class FreeplayMenuState extends BasicState
     var songs:Array<SongMetadata> = [];
     var swagMods:Array<String> = ["Base Game"];
 
-    var selectedSong:Int = 0;
+    static var selectedSong:Int = 0;
     var selectedMod:Int = 0;
 
     var selectedDifIndex:Int = 1;
