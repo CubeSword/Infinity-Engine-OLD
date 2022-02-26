@@ -1280,17 +1280,24 @@ class PlayState extends BasicState
 		if(achievementActive)
 			Conductor.songPosition = previousSongPos;
 
-		var curTime:Float = FlxG.sound.music.time - Options.getData('song-offset');
-		if(curTime < 0) curTime = 0;
+		if(FlxG.sound.music != null && FlxG.sound.music.active)
+		{
+			var curTime:Float = FlxG.sound.music.time - Options.getData('song-offset');
+			if(curTime < 0) curTime = 0;
 
-		var secondsTotal:Int = Math.floor((FlxG.sound.music.length - curTime) / 1000);
-		if(secondsTotal < 0) secondsTotal = 0;
+			var secondsTotal:Int = Math.floor((FlxG.sound.music.length - curTime) / 1000);
+			if(secondsTotal < 0) secondsTotal = 0;
 
-		var minutesRemaining:Int = Math.floor(secondsTotal / 60);
-		var secondsRemaining:String = '' + secondsTotal % 60;
-		if(secondsRemaining.length < 2) secondsRemaining = '0' + secondsRemaining;
+			var minutesRemaining:Int = Math.floor(secondsTotal / 60);
+			var secondsRemaining:String = '' + secondsTotal % 60;
+			if(secondsRemaining.length < 2) secondsRemaining = '0' + secondsRemaining;
 
-		songTime = minutesRemaining + ":" + secondsRemaining;
+			songTime = minutesRemaining + ":" + secondsRemaining;
+		}
+		else
+		{
+			songTime = "0:00";
+		}
 
 		refreshDiscordRPC();
 
@@ -2054,7 +2061,7 @@ class PlayState extends BasicState
 						countdownReady.cameras = [otherCam];
 						add(countdownReady);
 
-						FlxTween.tween(countdownReady, {alpha: 0}, Conductor.crochet / 1000, {
+						FlxTween.tween(countdownReady, {alpha: 0}, (Conductor.crochet / 1000) / songMultiplier, {
 							ease: FlxEase.cubeInOut,
 							onComplete: function(twn:FlxTween)
 							{
@@ -2070,7 +2077,7 @@ class PlayState extends BasicState
 						countdownSet.cameras = [otherCam];
 						add(countdownSet);
 
-						FlxTween.tween(countdownSet, {alpha: 0}, Conductor.crochet / 1000, {
+						FlxTween.tween(countdownSet, {alpha: 0}, (Conductor.crochet / 1000) / songMultiplier, {
 							ease: FlxEase.cubeInOut,
 							onComplete: function(twn:FlxTween)
 							{
@@ -2086,7 +2093,7 @@ class PlayState extends BasicState
 						countdownGo.cameras = [otherCam];
 						add(countdownGo);
 
-						FlxTween.tween(countdownGo, {alpha: 0}, Conductor.crochet / 1000, {
+						FlxTween.tween(countdownGo, {alpha: 0}, (Conductor.crochet / 1000) / songMultiplier, {
 							ease: FlxEase.cubeInOut,
 							onComplete: function(twn:FlxTween)
 							{
@@ -2192,10 +2199,13 @@ class PlayState extends BasicState
 				resyncVocals(true);
 			else
 			{*/
-				if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > gamerValue
-					|| (song.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > gamerValue))
+				if(FlxG.sound.music != null && FlxG.sound.music.active)
 				{
-					resyncVocals();
+					if (Math.abs(FlxG.sound.music.time - (Conductor.songPosition - Conductor.offset)) > gamerValue
+						|| (song.needsVoices && Math.abs(vocals.time - (Conductor.songPosition - Conductor.offset)) > gamerValue))
+					{
+						resyncVocals();
+					}
 				}
 			//}
 
