@@ -1,7 +1,7 @@
 package game;
 
+import game.Achievements;
 import menus.NoteBGOpacityMenu;
-import menus.AchievementThing;
 import flixel.addons.text.FlxTypeText;
 import openfl.display3D.Context3DProgramFormat;
 import menus.TitleScreenState;
@@ -60,9 +60,16 @@ class PlayState extends BasicState
 	public static var practiceMode:Bool = false;
 	public static var usedPractice:Bool = false;
 
+	public var canEndSong:Bool = false;
+	public var achievementActive:Bool = false;
+	public var achievementQueue:Array<String> = [];
+	var funnyAchievement:AchievementThing;
+
 	public var playerDead:Bool = false;
 
 	var changedSpeed:Bool = false;
+
+	public var previousSongPos:Float = 0;
 
 	var arrowsLoaded:Bool = false;
 
@@ -82,7 +89,7 @@ class PlayState extends BasicState
 	// stage shit
 	static public var stageCamZoom:Float = 0.9;
 	static public var pixelStage:Bool = false;
-	static public var pixelAssetZoom:Float = 6.1;
+	static public var pixelAssetZoom:Float = 6;
 	
 	// character shit
 	static public var opponent:CharacterGroup;
@@ -330,7 +337,7 @@ class PlayState extends BasicState
 	override public function create()
 	{
 		#if linc_luajit
-		if(Options.getData('optimization'))
+		if(!Options.getData('optimization'))
 		{
 			LuaHandler.lua_Characters.clear();
 			LuaHandler.lua_Sounds.clear();
@@ -528,6 +535,13 @@ class PlayState extends BasicState
 				curStage = "schoolAngry";
 			case "thorns":
 				curStage = "schoolEvil";
+		}		if (canEndSong)
+		{
+			// song ends too early or late on certain speeds, this is fix
+			if (FlxG.sound.music.length - Conductor.songPosition <= 20)
+			{
+				endSong();
+			}
 		}
 
 		if(!Options.getData('optimization'))
@@ -578,7 +592,7 @@ class PlayState extends BasicState
 			}
 			else
 			{
-				opponent = new CharacterGroup(characterPositions[1][0], characterPositions[1][1], song.gf);
+				opponent = new CharacterGroup(characterPositions[1][0], characterPositions[1][1], song.player2); // wait why was this song.gf what the fuck
 				//opponent.screenCenter(X);
 				for(thing in opponent.members)
 				{
@@ -736,8 +750,8 @@ class PlayState extends BasicState
 		for(i in 0...4)
 		{
 			var newComboNum:ComboSprite = new ComboSprite();
-			newComboNum.x = funnyRating.x - 80 + i * 50;
-			newComboNum.y = funnyRating.y + 95;
+			newComboNum.x = funnyRating.x - 50 + i * 43;
+			newComboNum.y = funnyRating.y + 115;
 			newComboNum.origPos[0] = newComboNum.x;
 			newComboNum.origPos[1] = newComboNum.y;
 			newComboNum.alpha = 0;
@@ -1197,35 +1211,44 @@ class PlayState extends BasicState
 
 		if(!Options.getData("optimization"))
 		{
-			for(char in opponent.members)
+			if(opponent != null)
 			{
-				if(char.animation.curAnim != null)
+				for(char in opponent.members)
 				{
-					if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+					if(char.animation.curAnim != null)
 					{
-						char.playAnim(char.animation.curAnim.name + "-loop");
+						if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+						{
+							char.playAnim(char.animation.curAnim.name + "-loop");
+						}
 					}
 				}
 			}
 
-			for(char in speakers.members)
+			if(speakers != null)
 			{
-				if(char.animation.curAnim != null)
+				for(char in speakers.members)
 				{
-					if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+					if(char.animation.curAnim != null)
 					{
-						char.playAnim(char.animation.curAnim.name + "-loop");
+						if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+						{
+							char.playAnim(char.animation.curAnim.name + "-loop");
+						}
 					}
 				}
 			}
 
-			for(char in player.members)
+			if(player != null)
 			{
-				if(char.animation.curAnim != null)
+				for(char in player.members)
 				{
-					if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+					if(char.animation.curAnim != null)
 					{
-						char.playAnim(char.animation.curAnim.name + "-loop");
+						if(char.animation.getByName(char.animation.curAnim.name + "-loop") != null && char.animation.curAnim.finished)
+						{
+							char.playAnim(char.animation.curAnim.name + "-loop");
+						}
 					}
 				}
 			}
@@ -1246,13 +1269,16 @@ class PlayState extends BasicState
 				}
 		}
 
-		if(!endingSong)
+		if(!endingSong && !achievementActive)
 		{
 			/*if(countdownStarted)
 				Conductor.songPosition += (FlxG.elapsed * 1000);
 			else*/
 				Conductor.songPosition += (FlxG.elapsed * 1000) * songMultiplier;
 		}
+
+		if(achievementActive)
+			Conductor.songPosition = previousSongPos;
 
 		var curTime:Float = FlxG.sound.music.time - Options.getData('song-offset');
 		if(curTime < 0) curTime = 0;
@@ -1679,14 +1705,111 @@ class PlayState extends BasicState
 
 		if (!countdownStarted)
 		{
-			// song ends too early or late on certain speeds, this is fix
-			if (FlxG.sound.music.length - Conductor.songPosition <= 20)
+			if (!achievementActive)
 			{
-				processAchievements();
+				if (FlxG.sound.music.length - Conductor.songPosition <= 20)
+				{
+					FlxG.sound.music.volume = 0;
+					vocals.volume = 0;
+
+					checkForAchievements();
+				}
+			}
+
+			if (canEndSong)
+			{
+				// song ends too early or late on certain speeds, this is fix
+				if (FlxG.sound.music.length - Conductor.songPosition <= 20)
+				{
+					endSong();
+				}
 			}
 		}
 
 		executeALuaState("updatePost", [elapsed]);
+	}
+
+	function checkForAchievements()
+	{
+		achievementQueue = [];
+
+		var daAchievements:Array<Achievement> = Achievements.getAchievements();
+		var achievementsGotten:Array<Achievement> = [];
+
+		var savedAchievements:Array<String> = Options.getData('achievements');
+
+		for(achIndex in 0...daAchievements.length)
+		{
+			var unlock:Bool = false;
+
+			// ADD ACHIEVEMENTS AND THERE REQUIREMENTS HERE
+			switch(daAchievements[achIndex].fileName)
+			{
+				case 'tutorial':
+					if(storyMode && weekName == 'tutorial' && storyPlaylist.length <= 1)
+					{
+						unlock = true;
+					}
+				case 'week1':
+					if(storyMode && weekName == 'week1' && storyPlaylist.length <= 1 && misses == 0)
+					{
+						unlock = true;
+					}
+				case 'week2':
+					if(storyMode && weekName == 'week2' && storyPlaylist.length <= 1 && misses == 0)
+					{
+						unlock = true;
+					}
+				case 'week3':
+					if(storyMode && weekName == 'week3' && storyPlaylist.length <= 1 && misses == 0)
+					{
+						unlock = true;
+					}
+				case 'week4':
+					if(storyMode && weekName == 'week4' && storyPlaylist.length <= 1 && misses == 0)
+					{
+						unlock = true;
+					}
+				case 'week5':
+					if(storyMode && weekName == 'week5' && storyPlaylist.length <= 1 && misses == 0)
+					{
+						unlock = true;
+					}
+				case 'week6':
+					if(storyMode && weekName == 'week6' && storyPlaylist.length <= 1 && misses == 0)
+					{
+						unlock = true;
+					}
+			}
+			// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+			if(unlock && !savedAchievements.contains(daAchievements[achIndex].fileName))
+			{
+				var food:Achievement = daAchievements[achIndex];
+
+				achievementQueue.push(food.fileName);
+				achievementsGotten.push(food);
+				savedAchievements.push(food.fileName);
+			}
+		}
+
+		trace("UNLOCKED ACHIEVEMENTS " + achievementsGotten);
+		Options.saveData('achievements', savedAchievements);
+
+		trace("SAVED ACHIEVEMENTS: " + Options.getData('achievements'));
+
+		// should freeze playstate in time until all achievements no exist.
+		// this is done here so achievements can be activated mid-song.
+		previousSongPos = Conductor.songPosition - 20;
+		achievementActive = true;
+
+		giveAchievements(achievementsGotten);
+	}
+
+	function giveAchievements(ach:Array<Achievement>)
+	{
+		funnyAchievement = new AchievementThing(ach, otherCam);
+		add(funnyAchievement);
 	}
 
 	override public function onFocus()
@@ -1770,8 +1893,6 @@ class PlayState extends BasicState
 		}
 	}
 
-	public var fromAch:Bool = false;
-
 	override public function closeSubState()
 	{
 		super.closeSubState();
@@ -1792,9 +1913,6 @@ class PlayState extends BasicState
 				paused = false;
 			}
 		}
-
-		if(fromAch)
-			endSong();
 	}
 
 	public function CalculateAccuracy()
@@ -1820,17 +1938,28 @@ class PlayState extends BasicState
 			lightningStrikeBeat = curBeat;
 			lightningOffset = FlxG.random.int(8, 24);
 
-			for(char in player.members)
+			if(player != null)
 			{
-				char.playAnim('scared', true);
+				for(char in player.members)
+				{
+					char.playAnim('scared', true);
+				}
 			}
 
-			for(char in speakers.members)
+			if(speakers != null)
 			{
-				char.playAnim('scared', true);
+				for(char in speakers.members)
+				{
+					char.playAnim('scared', true);
+				}
 			}
 		}
 	}
+
+	// countdown shit's here because Lua Lol!!!!!!
+	public var countdownReady:CountdownSprite;
+	public var countdownSet:CountdownSprite;
+	public var countdownGo:CountdownSprite;
 
 	override public function beatHit()
 	{
@@ -1921,20 +2050,53 @@ class PlayState extends BasicState
 					case 0:
 						FlxG.sound.play(Util.getSound(filePath + 'intro3'), 0.6);
 					case 1:
+						countdownReady = new CountdownSprite('ready', pixelStage);
+						countdownReady.cameras = [otherCam];
+						add(countdownReady);
+
+						FlxTween.tween(countdownReady, {alpha: 0}, Conductor.crochet / 1000, {
+							ease: FlxEase.cubeInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								remove(countdownReady);
+								countdownReady.kill();
+								countdownReady.destroy();
+							}
+						});
+
 						FlxG.sound.play(Util.getSound(filePath + 'intro2'), 0.6);
-						var countdown3:CountdownSprite = new CountdownSprite('ready', pixelStage);
-						countdown3.cameras = [otherCam];
-						add(countdown3);
 					case 2:
+						var countdownSet:CountdownSprite = new CountdownSprite('set', pixelStage);
+						countdownSet.cameras = [otherCam];
+						add(countdownSet);
+
+						FlxTween.tween(countdownSet, {alpha: 0}, Conductor.crochet / 1000, {
+							ease: FlxEase.cubeInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								remove(countdownSet);
+								countdownSet.kill();
+								countdownSet.destroy();
+							}
+						});
+
 						FlxG.sound.play(Util.getSound(filePath + 'intro1'), 0.6);
-						var countdown2:CountdownSprite = new CountdownSprite('set', pixelStage);
-						countdown2.cameras = [otherCam];
-						add(countdown2);
 					case 3:
+						var countdownGo:CountdownSprite = new CountdownSprite('go', pixelStage);
+						countdownGo.cameras = [otherCam];
+						add(countdownGo);
+
+						FlxTween.tween(countdownGo, {alpha: 0}, Conductor.crochet / 1000, {
+							ease: FlxEase.cubeInOut,
+							onComplete: function(twn:FlxTween)
+							{
+								remove(countdownGo);
+								countdownGo.kill();
+								countdownGo.destroy();
+							}
+						});
+
 						FlxG.sound.play(Util.getSound(filePath + 'introGo'), 0.6);
-						var countdown1:CountdownSprite = new CountdownSprite('go', pixelStage);
-						countdown1.cameras = [otherCam];
-						add(countdown1);
 					case 4:
 						Conductor.songPosition = 0;
 
@@ -2576,55 +2738,6 @@ class PlayState extends BasicState
 		}
 	}
 
-	function processAchievements()
-	{ // TODO: add shit to make custom achievements a thing
-		fromAch = true;
-
-		var listOfNewAchievements:Array<String> = [];
-
-		// add achievements here
-		if(storedSong == "tutorial" && storyMode)
-		{
-			if(getAchievement("tutorial") == true)
-				listOfNewAchievements.push("tutorial");
-		}
-		// don't modify shit below
-
-		if(FlxG.sound.music != null)
-			FlxG.sound.music.pause();
-
-		if(vocals != null)
-			vocals.pause();
-
-		persistentUpdate = false;
-
-		paused = true;
-
-		if(TitleScreenState.optionsInitialized)
-			Controls.refreshControls();
-
-		Controls.accept = false;
-
-		openSubState(new AchievementThing(listOfNewAchievements));
-	}
-
-	function getAchievement(achievement:String):Bool
-	{
-		var funnyList:Array<String> = Options.getData("achievements");
-
-		if(!funnyList.contains(achievement))
-		{
-			funnyList.push(achievement);
-			Options.saveData("achievements", funnyList);
-
-			return true;
-		}
-
-		Options.saveData("achievements", funnyList);
-
-		return false;
-	}
-
 	var trainMoving:Bool = false;
 	var trainCars:Int = 0;
 	var trainFinishing:Bool = false;
@@ -2645,9 +2758,12 @@ class PlayState extends BasicState
 		if (trainSound.time >= 4700 && !Options.getData('optimization'))
 		{
 			startedMoving = true;
-			for(char in speakers.members)
-			{
-				char.playAnim('hairBlow');
+			if(speakers != null)
+			{	
+				for(char in speakers.members)
+				{
+					char.playAnim('hairBlow');
+				}
 			}
 		}
 
@@ -2672,9 +2788,12 @@ class PlayState extends BasicState
 	function trainReset():Void
 	{
 		if(!Options.getData('optimization')) {
-			for(char in speakers.members)
+			if(speakers != null)
 			{
-				char.playAnim('hairFall');
+				for(char in speakers.members)
+				{
+					char.playAnim('hairFall');
+				}
 			}
 			
 			stage.members[8].x = FlxG.width + 200;

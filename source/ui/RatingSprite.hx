@@ -49,9 +49,9 @@ class RatingSprite extends FlxSprite
 			antialiasing = Options.getData('anti-aliasing');
 
 		if(isPixel)
-			setGraphicSize(Std.int(this.width * game.PlayState.pixelAssetZoom * 0.7));
+			setGraphicSize(Std.int(frameWidth * game.PlayState.pixelAssetZoom * 0.7));
 		else
-			setGraphicSize(Std.int(this.width * 0.7));
+			setGraphicSize(Std.int(frameWidth * 0.7));
 
 		updateHitbox();
 	}

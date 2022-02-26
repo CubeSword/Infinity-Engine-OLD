@@ -53,9 +53,9 @@ class ComboSprite extends FlxSprite
 			antialiasing = Options.getData('anti-aliasing');
 
 		if(isPixel)
-			setGraphicSize(Std.int(this.width * game.PlayState.pixelAssetZoom * 0.95));
+			setGraphicSize(Std.int(this.width * game.PlayState.pixelAssetZoom * 0.85));
 		else
-			setGraphicSize(Std.int(this.width * 0.67));
+			setGraphicSize(Std.int(this.width * 0.55));
 
 		updateHitbox();
 	}

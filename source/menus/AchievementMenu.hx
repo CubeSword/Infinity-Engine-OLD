@@ -1,5 +1,6 @@
 package menus;
 
+import game.Achievements;
 import ui.AchievementIcon;
 import flixel.math.FlxMath;
 import lime.app.Application;
@@ -23,7 +24,7 @@ class AchievementMenu extends BasicState
 {
     var achievements:Array<Achievement> = [];
 
-    static var selectedSong:Int = 0;
+    static var selectedAchievement:Int = 0;
 
     var bg:FlxSprite;
 
@@ -81,7 +82,7 @@ class AchievementMenu extends BasicState
 
         achievements = achievementListData;
 
-        bg = new FlxSprite().loadGraphic(Util.getImage("menuDesat"));
+        bg = new FlxSprite().loadGraphic(Util.getImage("menuDesat", true, "Base Game"));
 		
 		add(bg);
 
@@ -92,7 +93,7 @@ class AchievementMenu extends BasicState
         {
             var achievementData = achievements[achievementDataIndex];
 
-            var alphabet = new AlphabetText(0, (70 * achievementDataIndex) + 30, achievementData.name);
+            var alphabet = new AlphabetText(0, (70 * achievementDataIndex) + 30, achievementData.title);
             alphabet.targetY = achievementDataIndex;
             alphabet.isMenuItem = true;
             alphabet.x += 200;
@@ -101,7 +102,7 @@ class AchievementMenu extends BasicState
 
             songAlphabets.add(alphabet);
 
-            var icon = new AchievementIcon("achievements/images/" + achievementData.file_name + "-achievement", alphabet, null, null, LEFT);
+            var icon = new AchievementIcon("achievements/images/" + achievementData.fileName + "-achievement", alphabet, null, null, LEFT);
             songIcons.add(icon);
 
             descriptions.push(achievementData.description);
@@ -159,10 +160,10 @@ class AchievementMenu extends BasicState
         {
             var funnyList:Array<String> = Options.getData("achievements");
 
-            if(funnyList.contains(achievements[selectedSong].file_name))
-                funnyList.remove(achievements[selectedSong].file_name);
+            if(funnyList.contains(achievements[selectedAchievement].fileName))
+                funnyList.remove(achievements[selectedAchievement].fileName);
             else
-                funnyList.push(achievements[selectedSong].file_name);
+                funnyList.push(achievements[selectedAchievement].fileName);
 
             Options.saveData("achievements", funnyList);
 
@@ -172,28 +173,28 @@ class AchievementMenu extends BasicState
         if(up || down)
         {
             if(up)
-                selectedSong -= 1;
+                selectedAchievement -= 1;
     
             if(down)
-                selectedSong += 1;
+                selectedAchievement += 1;
             
             updateSelection();
         }
 
 		if (-1 * Math.floor(FlxG.mouse.wheel) != 0)
         {
-            selectedSong += -1 * Math.floor(FlxG.mouse.wheel);
+            selectedAchievement += -1 * Math.floor(FlxG.mouse.wheel);
 			updateSelection();
         }
     }
 
     function updateSelection()
     {
-        if(selectedSong < 0)
-            selectedSong = achievements.length - 1;
+        if(selectedAchievement < 0)
+            selectedAchievement = achievements.length - 1;
 
-        if(selectedSong > achievements.length - 1)
-            selectedSong = 0;
+        if(selectedAchievement > achievements.length - 1)
+            selectedAchievement = 0;
 
         if(songIcons.members.length > 0)
         {
@@ -202,14 +203,14 @@ class AchievementMenu extends BasicState
                 songIcons.members[i].alpha = 0.6;
             }
     
-            songIcons.members[selectedSong].alpha = 1;
+            songIcons.members[selectedAchievement].alpha = 1;
         }
 
         for(itemIndex in 0...songAlphabets.members.length)
         {
             var item = songAlphabets.members[itemIndex];
 
-            item.targetY = itemIndex - selectedSong;
+            item.targetY = itemIndex - selectedAchievement;
 
             item.alpha = 0.6;
 
@@ -219,28 +220,14 @@ class AchievementMenu extends BasicState
 
         var funnyList:Array<String> = Options.getData("achievements");
 
-        if(funnyList.contains(achievements[selectedSong].file_name))
+        if(funnyList.contains(achievements[selectedAchievement].fileName))
             bg.color = 0xFF60CCFF;
         else
             bg.color = 0xFF545454;
 
-        descriptionText.text = descriptions[selectedSong];
+        descriptionText.text = descriptions[selectedAchievement];
         descriptionText.screenCenter(X);
 
         FlxG.sound.play(Util.getSound('menus/scrollMenu'));
     }
-}
-
-typedef AchievementList =
-{
-    var achievements:Array<Achievement>;
-}
-
-typedef Achievement =
-{
-    var file_name:String;
-    var name:String;
-    var description:String;
-
-    // add more shit here for custom stuff in future
 }

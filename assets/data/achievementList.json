@@ -1,13 +1,43 @@
 {
     "achievements": [
         {
-            "file_name": "tutorial",
-            "name": "You can press keys!",
-            "description": "You beat the tutorial lol."
+            "fileName": "tutorial",
+            "title": "You can press keys!",
+            "description": "Beat the Tutorial on any difficulty."
         },
         {
-            "file_name": "coolswag",
-            "name": "coolswag",
+            "fileName": "week1",
+            "title": "Beginners Luck",
+            "description": "Beat Week 1 in Story Mode on Hard Difficulty with 0 misses."
+        },
+        {
+            "fileName": "week2",
+            "title": "Trick or Treat!",
+            "description": "Beat Week 2 in Story Mode on Hard Difficulty with 0 misses."
+        },
+        {
+            "fileName": "week3",
+            "title": "Bullet Dodger",
+            "description": "Beat Week 3 in Story Mode on Hard Difficulty with 0 misses."
+        },
+        {
+            "fileName": "week4",
+            "title": "Lady Killer",
+            "description": "Beat Week 4 in Story Mode on Hard Difficulty with 0 misses."
+        },
+        {
+            "fileName": "week5",
+            "title": "Christmas Duet",
+            "description": "Beat Week 5 in Story Mode on Hard Difficulty with 0 misses."
+        },
+        {
+            "fileName": "week6",
+            "title": "New Highscore!",
+            "description": "Beat Week 6 in Story Mode on Hard Difficulty with 0 misses."
+        },
+        {
+            "fileName": "coolswag",
+            "title": "coolswag",
             "description": "nah this ain't cool, or swag >:((((("
         }
     ]

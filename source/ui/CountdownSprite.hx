@@ -19,14 +19,6 @@ class CountdownSprite extends FlxSprite {
 		loadGraphic(Util.getImage(filePath + countdownStr));
 		screenCenter();
 		scrollFactor.set();
-		
-		FlxTween.tween(this, {alpha: 0}, (game.Conductor.crochet / 1000) / game.PlayState.songMultiplier, {
-			ease: FlxEase.cubeInOut,
-			onComplete: function(twn:FlxTween)
-			{
-				this.destroy();
-			}
-		});
 
 		if(pixel)
 			scale.set(game.PlayState.pixelAssetZoom, game.PlayState.pixelAssetZoom);
