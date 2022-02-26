@@ -37,11 +37,11 @@ class AchievementThing extends FlxSpriteGroup
 
             this.cameras = [camera];
 
-            box = new FlxSprite(10, 10).makeGraphic(1000, 150, FlxColor.BLACK);
+            box = new FlxSprite(10, 10).makeGraphic(1000, 100, FlxColor.BLACK);
             add(box);
 
             var realIcon = achievementsGotten[0].fileName;
-            var achievementPath = 'achievments/images/$realIcon-achievement';
+            var achievementPath = 'achievements/images/$realIcon-achievement';
             
             if(!Std.isOfType(Util.getImage(achievementPath, false), FlxGraphic))
             {
@@ -59,7 +59,7 @@ class AchievementThing extends FlxSpriteGroup
             title.borderSize = 2;
             add(title);
 
-            desc = new FlxText(title.x, title.y + 20, 0, achievementsGotten[0].description, 18);
+            desc = new FlxText(title.x, title.y + 25, 0, achievementsGotten[0].description, 18);
             desc.setFormat(Util.getFont('vcr'), 18, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
             desc.borderSize = 2;
             add(desc);

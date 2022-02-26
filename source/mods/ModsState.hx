@@ -36,7 +36,7 @@ class ModsState extends BasicState
         FlxG.camera.scroll.set();
 		FlxG.camera.target = null;
 
-        menuBG = new FlxSprite().loadGraphic(Util.getImage("menuDesat"));
+        menuBG = new FlxSprite().loadGraphic(Util.getImage("menuDesat", true, "Base Game"));
 		menuBG.color = menuColor;
         menuBG.scrollFactor.set();
 		add(menuBG);

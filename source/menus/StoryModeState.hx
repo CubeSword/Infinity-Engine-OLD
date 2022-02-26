@@ -1,5 +1,6 @@
 package menus;
 
+import ui.StoryWeekSprite;
 import sys.FileSystem;
 import lime.app.Application;
 import lime.utils.Assets;
@@ -33,7 +34,7 @@ class StoryModeState extends BasicState {
     var selectedMod:Int = 0;
     var swagMods:Array<String> = ["Base Game"];
 
-    var funnyWeeks:FlxTypedGroup<FlxSprite>;
+    var funnyWeeks:FlxTypedGroup<StoryWeekSprite>;
     var grpDifficulty:FlxTypedGroup<FlxSprite>;
 
     var jsonDirs:Array<String> = [];
@@ -89,7 +90,7 @@ class StoryModeState extends BasicState {
         Highscores.init();
 
         // week shit
-        funnyWeeks = new FlxTypedGroup<FlxSprite>();
+        funnyWeeks = new FlxTypedGroup<StoryWeekSprite>();
         add(funnyWeeks);
 
         grpDifficulty = new FlxTypedGroup<FlxSprite>();
@@ -310,7 +311,7 @@ class StoryModeState extends BasicState {
             else
                 weekQuotes.push(data.funnyWeekQuote);
 
-            var realWeek:FlxSprite = new FlxSprite(0, 600 + json_i * 125).loadGraphic(Util.getImage('weeks/images/' + data.fileName, false));
+            var realWeek:StoryWeekSprite = new StoryWeekSprite(0, 600 + json_i * 125).loadGraphic(Util.getImage('weeks/images/' + data.fileName, false));
             realWeek.screenCenter(X);
             realWeek.ID = json_i;
             funnyWeeks.add(realWeek);
@@ -391,6 +392,7 @@ class StoryModeState extends BasicState {
 
             FlxG.sound.play(Util.getSound("menus/confirmMenu"));
 
+            funnyWeeks.members[selectedWeek].startFlashing();
             weekChars.members[1].playAnim('confirm', true);
 
 			new FlxTimer().start(1, function(tmr:FlxTimer)
