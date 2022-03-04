@@ -1738,6 +1738,7 @@ class PlayState extends BasicState
 
 	var alreadyFucked:Bool = false;
 
+	#if achievements_allowed
 	function checkForAchievements()
 	{
 		if(storyMode && !alreadyFucked)
@@ -1753,7 +1754,6 @@ class PlayState extends BasicState
 
 		var savedAchievements:Array<String> = Options.getData('achievements');
 
-		#if achievements_allowed
 		for(achIndex in 0...daAchievements.length)
 		{
 			var unlock:Bool = false;
@@ -1808,7 +1808,6 @@ class PlayState extends BasicState
 				savedAchievements.push(food.fileName);
 			}
 		}
-		#end
 
 		trace("UNLOCKED ACHIEVEMENTS " + achievementsGotten);
 		Options.saveData('achievements', savedAchievements);
@@ -1828,6 +1827,7 @@ class PlayState extends BasicState
 		funnyAchievement = new AchievementThing(ach, otherCam);
 		add(funnyAchievement);
 	}
+	#end
 
 	override public function onFocus()
 	{
