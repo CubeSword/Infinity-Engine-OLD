@@ -39,7 +39,7 @@ class CreditsState extends BasicState
         creditIconGroup = new FlxTypedGroup();
         curSelected = 0;
 
-        menuBG = new FlxSprite(-80).loadGraphic(Util.getImage('menuDesat'));
+        menuBG = new FlxSprite(-80).loadGraphic(Util.getImage('menuDesat', true, "Base Game"));
         menuBG.scrollFactor.x = 0;
         menuBG.scrollFactor.y = 0.18;
         menuBG.setGraphicSize(Std.int(menuBG.width * 1.175));
@@ -64,7 +64,7 @@ class CreditsState extends BasicState
 
             var icon = new TrackerSprite(creditGroup.members[i], 10, -30, LEFT);
             icon.ID = i;
-            icon.loadGraphic('assets/credits/icons/' + credits[i].icon + '.png');
+            icon.loadGraphic(Util.getImage('credits/icons/' + credits[i].icon, false));
             add(icon);
             creditIconGroup.add(icon);
         }
