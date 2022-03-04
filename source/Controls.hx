@@ -68,7 +68,7 @@ class Controls
         accept = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[6]), FlxInputState.JUST_PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[6]), FlxInputState.JUST_PRESSED);
         acceptP = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[6]), FlxInputState.PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[6]), FlxInputState.PRESSED);
         reset = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[7]), FlxInputState.JUST_PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[7]), FlxInputState.JUST_PRESSED);
-        resetP = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[7]), FlxInputState.JUST_PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[7]), FlxInputState.PRESSED);
+        resetP = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[7]), FlxInputState.PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[7]), FlxInputState.PRESSED);
 
         UI_LEFT = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[0]), FlxInputState.JUST_PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[0]), FlxInputState.JUST_PRESSED);
         UI_DOWN = FlxG.keys.checkStatus(FlxKey.fromString(uiBinds[1]), FlxInputState.JUST_PRESSED) || FlxG.keys.checkStatus(FlxKey.fromString(uiBindsAlt[1]), FlxInputState.JUST_PRESSED);

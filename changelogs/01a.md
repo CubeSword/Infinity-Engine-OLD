@@ -1,4 +1,4 @@
-# Project Re-Funked Changelog
+# Infinity Engine Changelog
 -----
 ## v0.1 (Unreleased)
 - We're working on it! :D

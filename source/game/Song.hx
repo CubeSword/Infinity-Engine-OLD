@@ -23,7 +23,7 @@ class Event
 typedef Song =
 {
 	var song:String;
-	var notes:Array<Section>;
+	var notes:Array<SwagSection>;
 	var bpm:Float;
 	var needsVoices:Bool;
 	var speed:Float;

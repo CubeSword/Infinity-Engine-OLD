@@ -16,6 +16,7 @@ import flixel.text.FlxText;
 import mods.Mods;
 import flixel.FlxSprite;
 
+#if achievements_allowed
 class AchievementThing extends FlxSpriteGroup
 {
     public var achievementsGotten:Array<Achievement> = [];
@@ -36,8 +37,9 @@ class AchievementThing extends FlxSpriteGroup
             FlxG.sound.play(Util.getSound('menus/confirmMenu'));
 
             this.cameras = [camera];
+            this.alpha = 0;
 
-            box = new FlxSprite(10, 10).makeGraphic(1000, 100, FlxColor.BLACK);
+            box = new FlxSprite(10, 10).makeGraphic(700, 90, FlxColor.BLACK);
             add(box);
 
             var realIcon = achievementsGotten[0].fileName;
@@ -54,15 +56,19 @@ class AchievementThing extends FlxSpriteGroup
             icon.updateHitbox();
             add(icon);
 
-            title = new FlxText(icon.x + (box.height + 20), box.y + 10, 0, achievementsGotten[0].title, 24);
+            title = new FlxText(icon.x + (box.height + 20), box.y + 10, (box.width - icon.width) - 15, achievementsGotten[0].title, 24);
             title.setFormat(Util.getFont('vcr'), 24, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
             title.borderSize = 2;
             add(title);
 
-            desc = new FlxText(title.x, title.y + 25, 0, achievementsGotten[0].description, 18);
+            desc = new FlxText(title.x, title.y + 25, (box.width - icon.width) - 15, achievementsGotten[0].description, 18);
             desc.setFormat(Util.getFont('vcr'), 18, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
             desc.borderSize = 2;
             add(desc);
+
+            FlxTween.tween(this, {alpha: 1}, 1, {
+                ease: FlxEase.cubeInOut
+            });
 
             doTimer();
         }
@@ -108,7 +114,7 @@ class AchievementThing extends FlxSpriteGroup
         {
             FlxTween.tween(this, {alpha: 0}, 1, {
                 ease: FlxEase.cubeInOut,
-                startDelay: 3,
+                startDelay: 4,
                 onComplete: function(twn:FlxTween)
                 {
                     refresh();
@@ -118,3 +124,4 @@ class AchievementThing extends FlxSpriteGroup
         }
     }
 }
+#end

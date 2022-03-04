@@ -1,5 +1,6 @@
 package ui;
 
+import flixel.FlxBasic;
 import mods.Mods;
 import lime.utils.Assets;
 import flixel.tweens.FlxEase;
@@ -7,18 +8,20 @@ import flixel.util.FlxColor;
 import game.PlayState;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import flixel.addons.text.FlxTypeText;
 import flixel.tweens.FlxTween;
 
-class DialogueBox extends FlxTypedGroup<FlxSprite>
+using StringTools;
+
+class DialogueBox extends FlxGroup
 {
 	public var dialogueType:String = 'normal';
 	public var dialogueBox:FlxSprite;
 	public var swagFade:FlxSprite;
 
 	public static var dialogue:String = "coolswag";
-	public static var portrait:String = "bf";
+	public static var character:String = "bf";
 
 	public var dialogueText:FlxTypeText;
 
@@ -26,22 +29,22 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 
 	var alignment:String = "left";
 
-	var character:Array<Dynamic> = [];
+	var characters:Array<Dynamic> = [];
 	var characterSwag:Dynamic;
 
 	var leftPort:FlxSprite;
 	var middlePort:FlxSprite;
 	var rightPort:FlxSprite;
 
-	public function new(swagDialogue:String = "coolswag", ?initPortrait:String = "bf")
+	public function new(swagDialogue:String = "coolswag", ?initCharacter:String = "bf")
 	{
 		super();
 
 		dialogue = swagDialogue;
-		portrait = initPortrait;
-		character = [];
+		character = initCharacter;
+		characters = [];
 
-		refreshCharacterJson(initPortrait);
+		refreshCharacterJson(initCharacter);
 
 		trace(character);
 
@@ -55,10 +58,7 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 
 		//the box
 		dialogueBox = new FlxSprite(60, FlxG.height * 0.45);
-		dialogueBox.frames = Util.getSparrow('assets/dialogue/boxes/normal', false);
-
-		// is it intentional that i have to use assets here? i want mods folder support
-		// and removing 'assets' makes the game crash
+		dialogueBox.frames = Util.getSparrow('dialogue/boxes/normal/assets', false);
 
 		dialogueBox.animation.addByPrefix('open', 'Speech Bubble Normal Open', 12, false);
 		dialogueBox.animation.addByPrefix('idle', 'speech bubble normal', 24, true);
@@ -71,16 +71,16 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 		dialogueBox.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 		dialogueBox.scrollFactor.set();
 
-		/*//the portraits
+		/*//the characters
 		leftPort = new FlxSprite(dialogueBox.x + 30, dialogueBox.y + 30);
-		leftPort.frames = Util.getSparrow('assets/dialogue/portraits/$portrait/assets', false);
+		leftPort.frames = Util.getSparrow('dialogue/characters/$character/assets', false);
 
 		middlePort = new FlxSprite(0, dialogueBox.y + 30);
 		middlePort.screenCenter(X);
-		middlePort.frames = Util.getSparrow('assets/dialogue/portraits/$portrait/assets', false);
+		middlePort.frames = Util.getSparrow('dialogue/characters/$character/assets', false);
 
 		rightPort = new FlxSprite(dialogueBox.x + 130, dialogueBox.y + 30);
-		rightPort.frames = Util.getSparrow('assets/dialogue/portraits/$portrait/assets', false);
+		rightPort.frames = Util.getSparrow('dialogue/characters/$character/assets', false);
 		
 		for(i in 0...character.length)
 		{
@@ -112,8 +112,8 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 
 		//the text
 		dialogueText = new FlxTypeText(dialogueBox.x + 60, dialogueBox.y + 120, Std.int(dialogueBox.width * 0.85), dialogue + "\n", 48);
-		dialogueText.setFormat("assets/fonts/funkin.ttf", 48, FlxColor.BLACK, LEFT);
-		dialogueText.sounds = [FlxG.sound.load(Util.getSound('dialogue/dialogueText'))];
+		dialogueText.setFormat(Util.getFont('funkin'), 48, FlxColor.BLACK, LEFT);
+		dialogueText.sounds = [FlxG.sound.load(Util.getSound('dialogue/sounds/normal/talk', false))];
 		dialogueText.cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
 		dialogueText.scrollFactor.set();
 		dialogueText.start(textSpeed);
@@ -143,8 +143,9 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 
 	public function changeDialogueText(text:String = "", char:String = "bf")
 	{
+		FlxG.sound.play(Util.getSound('dialogue/sounds/normal/click', false));
 		dialogueText.resetText(text);
-		dialogueText.start();
+		dialogueText.start(textSpeed, true);
 	}
 
 	function refreshCharacterJson(char:String = "bf")
@@ -176,4 +177,97 @@ class DialogueBox extends FlxTypedGroup<FlxSprite>
 		}
 		#end
 	}
+}
+
+class DialogueCharacter extends FlxSprite
+{
+	public var ogPos:Array<Float> = [0, 0];
+	public var json:DialogueCharacterFile;
+	public var box:FlxSprite;
+
+	public var offsets:Array<Dynamic> = [];
+
+	override public function new(?char:String = "bf", box:FlxSprite)
+	{
+		this.box = box;
+
+		super();
+		loadChar(char);
+	}
+
+	override public function update(elapsed:Float)
+	{
+		super.update(elapsed);
+
+		if(animation.curAnim.name.contains("-talk") && animation.curAnim.finished)
+		{
+			playAnim(animation.curAnim.name.replace("-talk", "-idle"), true);
+		}
+	}
+
+	public function loadChar(?char:String = "bf")
+	{
+		json = Util.getJsonContents(Util.getPath('dialogue/characters/$char/config.json'));
+
+		frames = Util.getSparrow('dialogue/characters/$char/assets', false);
+
+		for(i in 0...json.animations.length)
+		{
+			//trace(json.animations[i][0] + " - " + json.animations[i][1] + " - " + json.animations[i][2] + " - " + json.animations[i][3]);
+			animation.addByPrefix(json.animations[i][0], json.animations[i][1], json.animations[i][2], json.animations[i][3]);
+			offsets.push([json.animations[i][0], json.animations[i][4][0], json.animations[i][4][1]]);
+		}
+		
+		playAnim('normal-talk', true);
+
+		setupPosition();
+	}
+
+	public function setupPosition()
+	{
+		var alignment:String = json.alignment;
+		
+		switch(alignment)
+		{
+			case 'left':
+				setPosition(box.x + 180, box.y - 330);
+			case 'middle' | 'center':
+				y = box.y - 330;
+				screenCenter(X);
+			case 'right':
+				setPosition(box.x + 700, box.y - 330);
+			default:
+				setPosition(box.x + 700, box.y - 330);
+		}
+
+		ogPos = [x, y];
+		setPosition(ogPos[0] + json.position[0], ogPos[1] + json.position[1]);
+	}
+
+	public function playAnim(anim:String, ?force:Bool = false, ?reverse:Bool = false, ?frame:Int = 0)
+	{
+		if(animation.getByName(anim) != null)
+		{
+			animation.play(anim, force, reverse, frame);
+
+			for(array in offsets)
+			{
+				if(array[0] == anim)
+					offset.set(array[1], array[2]);
+			}
+		}
+	}
+}
+
+typedef DialogueCharacterFile =
+{
+	var scale:Float;
+	var alignment:String;
+	var antialiasing:Bool;
+	var position:Array<Float>;
+	var animations:Array<Dynamic>;
+	/*  [
+			["name", "prefix", 24, false]
+		]
+	*/
 }

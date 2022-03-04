@@ -2,6 +2,7 @@ package game;
 
 import mods.Mods;
 
+#if achievements_allowed
 typedef Achievement =
 {
     var fileName:String;
@@ -51,3 +52,4 @@ class Achievements
         return achievements;
     }
 }
+#end

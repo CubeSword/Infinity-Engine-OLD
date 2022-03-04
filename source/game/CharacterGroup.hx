@@ -14,7 +14,7 @@ class CharacterGroup extends FlxTypedGroup<Character> {
     var charArray:Array<String> = [];
     var json:Dynamic;
 
-    public var char:Character;
+    public var character:Character;
 
     public function new(?x:Float = 0, ?y:Float = 0, character:String = "bf")
     {
@@ -33,36 +33,16 @@ class CharacterGroup extends FlxTypedGroup<Character> {
         clear();
         // remove existing chars so they don't stack lol
 
-        char = new Character(0, 0, character);
-        
-        json = Util.getJsonContents('assets/characters/placeholder.json');
-
-        var balls:Bool = false;
-
-        if(Assets.exists('assets/characters/$character.json'))
-            balls = true;
-        #if sys
-        else
+        if(character != "")
         {
-            if(Mods.activeMods.length > 0)
-            {
-                for(mod in Mods.activeMods)
-                {
-                    if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$character.json'))
-                    {
-                        balls = true;
-                    }
-                }
-            }
-        }
-        #end
+            this.character = new Character(0, 0, character);
+            
+            json = Util.getJsonContents('assets/characters/placeholder.json');
 
-        if(balls)
-        {
-            #if sys
+            var balls:Bool = false;
+
             if(Assets.exists('assets/characters/$character.json'))
-            #end
-                json = Util.getJsonContents('assets/characters/$character.json');
+                balls = true;
             #if sys
             else
             {
@@ -72,27 +52,67 @@ class CharacterGroup extends FlxTypedGroup<Character> {
                     {
                         if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$character.json'))
                         {
-                            json = Util.getJsonContents('mods/$mod/characters/$character.json');
+                            balls = true;
                         }
                     }
                 }
             }
             #end
-        }
-        // get character json to load multiple characters
 
-        var characters:Array<String> = []; 
-        if(json.characters != null)
-            characters = json.characters;
+            if(balls)
+            {
+                #if sys
+                if(Assets.exists('assets/characters/$character.json'))
+                #end
+                    json = Util.getJsonContents('assets/characters/$character.json');
+                #if sys
+                else
+                {
+                    if(Mods.activeMods.length > 0)
+                    {
+                        for(mod in Mods.activeMods)
+                        {
+                            if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/characters/$character.json'))
+                            {
+                                json = Util.getJsonContents('mods/$mod/characters/$character.json');
+                            }
+                        }
+                    }
+                }
+                #end
+            }
+            // get character json to load multiple characters
+
+            var characters:Array<String> = []; 
+            if(json.characters != null)
+                characters = json.characters;
+            else
+                characters = [character];
+            // grab characters from characters array if it exists, if it doesn't exist it will load one character instead
+
+            for(char in characters)
+            {
+                var swagChar:Character = new Character(x, y, char);
+                add(swagChar);
+            }
+            // load each character
+        }
         else
-            characters = [character];
-        // grab characters from characters array if it exists, if it doesn't exist it will load one character instead
-
-        for(char in characters)
         {
-            var swagChar:Character = new Character(x, y, char);
-            add(swagChar);
+            this.character = new Character(0, 0, 'placeholder');
+
+            json = Util.getJsonContents('assets/characters/placeholder.json');
         }
-        // load each character
+    }
+
+    public function playAnim(anim:String, ?force:Bool = false, ?reverse:Bool = false, ?frame:Null<Int> = 0, ?offsetX:Null<Float>, ?offsetY:Null<Float>)
+    {
+        // this function exists so i don't have to do it manually in playstate anymore lol
+        trace("FARD");
+        for(char in members)
+        {
+            trace("ACTUALLY FARDED");
+            char.playAnim(anim, force, reverse, frame, offsetX, offsetY);
+        }
     }
 }

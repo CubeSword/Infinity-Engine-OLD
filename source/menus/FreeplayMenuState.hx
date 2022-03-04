@@ -24,7 +24,7 @@ class FreeplayMenuState extends BasicState
     var swagMods:Array<String> = ["Base Game"];
 
     static var selectedSong:Int = 0;
-    var selectedMod:Int = 0;
+    static var selectedMod:Int = 0;
 
     var selectedDifIndex:Int = 1;
 
@@ -84,8 +84,6 @@ class FreeplayMenuState extends BasicState
 
 		FlxTransitionableState.skipNextTransIn = false;
 		FlxTransitionableState.skipNextTransOut = false;
-
-        curSpeed = 1;
 
         #if sys
         for(mod in Mods.activeMods)
@@ -387,7 +385,10 @@ class FreeplayMenuState extends BasicState
         if(Controls.accept)
         {
             game.PlayState.songMultiplier = curSpeed;
-            transitionState(new game.PlayState(songs[selectedSong].songName.toLowerCase(), selectedDifficulty.toLowerCase(), false));
+            if(shiftP)
+                LoadingState.loadAndSwitchState(new game.PlayState(songs[selectedSong].songName.toLowerCase(), selectedDifficulty.toLowerCase(), false));
+            else
+                transitionState(new game.PlayState(songs[selectedSong].songName.toLowerCase(), selectedDifficulty.toLowerCase(), false));
         }
 
         // might be smart to update the text before updating the x and box lmao

@@ -6,7 +6,7 @@ import flixel.util.FlxColor;
 import openfl.display.BlendMode;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup;
-#if linc_luajit
+#if lua_allowed
 import llua.Convert;
 import llua.Lua;
 import llua.State;
@@ -178,7 +178,7 @@ class LuaHandler
         setVar("botplay", Options.getData("botplay"));
         setVar("downscroll", Options.getData("downscroll"));
         setVar("cameraZooms", Options.getData("camera-zooms"));
-        setVar("inGameOver", PlayState.instance.playerDead);
+        setVar("inGameOver", PlayState.instance.isDead);
 
         setVar("curStep", 0);
         setVar("curBeat", 0);
@@ -356,11 +356,11 @@ class LuaHandler
     
                 lua_Sprites.set(id, Sprite);
     
-                @:privateAccess
+                /*@:privateAccess
                 if(!front)
                     PlayState.instance.stage.add(Sprite);
                 else
-                    PlayState.instance.stageFront.add(Sprite);
+                    PlayState.instance.stageFront.add(Sprite);*/
             }
             else
                 Application.current.window.alert("Sprite " + id + " already exists! Choose a different name!", genericTitle);
@@ -379,11 +379,11 @@ class LuaHandler
     
                 lua_Sprites.set(id, Sprite);
     
-                @:privateAccess
+                /*@:privateAccess
                 if(!front)
                     PlayState.instance.stage.add(Sprite);
                 else
-                    PlayState.instance.stageFront.add(Sprite);
+                    PlayState.instance.stageFront.add(Sprite);*/
             }
             else
                 Application.current.window.alert("Sprite " + id + " already exists! Choose a different name!", genericTitle);
@@ -402,7 +402,7 @@ class LuaHandler
     
                 lua_Sprites.set(id, Sprite);
     
-                PlayState.instance.add(Sprite);
+                //PlayState.instance.add(Sprite);
             }
             else
                 Application.current.window.alert("Sprite " + id + " already exists! Choose a different name!", genericTitle);
@@ -420,10 +420,83 @@ class LuaHandler
     
                 lua_Sprites.set(id, Sprite);
     
-                PlayState.instance.add(Sprite);
+                //PlayState.instance.add(Sprite);
             }
             else
                 Application.current.window.alert("Sprite " + id + " already exists! Choose a different name!", genericTitle);
+        });
+
+		Lua_helper.add_callback(lua, "addStageSprite", function(id:String, front:Bool = false) {
+            var Sprite:StageSprite = lua_Sprites.get(id);
+
+            if (Sprite == null)
+                return false;
+
+            if(front)
+                PlayState.instance.stageFront.add(Sprite);
+            else
+            {
+                if(!PlayState.instance.isDead)
+                {
+                    var position:Int = PlayState.instance.members.indexOf(PlayState.speakers);
+                    if(PlayState.instance.members.indexOf(PlayState.player) < position)
+                        position = PlayState.instance.members.indexOf(PlayState.player);
+                    else if(PlayState.instance.members.indexOf(PlayState.opponent) < position)
+                        position = PlayState.instance.members.indexOf(PlayState.opponent);
+
+                    PlayState.instance.stage.insert(position, Sprite);
+                }
+            }
+            
+            return true;
+		});
+
+		Lua_helper.add_callback(lua, "addSprite", function(id:String, front:Bool = false) {
+            var Sprite:FlxSprite = lua_Sprites.get(id);
+
+            if (Sprite == null)
+                return false;
+
+            if(front)
+                PlayState.instance.add(Sprite);
+            else
+            {
+                if(PlayState.instance.isDead)
+                {
+                    GameOverSubstate.instance.insert(GameOverSubstate.instance.members.indexOf(GameOverSubstate.instance.player), Sprite);
+                }
+                else
+                {
+                    var position:Int = PlayState.instance.members.indexOf(PlayState.speakers);
+                    if(PlayState.instance.members.indexOf(PlayState.player) < position)
+                        position = PlayState.instance.members.indexOf(PlayState.player);
+                    else if(PlayState.instance.members.indexOf(PlayState.opponent) < position)
+                        position = PlayState.instance.members.indexOf(PlayState.opponent);
+
+                    PlayState.instance.insert(position, Sprite);
+                }
+            }
+
+            return true;
+		});
+
+        Lua_helper.add_callback(lua, "removeStageSprite", function(id:String, ?front:Bool = false) {
+            var sprite = lua_Sprites.get(id);
+
+            if (sprite == null)
+                return false;
+
+            lua_Sprites.remove(id);
+
+            if(front)
+                PlayState.instance.stage.remove(sprite);
+            else
+                PlayState.instance.stageFront.remove(sprite);
+
+            sprite.kill();
+            sprite.destroy();
+
+            return true;
         });
 
         Lua_helper.add_callback(lua, "removeSprite", function(id:String) {
@@ -1451,7 +1524,9 @@ class LuaHandler
     {
         switch(cam.toLowerCase())
         {
-            case 'hudCam' | 'hud': return PlayState.instance.hudCam;
+            case 'camgame' | 'gamecam' | 'game': return PlayState.instance.gameCam;
+            case 'camhud' | 'hudcam' | 'hud': return PlayState.instance.hudCam;
+            case 'camother' | 'othercam' | 'other': return PlayState.instance.otherCam;
         }
 
         return PlayState.instance.gameCam;
@@ -1482,7 +1557,7 @@ class LuaHandler
 
 	inline function getInstance()
     {
-        return PlayState.instance.playerDead ? GameOverSubstate.instance : PlayState.instance;
+        return PlayState.instance.isDead ? GameOverSubstate.instance : PlayState.instance;
     }
 }
 #end

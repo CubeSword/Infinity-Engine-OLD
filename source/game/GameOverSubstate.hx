@@ -12,7 +12,8 @@ using StringTools;
 
 class GameOverSubstate extends BasicSubState
 {
-    var player:Character;
+    public var player:Character;
+    
     var camFollow:FlxObject;
 
     var isEnding:Bool = false;

@@ -190,7 +190,7 @@ class PauseMenu extends BasicSubState
 						close();
 
 					case 'Restart Song':
-						#if linc_luajit
+						#if lua_allowed
 						if (PlayState.luaModchart != null)
 						{
 							PlayState.luaModchart.die();

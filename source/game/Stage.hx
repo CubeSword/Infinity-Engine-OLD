@@ -1,5 +1,9 @@
 package game;
 
+#if lua_allowed
+import game.LuaHandler;
+#end
+
 import mods.Mods;
 import lime.utils.Assets;
 import flixel.group.FlxGroup.FlxTypedGroup;
@@ -15,7 +19,7 @@ class Stage extends FlxTypedGroup<StageSprite>
 
     public var megaCoolPoggersStage:String = "stage";
 
-    #if linc_luajit
+    #if lua_allowed
     public var stageScript:LuaHandler = null;
     #end
 
@@ -23,134 +27,153 @@ class Stage extends FlxTypedGroup<StageSprite>
     {
         super();
 
-        megaCoolPoggersStage = swagStage;
-        getStageJSON(megaCoolPoggersStage);
-        //trace("Stage Objects: " + stageObjects);
-        //trace("Stage Objects Length: " + stageObjects.length);
+        switchStage(swagStage);
+    }
 
-        for(i in 0...stageObjects.length)
+    public function switchStage(swagStage:String = "stage")
+    {
+        for(bember in members)
         {
-            var swagSprite:StageSprite = new StageSprite(stageObjects[i].position[0], stageObjects[i].position[1]);
+            bember.kill();
+            bember.destroy();
+        }
 
-            //trace("x: " + stageObjects[i].position[0] + " y: " + stageObjects[i].position[1]);
-            //trace(stageObjects[i].file_Name);
+        clear();
 
-            if(stageObjects[i].is_Animated)
+        megaCoolPoggersStage = swagStage;
+
+        if(swagStage != "")
+        {
+            getStageJSON(megaCoolPoggersStage);
+            //trace("Stage Objects: " + stageObjects);
+            //trace("Stage Objects Length: " + stageObjects.length);
+
+            for(i in 0...stageObjects.length)
             {
-                if(!stageObjects[i].isPackerAtlas)
-                    file = Util.getSparrow('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
-                else
-                    file = Util.getPacker('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
+                var swagSprite:StageSprite = new StageSprite(stageObjects[i].position[0], stageObjects[i].position[1]);
 
-                //trace("file: " + file);
-                swagSprite.frames = file;
-                // should be like: 'stages/stage/stageback.png' or smth
+                //trace("x: " + stageObjects[i].position[0] + " y: " + stageObjects[i].position[1]);
+                //trace(stageObjects[i].file_Name);
 
-                for(i2 in 0...stageObjects[i].animations.length)
+                if(stageObjects[i].is_Animated)
                 {
-                    //trace("anim name: " + stageObjects[i].animations[i2][0]);
-                    //trace("xml shit: " + stageObjects[i].animations[i2][1]);
-
                     if(!stageObjects[i].isPackerAtlas)
-                        swagSprite.animation.addByPrefix(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
+                        file = Util.getSparrow('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
                     else
-                        swagSprite.animation.add(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
-                    // go through each animation and add them
+                        file = Util.getPacker('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
+
+                    //trace("file: " + file);
+                    swagSprite.frames = file;
+                    // should be like: 'stages/stage/stageback.png' or smth
+
+                    for(i2 in 0...stageObjects[i].animations.length)
+                    {
+                        //trace("anim name: " + stageObjects[i].animations[i2][0]);
+                        //trace("xml shit: " + stageObjects[i].animations[i2][1]);
+
+                        if(!stageObjects[i].isPackerAtlas)
+                            swagSprite.animation.addByPrefix(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
+                        else
+                            swagSprite.animation.add(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
+                        // go through each animation and add them
+                    }
+
+                    var firstAnim:String = stageObjects[i].animations[0][0];
+                    //trace("first anim: " + firstAnim);
+
+                    swagSprite.isAnimated = true;
+
+                    swagSprite.firstAnim = firstAnim;
+                    swagSprite.animation.play(firstAnim); // play first animation added, idle should go first so it can play here
+                }
+                else
+                {
+                    //trace('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name);
+                    swagSprite.loadGraphic(Util.getImage('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false));
                 }
 
-                var firstAnim:String = stageObjects[i].animations[0][0];
-                //trace("first anim: " + firstAnim);
+                if(stageObjects[i].specialScale)
+                {
+                    swagSprite.scale.set(stageObjects[i].scale, stageObjects[i].scale);
+                }
+                else
+                {
+                    swagSprite.setGraphicSize(Std.int(swagSprite.width * stageObjects[i].scale));
+                    swagSprite.updateHitbox();
+                }
 
-                swagSprite.isAnimated = true;
+                swagSprite.scrollFactor.set(stageObjects[i].scroll_Factor[0], stageObjects[i].scroll_Factor[1]);
 
-                swagSprite.firstAnim = firstAnim;
-                swagSprite.animation.play(firstAnim); // play first animation added, idle should go first so it can play here
+                if(stageObjects[i].antialiasing)
+                    swagSprite.antialiasing = Options.getData('anti-aliasing');
+                else
+                    swagSprite.antialiasing = false;
+
+                swagSprite.visible = stageObjects[i].visible;
+
+                if(stageObjects[i].alpha != null)
+                    swagSprite.alpha = stageObjects[i].alpha;
+                else
+                    swagSprite.alpha = 1;
+
+                swagSprite.bopLeftRight = stageObjects[i].danceLeftRight;
+
+                if(!stageObjects[i].isInFront)
+                    add(swagSprite); // add the sprite to the stage if it is not in front
             }
-            else
+
+            if(megaCoolPoggersStage == "school" || megaCoolPoggersStage == "schoolAngry")
             {
-                //trace('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name);
-                swagSprite.loadGraphic(Util.getImage('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false));
+                var widShit = Std.int(members[0].width * 6);
+
+                members[0].setGraphicSize(widShit);
+                members[1].setGraphicSize(widShit);
+                members[2].setGraphicSize(widShit);
+                members[3].setGraphicSize(Std.int(widShit * 0.8));
+                members[4].setGraphicSize(Std.int(widShit * 1.4));
+                members[5].setGraphicSize(widShit);
+
+                members[0].updateHitbox();
+                members[1].updateHitbox();
+                members[2].updateHitbox();
+                members[3].updateHitbox();
+                members[4].updateHitbox();
+                members[5].updateHitbox();
+
+                members[6].setGraphicSize(Std.int(members[6].width * 6));
+                members[6].updateHitbox();
             }
 
-            if(stageObjects[i].specialScale)
+            PlayState.characterPositions = [];
+            
+            for(i in 0...rawStageData.character_Positions.length)
             {
-                swagSprite.scale.set(stageObjects[i].scale, stageObjects[i].scale);
-            }
-            else
-            {
-                swagSprite.setGraphicSize(Std.int(swagSprite.width * stageObjects[i].scale));
-                swagSprite.updateHitbox();
+                PlayState.characterPositions.push([rawStageData.character_Positions[i][0], rawStageData.character_Positions[i][1]]);
             }
 
-            swagSprite.scrollFactor.set(stageObjects[i].scroll_Factor[0], stageObjects[i].scroll_Factor[1]);
+            //trace(PlayState.characterPositions);
 
-            if(stageObjects[i].antialiasing)
-                swagSprite.antialiasing = Options.getData('anti-aliasing');
-            else
-                swagSprite.antialiasing = false;
-
-            swagSprite.visible = stageObjects[i].visible;
-
-            if(stageObjects[i].alpha != null)
-                swagSprite.alpha = stageObjects[i].alpha;
-            else
-                swagSprite.alpha = 1;
-
-            swagSprite.bopLeftRight = stageObjects[i].danceLeftRight;
-
-            if(!stageObjects[i].isInFront)
-                add(swagSprite); // add the sprite to the stage if it is not in front
+            PlayState.stageCamZoom = rawStageData.camera_Zoom;
         }
-
-        if(megaCoolPoggersStage == "school" || megaCoolPoggersStage == "schoolAngry")
-        {
-            var widShit = Std.int(members[0].width * 6);
-
-            members[0].setGraphicSize(widShit);
-            members[1].setGraphicSize(widShit);
-            members[2].setGraphicSize(widShit);
-            members[3].setGraphicSize(Std.int(widShit * 0.8));
-            members[4].setGraphicSize(Std.int(widShit * 1.4));
-            members[5].setGraphicSize(widShit);
-
-            members[0].updateHitbox();
-            members[1].updateHitbox();
-            members[2].updateHitbox();
-            members[3].updateHitbox();
-            members[4].updateHitbox();
-            members[5].updateHitbox();
-
-            members[6].setGraphicSize(Std.int(members[6].width * 6));
-            members[6].updateHitbox();
-        }
-
-        PlayState.characterPositions = [];
-        
-        for(i in 0...rawStageData.character_Positions.length)
-        {
-            PlayState.characterPositions.push([rawStageData.character_Positions[i][0], rawStageData.character_Positions[i][1]]);
-        }
-
-        //trace(PlayState.characterPositions);
-
-        PlayState.stageCamZoom = rawStageData.camera_Zoom;
     }
 
     public function createLuaStuff()
     {
-        #if linc_luajit
+        #if lua_allowed
         #if sys
-        if(rawStageData != null)
-        {
+        /*if(rawStageData != null)
+        {*/
             if(sys.FileSystem.exists(Sys.getCwd() + Util.getPath('stages/$megaCoolPoggersStage/script.lua')))
                 stageScript = LuaHandler.createLuaHandler(Util.getPath('stages/$megaCoolPoggersStage/script.lua'));
-        }
+        //}
+
+        // hmm what if
         #end
         #end
     }
 
     override public function destroy() {
-        #if linc_luajit
+        #if lua_allowed
         if(stageScript != null)
         {
             stageScript.die();
@@ -247,7 +270,7 @@ class StageFront extends FlxTypedGroup<StageSprite> // lmao thx raf for pointing
 
     public var megaCoolPoggersStage:String = "stage";
 
-    #if linc_luajit
+    #if lua_allowed
     public var stageScript:LuaHandler = null;
     #end
 
@@ -255,94 +278,113 @@ class StageFront extends FlxTypedGroup<StageSprite> // lmao thx raf for pointing
     {
         super();
 
-        megaCoolPoggersStage = swagStage;
-        getStageJSON(megaCoolPoggersStage);
-        //trace("Stage Objects: " + stageObjects);
-        //trace("Stage Objects Length: " + stageObjects.length);
+        switchStage(swagStage);
+    }
 
-        for(i in 0...stageObjects.length)
+    public function switchStage(swagStage:String = "stage")
+    {
+        for(bember in members)
         {
-            var swagSprite:StageSprite = new StageSprite(stageObjects[i].position[0], stageObjects[i].position[1]);
+            bember.kill();
+            bember.destroy();
+        }
 
-            //trace("x: " + stageObjects[i].position[0] + " y: " + stageObjects[i].position[1]);
-            //trace(stageObjects[i].file_Name);
+        clear();
 
-            if(stageObjects[i].is_Animated)
+        megaCoolPoggersStage = swagStage;
+
+        if(swagStage != "")
+        {
+            getStageJSON(megaCoolPoggersStage);
+            //trace("Stage Objects: " + stageObjects);
+            //trace("Stage Objects Length: " + stageObjects.length);
+
+            for(i in 0...stageObjects.length)
             {
-                if(!stageObjects[i].isPackerAtlas)
-                    file = Util.getSparrow('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
-                else
-                    file = Util.getPacker('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
+                var swagSprite:StageSprite = new StageSprite(stageObjects[i].position[0], stageObjects[i].position[1]);
 
-                //trace("file: " + file);
-                swagSprite.frames = file;
-                // should be like: 'stages/stage/stageback.png' or smth
+                //trace("x: " + stageObjects[i].position[0] + " y: " + stageObjects[i].position[1]);
+                //trace(stageObjects[i].file_Name);
 
-                for(i2 in 0...stageObjects[i].animations.length)
+                if(stageObjects[i].is_Animated)
                 {
-                    //trace("anim name: " + stageObjects[i].animations[i2][0]);
-                    //trace("xml shit: " + stageObjects[i].animations[i2][1]);
-
                     if(!stageObjects[i].isPackerAtlas)
-                        swagSprite.animation.addByPrefix(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
+                        file = Util.getSparrow('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
                     else
-                        swagSprite.animation.add(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
-                    // go through each animation and add them
+                        file = Util.getPacker('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false);
+
+                    //trace("file: " + file);
+                    swagSprite.frames = file;
+                    // should be like: 'stages/stage/stageback.png' or smth
+
+                    for(i2 in 0...stageObjects[i].animations.length)
+                    {
+                        //trace("anim name: " + stageObjects[i].animations[i2][0]);
+                        //trace("xml shit: " + stageObjects[i].animations[i2][1]);
+
+                        if(!stageObjects[i].isPackerAtlas)
+                            swagSprite.animation.addByPrefix(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
+                        else
+                            swagSprite.animation.add(stageObjects[i].animations[i2][0], stageObjects[i].animations[i2][1], stageObjects[i].fps, stageObjects[i].looped, stageObjects[i].flipX);
+                        // go through each animation and add them
+                    }
+
+                    var firstAnim:String = stageObjects[i].animations[0][0];
+                    //trace("first anim: " + firstAnim);
+
+                    swagSprite.isAnimated = true;
+
+                    swagSprite.firstAnim = firstAnim;
+                    swagSprite.animation.play(firstAnim); // play first animation added, idle should go first so it can play here
+                }
+                else
+                {
+                    //trace('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name);
+                    swagSprite.loadGraphic(Util.getImage('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false));
                 }
 
-                var firstAnim:String = stageObjects[i].animations[0][0];
-                //trace("first anim: " + firstAnim);
+                swagSprite.setGraphicSize(Std.int(swagSprite.width * stageObjects[i].scale));
+                swagSprite.updateHitbox();
 
-                swagSprite.isAnimated = true;
+                swagSprite.scrollFactor.set(stageObjects[i].scroll_Factor[0], stageObjects[i].scroll_Factor[1]);
 
-                swagSprite.firstAnim = firstAnim;
-                swagSprite.animation.play(firstAnim); // play first animation added, idle should go first so it can play here
+                if(stageObjects[i].antialiasing)
+                    swagSprite.antialiasing = Options.getData('anti-aliasing');
+                else
+                    swagSprite.antialiasing = false;
+
+                swagSprite.visible = stageObjects[i].visible;
+
+                if(stageObjects[i].alpha != null)
+                    swagSprite.alpha = stageObjects[i].alpha;
+                else
+                    swagSprite.alpha = 1;
+
+                swagSprite.bopLeftRight = stageObjects[i].danceLeftRight;
+
+                if(stageObjects[i].isInFront)
+                    add(swagSprite); // add the sprite to the stage if it is in front
             }
-            else
-            {
-                //trace('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name);
-                swagSprite.loadGraphic(Util.getImage('stages/$megaCoolPoggersStage/' + stageObjects[i].file_Name, false));
-            }
-
-            swagSprite.setGraphicSize(Std.int(swagSprite.width * stageObjects[i].scale));
-            swagSprite.updateHitbox();
-
-            swagSprite.scrollFactor.set(stageObjects[i].scroll_Factor[0], stageObjects[i].scroll_Factor[1]);
-
-            if(stageObjects[i].antialiasing)
-                swagSprite.antialiasing = Options.getData('anti-aliasing');
-            else
-                swagSprite.antialiasing = false;
-
-            swagSprite.visible = stageObjects[i].visible;
-
-            if(stageObjects[i].alpha != null)
-                swagSprite.alpha = stageObjects[i].alpha;
-            else
-                swagSprite.alpha = 1;
-
-            swagSprite.bopLeftRight = stageObjects[i].danceLeftRight;
-
-            if(stageObjects[i].isInFront)
-                add(swagSprite); // add the sprite to the stage if it is in front
         }
     }
 
     public function createLuaStuff()
     {
-        #if linc_luajit
+        #if lua_allowed
         #if sys
-        if(rawStageData != null)
-        {
+        /*if(rawStageData != null)
+        {*/
             if(sys.FileSystem.exists(Sys.getCwd() + Util.getPath('stages/$megaCoolPoggersStage/script.lua')))
                 stageScript = LuaHandler.createLuaHandler(Util.getPath('stages/$megaCoolPoggersStage/script.lua'));
-        }
+        //}
+
+        // hmm what if
         #end
         #end
     }
 
     override public function destroy() {
-        #if linc_luajit
+        #if lua_allowed
         if(stageScript != null)
         {
             stageScript.die();

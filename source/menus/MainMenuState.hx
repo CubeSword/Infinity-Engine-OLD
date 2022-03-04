@@ -165,6 +165,12 @@ class MainMenuState extends BasicState
 		if (Controls.shiftP && FlxG.keys.justPressed.C)
 			Util.openURL('https://github.com/CubeSword/Infinity-Engine/blob/main/changelogs/$engineVersion.md');
 
+		if (FlxG.keys.justPressed.SEVEN)
+		{
+			transitionState(new OptionsState());
+			OptionsState.optionsList = OptionsState.defaultOptionsList["tools"];
+		}
+
 		if (Controls.accept)
 		{
 			if(!hasSelected)

@@ -1,0 +1,18 @@
+{
+    "scale": 1,
+	"alignment": "right",
+	"antialiasing": true,
+	"position": [0, 50],
+	"animations": [
+		["normal-talk", "normal talk0", 24, false, [0, 0]],
+		["normal-idle", "normal idle0", 24, true, [0, 0]],
+		["angry-talk", "angry talk0", 24, false, [0, 0]],
+		["angry-idle", "angry idle0", 24, true, [0, 0]],
+		["confused-talk", "confused talk0", 24, false, [0, 0]],
+		["confused-idle", "confused idle0", 24, true, [0, 0]],
+		["excited-talk", "excited talk0", 24, false, [0, 0]],
+		["excited-idle", "excited idle0", 24, true, [0, 0]],
+		["shocked-talk", "shocked talk0", 24, false, [0, 0]],
+		["shocked-idle", "shocked idle0", 24, true, [0, 0]]
+    ]
+}

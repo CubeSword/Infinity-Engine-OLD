@@ -129,9 +129,9 @@
 	"healthicon": "placeholder",
 	"flip_x": false,
 	"healthbar_colors": [
-		0,
-		0,
-		0
+		161,
+		161,
+		161
 	],
 	"camera_position": [
 		0,

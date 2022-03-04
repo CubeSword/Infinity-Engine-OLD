@@ -32,19 +32,25 @@
 	<set name="BUILD_DIR" value="export/debug" if="debug" />
 	<set name="BUILD_DIR" value="export/release" unless="debug" />
 	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
+
+	<!--<define name="PRELOAD_ALL" unless="web" />-->
+	<define name="NO_PRELOAD_ALL" unless="PRELOAD_ALL"/>
+
+	<library name="videos" preload="true" />
+
+	<section if="PRELOAD_ALL">
+		<library name="songs" preload="true" />
+	</section>
+	
+	<section if="NO_PRELOAD_ALL">
+		<library name="songs" preload="false" />
+	</section>
 	
 	<source path="source" />
 	<assets path="assets" />
-	<assets path="assets/images" />
-	<assets path="assets/stages" />
-	<assets path="assets/characters" />
-	<assets path="assets/credits" />
-	<assets path="assets/weeks" />
-	<assets path="assets/dialogue" />
-	<assets path="assets/achievements" />
 
-	<assets path="assets/songs" exclude="*.ogg" if="web"/>
-	<assets path="assets/songs" exclude="*.mp3" unless="web"/>
+	<assets path="assets/songs" library="songs" exclude="*.ogg" if="web"/>
+	<assets path="assets/songs" library="songs" exclude="*.mp3" unless="web"/>
 
 	<assets path="assets/music" exclude="*.ogg" if="web"/>
 	<assets path="assets/music" exclude="*.mp3" unless="web"/>
@@ -52,8 +58,7 @@
 	<assets path="assets/sounds" exclude="*.ogg" if="web"/>
 	<assets path="assets/sounds" exclude="*.mp3" unless="web"/>
 
-	<assets path="assets/data" />
-	<assets path="assets/fonts" embed='true'/>
+	<assets path="assets/fonts" embed='false'/>
 
 	<assets path="mods" />
 	<assets path="logs" />
@@ -70,8 +75,15 @@
 	<!--In case you want to use the ui package-->
 	<haxelib name="flixel-ui" />
 
+	<!--Extra Packages-->
 	<haxelib name="discord_rpc" if="desktop"/>
 	<haxelib name="linc_luajit" if="desktop"/>
+
+	<!-- _________________________ Engine Customization ________________________ -->
+
+	<define name="lua_allowed" if="linc_luajit" /> <!--comment/delete to get rid of lua-->
+	<define name="achievements_allowed" /> <!--comment/delete to get rid of achievements-->
+	<define name="videos_allowed" if="web || windows" unless="32bits"/> <!--comment/delete to get rid of videos-->
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape-haxe4" />-->

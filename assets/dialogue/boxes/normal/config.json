@@ -1,0 +1,16 @@
+{
+    "scale": 1,
+    "font": "funkin",
+    "fontSize": 48,
+    "boxPosition": [60, 354],
+    "textPosition": [120, 474],
+    "antialiasing": true,
+    "animations": [
+        ["Speech Bubble Normal Open", 12, false],
+        ["speech bubble normal", 24, false],
+        ["AHH speech bubble", 24, false],
+        ["Speech Bubble Normal Open", 12, true]
+    ],
+    "fieldWidth": 1060,
+    "textColor": [0, 0, 0]
+}

@@ -1,14 +1,16 @@
 package;
 
+import flixel.FlxBasic;
+import game.PlayState;
 import menus.TitleScreenState;
-import flixel.FlxState;
-import flixel.FlxSubState;
-import flixel.util.FlxColor;
 import flixel.FlxG;
 import game.Conductor;
 import flixel.FlxSprite;
+import flixel.FlxState;
+import lime.app.Application;
+import flixel.addons.ui.FlxUISubState;
 
-class BasicSubState extends FlxSubState
+class BasicSubState extends FlxUISubState
 {
 	//bpm and step
 	var curStep:Int = 0;
@@ -25,34 +27,46 @@ class BasicSubState extends FlxSubState
 		//	FlxG.camera.fade(FlxColor.TRANSPARENT, 0.5, true);
 	}
 
-	override function create() {
+	public function funkyBpm(BPM:Float, ?songMultiplier:Float = 1)
+	{
+		Conductor.changeBPM(BPM, songMultiplier); // love how this function is basically useless because Conductor.changeBPM itself is a function lol
+	}
+
+	override public function create()
+	{
 		super.create();
 
 		if(TitleScreenState.optionsInitialized)
 			Controls.refreshControls();
+
+		Util.clearMemoryStuff();
 	}
 
-	public function funkyBpm(BPM:Float, ?songMultiplier:Float = 1)
+	override public function update(elapsed:Float)
 	{
-		Conductor.changeBPM(BPM, songMultiplier);
-	}
-
-	override function update(elapsed:Float)
-	{
-		super.update(elapsed);
-		
 		var oldStep:Int = curStep;
 
 		updateCurStep();
 		updateBeat();
 
-		if(oldStep != curStep)
+		if (oldStep != curStep && curStep > 0)
 			stepHit();
 
-		FlxG.stage.frameRate = Options.getData('fpsCap');
+		if(FlxG.stage != null)
+			FlxG.stage.frameRate = Options.getData('fpsCap');
+
+		if(!Options.getData("anti-aliasing"))
+		{
+			forEachAlive(function(basic:FlxBasic) {
+				if(Std.isOfType(basic, FlxSprite))
+					Reflect.setProperty(basic, "antialiasing", false);
+			}, true);
+		}
 
 		if(TitleScreenState.optionsInitialized)
 			Controls.refreshControls();
+
+		super.update(elapsed);
 	}
 
 	//transition
@@ -62,7 +76,7 @@ class BasicSubState extends FlxSubState
 	{
 		if(TitleScreenState.optionsInitialized)
 			Controls.refreshControls();
-
+		
 		FlxG.switchState(state);
 
 		if(TitleScreenState.optionsInitialized)
@@ -72,7 +86,7 @@ class BasicSubState extends FlxSubState
 
 	private function updateBeat():Void
 	{
-		curBeat = Math.floor(curStep / (16 / Conductor.timeScale[1]));
+		curBeat = Math.floor(curStep / Conductor.timeScale[1]);
 	}
 
 	private function updateCurStep():Void
@@ -83,13 +97,35 @@ class BasicSubState extends FlxSubState
 			bpm: 0
 		}
 		
-		for (i in 0...Conductor.bpmChangeMap.length)
+		for(i in 0...Conductor.bpmChangeMap.length)
 		{
 			if (Conductor.songPosition >= Conductor.bpmChangeMap[i].songTime)
 				lastChange = Conductor.bpmChangeMap[i];
 		}
 
-		Conductor.recalculateStuff();
+		var dumb:TimeScaleChangeEvent = {
+			stepTime: 0,
+			songTime: 0,
+			timeScale: [4,4]
+		};
+
+		var lastTimeChange:TimeScaleChangeEvent = dumb;
+
+		for(i in 0...Conductor.timeScaleChangeMap.length)
+		{
+			if (Conductor.songPosition >= Conductor.timeScaleChangeMap[i].songTime)
+				lastTimeChange = Conductor.timeScaleChangeMap[i];
+		}
+
+		if(lastTimeChange != dumb)
+			Conductor.timeScale = lastTimeChange.timeScale;
+
+		var multi:Float = 1;
+
+		if(FlxG.state == PlayState.instance)
+			multi = PlayState.songMultiplier;
+
+		Conductor.recalculateStuff(multi);
 
 		curStep = lastChange.stepTime + Math.floor((Conductor.songPosition - lastChange.songTime) / Conductor.stepCrochet);
 
@@ -105,5 +141,16 @@ class BasicSubState extends FlxSubState
 	public function beatHit():Void
 	{
 		//do literally nothing dumbass
+	}
+
+	public static function changeAppTitle(?prefix:String = "", ?suffix:String = ""):Void
+	{
+		if(suffix != "" || suffix != null)
+			Application.current.window.title = prefix + " - " + suffix;
+		else
+			Application.current.window.title = prefix;
+
+		if(prefix == "" || prefix == null)
+			Application.current.window.title = Util.engineName;
 	}
 }

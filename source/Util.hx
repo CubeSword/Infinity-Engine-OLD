@@ -144,19 +144,17 @@ class Util
 	{
 		var gaming = null;
 
-		if(Assets.exists('assets/$path'))
-			gaming = 'assets/$path';
-		else
+		for(mod in Mods.activeMods)
 		{
-			for(mod in Mods.activeMods)
+			if(sys.FileSystem.exists(Sys.getCwd() + 'mods/$mod/$path')) // hey wait a minute-
 			{
-				if(sys.FileSystem.exists('mods/$mod/$path'))
-				{
-					gaming = 'mods/$mod/$path';
-					break;
-				}
+				gaming = 'mods/$mod/$path';
+				return gaming;
 			}
 		}
+
+		if(Assets.exists('assets/$path'))
+			gaming = 'assets/$path';
 
 		return gaming;
 	}

@@ -260,12 +260,12 @@ class TitleScreenState extends BasicState
 
 		if(startedTitle)
 		{
-			logo.animation.play('idle');
+			logo.animation.play('idle', true);
 
 			if(!boppedLeft)
-				gf.animation.play('danceLeft');
+				gf.animation.play('danceLeft', true);
 			else
-				gf.animation.play('danceRight');
+				gf.animation.play('danceRight', true);
 
 			boppedLeft = !boppedLeft;
 		}

@@ -31,7 +31,7 @@ class OptionsState extends BasicState
 	var stupidBox:FlxSprite;
 	var descText:FlxText;
 
-	var defaultOptionsList = [
+	static public var defaultOptionsList = [
 		"selectables" => [
 			["Graphics", "menu", "Change how things look in menus/gameplay."],
 			["Gameplay", "menu", "Change how things behave during gameplay."],
@@ -69,8 +69,9 @@ class OptionsState extends BasicState
 		],
 		"tools" => [
 			["Back", "menu", ""],
-			["Character Editor", "menu", "Make a new character with the Character Editor."],
+			["Character Editor", "menu", "Make/Edit characters with the Character Editor."],
 			["Chart Editor", "menu", "Chart your songs with the Chart Editor."],
+			["Dialogue Editor", "menu", "Make/Edit dialogue boxes or characters with the Dialogue Editor."],
 		],
 		"misc" => [
 			["Back", "menu", ""],
@@ -79,10 +80,16 @@ class OptionsState extends BasicState
 		]
 	];
 
-	var optionsList:Array<Dynamic> = [];
+	static public var optionsList:Array<Dynamic> = [];
 	
 	var selectedOption:Int = 0;
 	var menuColor:Int = 0xFFf542d7;
+
+	override public function new()
+	{
+		super();
+		optionsList = defaultOptionsList["selectables"];
+	}
 
     override public function create()
 	{
@@ -91,8 +98,6 @@ class OptionsState extends BasicState
 
 		FlxTransitionableState.skipNextTransIn = false;
 		FlxTransitionableState.skipNextTransOut = false;
-
-		optionsList = defaultOptionsList["selectables"];
 
         menuBG = new FlxSprite().loadGraphic(Util.getImage("menuDesat", true, "Base Game"));
 		menuBG.color = menuColor;
@@ -212,6 +217,8 @@ class OptionsState extends BasicState
 							transitionState(new CharacterEditorMenu());
 						case "Chart Editor":
 							transitionState(new ChartEditorMenu("test"));
+						case "Dialogue Editor":
+							transitionState(new DialogueEditorMenu());
 					}
 				case "checkbox":
 					Options.saveData(optionsList[selectedOption][3], !Options.getData(optionsList[selectedOption][3]));

@@ -1105,6 +1105,9 @@ class CharacterEditorMenu extends BasicState
             "scale": scaleBox.value
         }];
 
+        if(playerChar) // flip the character if the player character box is checked lo
+            charData.flipX = !charData.flipX;
+
         for(i in 0...character.anims.length)
         {
             character.anims[i].offsets = [animOffsets[i][0], animOffsets[i][1]];

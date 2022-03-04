@@ -18,6 +18,7 @@ class Character extends FlxSprite {
     public var healthColor:Int = FlxColor.WHITE;
     public var bopLeftRight:Bool = false;
     public var bopDirection:Int = 0;
+    public var singDuration:Float = 6.1;
     public var shouldDance:Bool = true;
     public var isPlayer:Bool = false;
     public var holdTimer:Float = 0;
@@ -122,6 +123,7 @@ class Character extends FlxSprite {
             position = json.position;
 
             anims = json.animations;
+            singDuration = json.sing_duration;
 
             if(json.healthicon != null)
                 healthIcon = json.healthicon;
@@ -172,11 +174,18 @@ class Character extends FlxSprite {
                 offset.set(offsetMap[AnimName][0], offsetMap[AnimName][1]);
         }
     }
-
     public function dance() {
         if(shouldDance)
         {
             holdTimer = 0;
+
+            if(animation.curAnim != null)
+            {
+                if(animation.curAnim.name == 'singLEFT')
+                    bopDirection = 0;
+                else if(animation.curAnim.name == 'singRIGHT')
+                    bopDirection = 1;
+            }
             
             if (bopLeftRight == true) {
                 if (bopDirection == 0) {
