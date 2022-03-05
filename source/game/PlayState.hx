@@ -1855,9 +1855,12 @@ class PlayState extends BasicState
 			{
 				for(sound in LuaHandler.lua_Sounds)
 				{
-					sound.stop();
-					sound.kill();
-					sound.destroy();
+					if(sound != null)
+					{
+						sound.stop();
+						sound.kill();
+						sound.destroy();
+					}
 				}
 
 				luaModchart.die();
