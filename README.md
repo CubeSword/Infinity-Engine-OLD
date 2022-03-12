@@ -1,3 +1,9 @@
+# ⚠️ **WARNING:** This repo for Infinity Engine is no longer being updated. Why?
+I have realized that this is probably going to be too much work for 2 people (at this point lol, there was a team but they forgor) so i'm going to go off of Vanilla FNF. You can go nuts with continuing this version of the engine, But the new repo will be the official version or some wack shit
+
+Here's the new repo:
+Click [here Lol](https://github.com/CubeSword/Infinity-Engine) for the New repo!!!
+
 # ♾️ Infinity Engine
 -----
 ![](https://media.discordapp.net/attachments/782707705792954388/931918337989029948/Untitled108_20220115083034.png)
